@@ -1,8 +1,0 @@
-.containerMaster{
-
-    display: grid;
-    grid-template-columns: repeat(3,350px);
-    gap: 150px;
-    text-align: center;
-    align-items: center;
-}
