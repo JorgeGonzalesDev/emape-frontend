@@ -1,781 +1,440 @@
 import { Grid, TextField, MenuItem, Button, Checkbox, FormControlLabel } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Register from "../../views/Person/Register";
+import { getCargo } from "../../service/position";
+import { listAFPS } from "../../service/afp";
+import {
+    getBanks, getTypeWorker,
+    getRSalud, getRPension,
+    getPuestoLaboral, getUnidad, getCondicion,
+    getRLaboral, getOcupacionL, getCategoriaO
+} from "../../service/common";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AddOrUpdateWorker, getWorker } from "../../service/worker";
+import moment from "moment";
+import Swal from "sweetalert2";
 
-const RegisterSteps = () => {
+const RegisterSteps = ({
+    codePerson = 0,
+    fullName = "",
+    codeW = null,
+}) => {
 
     const [fields, setFields] = useState({
-        'code_employee': '',
-        'type_document': '',
-        'first_lastname': '',
-        'second_lastname': '',
-        'full_name': '',
-
-        'code_back': '',
-        'document_number': '',
-        'ruc': '',
-        'name': '',
-        'photo': '',
-        
-        'date_birthday': '',
-        'marital_status': '',
-        'sex': '',
-
-        'direction_document': '',
-        'direction': '',
-        'telephone': '',
-        'phone': '',
-        'email': '',
-
-        'date_register': '',
-        'date_update': '',
-
-        'register_for': '',
-        'update_for': '',
-
-        'status': '',
-        'work_area': '',
-        'date_of_admission': '',
-        'job_title': '',
-        'termination_date': '',
-        'job_labor': '',
-        'date_end': '',
-        'working_condition': '',
-        'type_employee': '',
-        'workshift': '',
-        'fund': '',
-        'affiliate': '',
-        'plaza': '',
-        'level': '',
-        'salary_bank': '',
-        'salary_account': '',
-        'number_CCL': '',
-        'bank_CTS': '',
-        'count_CTS': '',
-        'code_CUSPP': '',
-        'job_type': '',
-        'pension_type': '',
-        'code_ESSALUD': '',
-        'labor_regimen': '',
-        'pension_regimen': '',
-        'health_regimen': '',
-        'labor_occupation': '',
-        'special_situation': '',
-        'occupation_category': '',
-        'disability': '',
-        'unionized': '',
-        'tax_agreement': '',
-        'type_pay': '',
-        't_register': '',
-        'pay_not_AFP': '',
-        'older': '',
-        'current_age': '',
-        'observations': '',
-        'date_of_admission_select': '',
-        'termination_date_select': '',
-        'contract_number': '',
-
-        /* Carga Familiar */
-
-        'relationship': '',
-        'dependent':'',
-        'legal_burden': '',
-        'type_burden': '',
-        'fixed_amount': '',
-        'percentage': '',
-        'bank': '',
-        'bank_account': '',
-        'number_c_c_i': '',
+        coD_TRABAJADOR: 0,
+        coD_PERS: codePerson,
+        coD_UORG: 0,
+        feC_INGRESO: moment(new Date()).format(),
+        coD_CAR: 0,
+        feC_CESE: moment(new Date()).format(),
+        coD_PUESTO: 0,
+        coD_CONDICION: 0,
+        coD_TIPOTRABAJ: 0,
+        coD_AFP: 0,
+        nuM_PLAZA: "",
+        coD_BCOSUELDO: 0,
+        nuM_CTASUELDO: "",
+        nuM_CCI: "",
+        coD_BCOCTS: 0,
+        nuM_CTACTS: "",
+        coD_CUSPP: "",
+        inD_REGLABORAL: "",
+        inD_REGPENSION: "",
+        coD_ESSALUD: "",
+        coD_SEGSALUD: 0,
+        coD_REGLABORAL: 0,
+        coD_REGPENSION: 0,
+        coD_OCUPLABORAL: 0,
+        coD_CATOCUPACION: 0,
+        inD_DISCAPACIDAD: "0",
+        inD_SINDICALIZADO: "0",
+        inD_SITESPECIAL: "0",
+        inD_DOBLETRIBUTO: "0",
+        inD_TIPOPAGO: 0,
+        inD_PLAME: "",
+        obS_TRABAJADOR: "",
+        inD_NOSEGUROAFP: "",
+        nrO_CONTRATO: "",
+        feC_INI_CONTRATO: moment(new Date()).format(),
+        feC_FIN_CONTRATO: moment(new Date()).format(),
     });
 
-    const handleInputChange = event => {
-        const { name, value } = event.target;
-        setFields({ ...fields, [name]: value });
-    }
+    const [step, setStep] = useState(1);
+    const [positions, setPositions] = useState([]);
+    const [afps, setAfps] = useState([]);
+    const [banks, setBanks] = useState([]);
+    const [typeWorker, setTypeWorker] = useState([]);
+    const [rSalud, setRSalud] = useState([]);
+    const [rPension, setRPension] = useState([]);
+    const [puestoL, setPuestoL] = useState([]);
+    const [unidad, setUnidad] = useState([]);
+    const [condicion, setCondicion] = useState([]);
+    const [rLaboral, setRLaboral] = useState([]);
+    const [ocupacionLaboral, setOcupacionLaboral] = useState([]);
+    const [categoriaOcupacional, setCategoriaOcupacional] = useState([]);
 
-    const [step, setStep] = useState(0);
+    const loadData = async () => {
 
-    const validateFields = () => {
+        const responsePositions = await getCargo();
+        setPositions(responsePositions.listado)
+        const responseAfps = await listAFPS();
+        setAfps(responseAfps.listado);
+        const responseBanks = await getBanks();
+        setBanks(responseBanks.listado);
+        const responseTypeWorker = await getTypeWorker();
+        setTypeWorker(responseTypeWorker.listado);
+        const responserSalud = await getRSalud();
+        setRSalud(responserSalud.listado);
+        const responsePension = await getRPension();
+        setRPension(responsePension.listado);
+        const responsePuestoLaboral = await getPuestoLaboral();
+        setPuestoL(responsePuestoLaboral.listado);
+        const responseUnidad = await getUnidad();
+        setUnidad(responseUnidad.listado);
+        const responseCondicion = await getCondicion();
+        setCondicion(responseCondicion.listado);
+        const responseRLaboral = await getRLaboral();
+        setRLaboral(responseRLaboral.listado);
+        const responseOcupacionL = await getOcupacionL();
+        setOcupacionLaboral(responseOcupacionL.listado);
+        const responseCategoriaO = await getCategoriaO();
+        setCategoriaOcupacional(responseCategoriaO.listado);
 
-        const copyFields = { ...fields };
-
-        if (step === 0) {
-
-            delete copyFields.full_name;
-            delete copyFields.date_birthday;
-
-
+        if (codeW) {
+            const response = await getWorker(codeW);
+            if (response.listado) {
+                setFields({
+                    coD_TRABAJADOR: response.listado[0]['coD_TRABAJADOR'],
+                    coD_PERS: response.listado[0]['coD_PERS'],
+                    coD_UORG: response.listado[0]['coD_UORG'],
+                    feC_INGRESO: response.listado[0]['feC_INGRESO'],
+                    coD_CAR: response.listado[0]['coD_CAR'],
+                    feC_CESE: response.listado[0]['feC_CESE'],
+                    coD_PUESTO: response.listado[0]['coD_PUESTO'],
+                    coD_CONDICION: response.listado[0]['coD_CONDICION'],
+                    coD_TIPOTRABAJ: response.listado[0]['coD_TIPOTRABAJ'],
+                    coD_AFP: response.listado[0]['coD_AFP'],
+                    nuM_PLAZA: response.listado[0]['nuM_PLAZA'],
+                    coD_BCOSUELDO: response.listado[0]['coD_BCOSUELDO'],
+                    nuM_CTASUELDO: response.listado[0]['nuM_CTASUELDO'],
+                    nuM_CCI: response.listado[0]['nuM_CCI'],
+                    coD_BCOCTS: response.listado[0]['coD_BCOCTS'],
+                    nuM_CTACTS: response.listado[0]['nuM_CTACTS'],
+                    coD_CUSPP: response.listado[0]['coD_CUSPP'],
+                    inD_REGLABORAL: response.listado[0]['inD_REGLABORAL'],
+                    inD_REGPENSION: response.listado[0]['inD_REGPENSION'],
+                    coD_ESSALUD: response.listado[0]['coD_ESSALUD'],
+                    coD_SEGSALUD: response.listado[0]['coD_SEGSALUD'],
+                    coD_REGLABORAL: response.listado[0]['coD_REGLABORAL'],
+                    coD_REGPENSION: response.listado[0]['coD_REGPENSION'],
+                    coD_OCUPLABORAL: response.listado[0]['coD_OCUPLABORAL'],
+                    coD_CATOCUPACION: response.listado[0]['coD_CATOCUPACION'],
+                    inD_DISCAPACIDAD: response.listado[0]['inD_DISCAPACIDAD'],
+                    inD_SINDICALIZADO: response.listado[0]['inD_SINDICALIZADO'],
+                    inD_SITESPECIAL: response.listado[0]['inD_SITESPECIAL'],
+                    inD_DOBLETRIBUTO: response.listado[0]['inD_DOBLETRIBUTO'],
+                    inD_TIPOPAGO: response.listado[0]['inD_TIPOPAGO'],
+                    inD_PLAME: response.listado[0]['inD_PLAME'],
+                    obS_TRABAJADOR: response.listado[0]['obS_TRABAJADOR'],
+                    inD_NOSEGUROAFP: response.listado[0]['inD_NOSEGUROAFP'],
+                    nrO_CONTRATO: response.listado[0]['nrO_CONTRATO'],
+                    feC_INI_CONTRATO: response.listado[0]['feC_INI_CONTRATO'],
+                    feC_FIN_CONTRATO: response.listado[0]['feC_FIN_CONTRATO'],
+                })
+            }
         }
 
-        let errors = {};
+    }
 
-        Object.keys(copyFields).forEach(key => {
-            if (copyFields[key] === '') {
-                console.log(
-                    `El campo ${key} => ${copyFields[key]} no puede estar vacío`
-                );
+    useEffect(() => {
+        loadData();
+    }, []);
 
-                errors[`${key}`] = true;
+    const handleInputChange = event => {
 
-            }
+        const { name, type, checked, value } = event.target;
+
+        const val = type === 'checkbox' ? checked : value;
+
+        setFields({
+            ...fields,
+            [name]: val,
         });
 
-        if (Object.keys(errors).length > 0) {
-            return false;
-        }
+    }
 
-        return true;
+    const handleInputChangeDate = (value, name) => {
+        setFields({
+            ...fields,
+            [name]: moment(new Date(value)).format(),
+        });
+    };
+
+    const handleFields = async () => {
+
+        const response = await AddOrUpdateWorker(fields)
+
+        if (response.code === 0) {
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Datos ingresados con exito',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+            return window.location = "/trabajador"
+
+        } else {
+            return Swal.fire({
+                icon: 'error',
+                title: 'Ha ocurrido un error al ingresar los datos',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
 
     }
 
-    const backStep = () => setStep(step - 1);
-    const handleSubmit = () => alert('Datos enviado correctamente');
+    const Steps = () => {
 
-    const nextStep = () => {
+        if (step === 1) {
 
-        // const validate = validateFields();
-
-        // if (!validate) {
-        //     alert('Por favor, complete todos los campos');
-        //     return;
-        // }
-
-        fields.full_name = `${fields.first_lastname} ${fields.second_lastname} ${fields.name}`;
-
-        console.log(fields);
-
-        setStep(step + 1);
-
-    };
-
-
-    if (step === 0) {
-        return (
-            <>
-                <Grid container spacing={2}>
+            return (
+                <>
                     <Grid item md={12} sm={12}>
                         <h2>Datos Generales</h2>
                     </Grid>
-                    <Grid item md={2} sm={12} xs={12}>
+                    <Grid
+                        item md={4} xs={12}>
                         <TextField
                             fullWidth
-                            label="Código Empleado"
-                            name="code_employee"
-                            onChange={handleInputChange}
-                            value={fields.code_employee}
+                            label="Nombre"
+                            type='text'
+                            inputProps={
+                                { readOnly: true, }
+                            }
+                            value={`${fullName}`}
                         />
                     </Grid>
-                    {/* Cód. Anterior */}
-                    <Grid
-                        item md={2} xs={12}>
-                        <TextField
-                            name="code_back"
-                            fullWidth
-                            label="Cód. Anterior"
-                            onChange={handleInputChange}
-                            value={fields.code_back}
-                        >
-                        </TextField>
-
-
-                    </Grid>
-                    {/* Fin Cód. Anterior */}
                     <Grid item md={12} />
-                    {/* Type_document */}
-                    <Grid item md={2} sm={12} xs={12}>
+                    <Grid
+                        item md={4} sm={12} xs={12}>
                         <TextField
-                            name="type_document"
+                            name="coD_UORG"
                             fullWidth
                             select
-                            label="Tipo Documento"
-                            onChange={handleInputChange}
-                            value={fields.type_document}
-                        >
-                            <MenuItem value="dni"  >
-                                DNI
-                            </MenuItem>
-                            <MenuItem value="ext" >
-                                Extranjero
-                            </MenuItem>
-                        </TextField>
-                    </Grid>
-                    {/* Fin Type_document */}
-                    {/* document_number */}
-                    <Grid
-                        item md={2} xs={12}>
-                        <TextField
-                            name="document_number"
-                            fullWidth
-                            label="Número Documento"
-                            onChange={handleInputChange}
-                            value={fields.document_number}
-                        >
-                        </TextField>
-
-
-                    </Grid>
-                    {/* Fin document_number */}
-                    <Grid item md={12} />
-
-                    <Grid item md={2} sm={12} xs={12}>
-                        <TextField
-                            name="first_lastname"
-                            fullWidth
-                            label="Apellido Parterno"
-                            onChange={handleInputChange}
-                            value={fields.first_lastname}
-                        >
-                        </TextField>
-                    </Grid>
-                    {/* Inicio Ruc */}
-                    <Grid
-                        item md={2} xs={12}>
-                        <TextField
-                            name="ruc"
-                            fullWidth
-                            label="Número R.U.C"
-                            onChange={handleInputChange}
-                            value={fields.ruc}
-                        >
-                        </TextField>
-
-
-                    </Grid>
-                    {/* fin Ruc */}
-                    <Grid item md={12} />
-                    <Grid item md={3} sm={12} xs={12}>
-                        <TextField
-                            name="second_lastname"
-                            fullWidth
-                            label="Apellido Materno"
-                            onChange={handleInputChange}
-                            value={fields.second_lastname}
-                        />
-                    </Grid>
-                    <Grid
-                        item md={3} sm={12} xs={12}>
-                        <TextField
-                            name="name"
-                            fullWidth
-                            label="Nombres"
-                            type="text"
-                            onChange={handleInputChange}
-                            value={fields.name}
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid item md={12} />
-                    {/* fin Name */}
-                    <Grid item md={6} sm={12} xs={12}>
-                        <TextField
-                            name="full_name"
-                            fullWidth
-                            label="Apellido y Nombre"
-                            onChange={handleInputChange}
-                            type='text'
-                            inputProps={
-                                { readOnly: true, }
-                            }
-                            value={`${fields.first_lastname} ${fields.second_lastname} ${fields.name}`}
-                        />
-                    </Grid>
-                    {/* Foto */}
-                    <Grid
-                        item md={2} xs={12} sm={12}>
-                        <TextField
-                            name="photo"
-                            id="photo"
-                            fullWidth
-                            type="file"
-                            sx={{ display: 'none', }}
-                            onChange={handleInputChange}
-                            value={fields.photo}
-                        >
-                        </TextField>
-                        <img src="photo" alt="" />
-                        <label htmlFor="" for="photo">Foto</label>
-                        
-
-
-                    </Grid>
-                    {/* Fin Foto */}
-
-                    <Grid item md={12} />
-
-
-                    <Grid
-                        item md={3} sm={12} xs={12}>
-                        <TextField
-                            id="date_birthday"
-                            name="date_birthday"
-                            fullWidth
-                            label="Fecha de Nacimiento"
-                            type='date'
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            onChange={handleInputChange}
-                            value={fields.date_birthday}
-
-                        />
-                    </Grid>
-
-                    {/* Sex */}
-
-                    <Grid
-                        item md={3} sm={12} xs={12}>
-                        <TextField
-                            name="sex"
-                            fullWidth
-                            label="Sexo"
-                            type='text'
-                            onChange={handleInputChange}
-                            value={fields.sex}
-
-                        />
-                    </Grid>
-                    {/* Fin Sex */}
-                    {/* Estado civil */}
-                    <Grid
-                        item md={3} sm={12} xs={12}>
-                        <TextField
-                            name="marital_status"
-                            fullWidth
-                            label="Estado vicil"
-                            type='text'
-                            onChange={handleInputChange}
-                            value={fields.marital_status}
-
-                        />
-                    </Grid>
-
-                    {/* fin  estado civil */}
-                    <Grid item md={12} />
-                    {/* Inicio Dirección Legajo */}
-                    <Grid item md={9} sm={12} xs={12}>
-                        <TextField
-                            name="direction_document"
-                            fullWidth
-                            label="Dirección Legajo"
-                            type='text'
-                            onChange={handleInputChange}
-                            value={fields.direction_document}
-                        />
-                    </Grid>
-                    {/* Fin Dirección Legajo */}
-                    <Grid item md={12} />
-                    {/* Inicio Dirección Actual */}
-                    <Grid item md={9} sm={12} xs={12}>
-                        <TextField
-                            name="direction"
-                            fullWidth
-                            label="Dirección Actual"
-                            type='text'
-                            onChange={handleInputChange}
-                            value={fields.direction}
-                        />
-                    </Grid>
-                    <Grid item md={12} />
-                    {/* Fin Dirección Actual */}
-                    <Grid
-                        item md={3} xs={12}>
-                        <TextField
-                            name="telephone"
-                            fullWidth
-                            label="Telefono fijo"
-                            type='number'
-                            maxlength={9}
-                            onChange={handleInputChange}
-                            value={fields.telephone}
-                        />
-                    </Grid>
-
-                    {/* celular y mail */}
-
-                    <Grid
-                        item md={3} xs={12}>
-                        <TextField
-                            name="phone"
-                            fullWidth
-                            label="Celular"
-                            type="number"
-                            onChange={handleInputChange}
-                            value={fields.phone}
-                        >
-                        </TextField>
-
-
-                    </Grid>
-
-                    <Grid
-                        item md={3} xs={12}>
-                        <TextField
-                            name="email"
-                            fullWidth
-                            label="E-mail"
-                            type="email"
-                            onChange={handleInputChange}
-                            value={fields.email}
-                        >
-                        </TextField>
-
-
-                    </Grid>
-
-                    {/* fin */}
-
-
-                    <Grid item md={12} />
-                    <Grid
-                        item md={4} sm={12} xs={12}>
-                        <TextField
-                            name="register_for"
-                            fullWidth
-                            label="Registrado por"
-                            onChange={handleInputChange}
-                            value={fields.register_for}
-
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid
-                        item md={2} sm={12} xs={12}>
-                        <TextField
-                            name="date_register"
-                            fullWidth
-                            type='date'
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            onChange={handleInputChange}
-                            value={fields.date_register}
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid
-                        item md={4} sm={12} xs={12}>
-                        <TextField
-                            name="update_for"
-                            fullWidth
-                            label="Modificado por"
-                            onChange={handleInputChange}
-                            value={fields.update_for}
-
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid
-                        item md={2} sm={12} xs={12}>
-                        <TextField
-                            name="date_update"
-                            fullWidth
-                            type='date'
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            onChange={handleInputChange}
-                            value={fields.date_update}
-                        >
-                        </TextField>
-                    </Grid>
-
-                    <Grid item md={12}>
-                        <Button onClick={nextStep} variant="contained">Siguiente</Button>
-                    </Grid>
-                </Grid>
-            </>
-        )
-    } else if (step === 1) {
-        return (
-            <>
-                <Grid container spacing={2}>
-                    <Grid item md={12} sm={12}>
-                        <h2>Datos Laborales</h2>
-                    </Grid>
-                    <Grid item md={4} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Código Empleado"
-                            type="text"
-                            inputProps={
-                                { readOnly: true, }
-                            }
-                            value={fields.code_employee}
-                        />
-                    </Grid>
-                    <Grid item md={5} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Nombres"
-                            name="full_name"
-                            type="text"
-                            onChange={handleInputChange}
-                            value={fields.full_name}
-                        />
-                    </Grid>
-                    <Grid
-                        item md={3} sm={12} xs={12}>
-                        <TextField
-                            name="status"
-                            fullWidth
-                            label="Estado"
-                            type="text"
-                            onChange={handleInputChange}
-                            value={fields.status}
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid item md={12} />
-                    <Grid
-                        item md={8} sm={12} xs={12}>
-                        <TextField
-                            name="work_area"
-                            fullWidth
                             label="Area Laboral"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.work_area}
+                            value={fields.coD_UORG}
                         >
+                            <MenuItem value="0">
+                                Sin especificar
+                            </MenuItem>
+                            {unidad &&
+                                unidad.map(unidad => (
+                                    <MenuItem value={unidad.coD_UORG}>
+                                        {unidad.deS_UORG}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
-                    <Grid
-                        item md={4} sm={12} xs={12}>
-                        <TextField
-                            name="date_of_admission"
-                            fullWidth
-                            label="Fecha de ingreso"
-                            type='date'
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            onChange={handleInputChange}
-                            value={fields.date_of_admission}
-
-                        />
+                    <Grid item md={3} sm={12} xs={12}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DesktopDatePicker
+                                label="Fecha de ingreso"
+                                inputFormat="dd-MM-yyyy"
+                                value={moment(fields.feC_INGRESO).format()}
+                                onChange={e =>
+                                    handleInputChangeDate(e, 'feC_INGRESO')}
+                                renderInput={(params) => <TextField fullWidth {...params} />}
+                            />
+                        </LocalizationProvider>
                     </Grid>
                     <Grid item md={12} />
-                    <Grid
-                        item md={8} sm={12} xs={12}>
+                    <Grid item md={4} sm={12} xs={12}>
                         <TextField
-                            name="job_title"
+                            name="coD_CAR"
                             fullWidth
                             select
                             label="Cargo Laboral"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.job_title}
+                            value={fields.coD_CAR}
                         >
-                            <MenuItem value="a">
-                                GERENTE DE PRESUPUESTO
+                            <MenuItem value="0">
+                                Sin especificar
                             </MenuItem>
-                            <MenuItem value="b">
-                                GERENTE DE PRESUPUESTO
-                            </MenuItem>
+                            {positions &&
+                                positions.map(position => (
+                                    <MenuItem value={position.coD_CAR}>
+                                        {position.deS_CAR}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
-                    <Grid
-                        item md={4} sm={12} xs={12}>
-                        <TextField
-                            name="termination_date"
-                            fullWidth
-                            label="Fecha Cese"
-                            type='date'
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            onChange={handleInputChange}
-                            value={fields.termination_date}
-
-                        />
+                    <Grid item md={3} sm={12} xs={12}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DesktopDatePicker
+                                label="Fecha de cese"
+                                inputFormat="dd-MM-yyyy"
+                                value={moment(fields.feC_CESE).format()}
+                                onChange={e =>
+                                    handleInputChangeDate(e, 'feC_CESE')}
+                                renderInput={(params) => <TextField fullWidth {...params} />}
+                            />
+                        </LocalizationProvider>
                     </Grid>
                     <Grid item md={12} />
                     <Grid
-                        item md={8} sm={12} xs={12}>
+                        item md={4} sm={12} xs={12}>
                         <TextField
-                            name="job_labor"
+                            name="coD_PUESTO"
                             fullWidth
                             select
                             label="Puesto Laboral"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.job_labor}
+                            value={fields.coD_PUESTO}
                         >
-                            <MenuItem value="a">
-                                GERENTE DE PRESUPUESTO
+                            <MenuItem value="0">
+                                Sin especificar
                             </MenuItem>
-                            <MenuItem value="b">
-                                GERENTE DE PRESUPUESTO
-                            </MenuItem>
+                            {puestoL &&
+                                puestoL.map(puestoL => (
+                                    <MenuItem value={puestoL.coD_PUESTO}>
+                                        {puestoL.noM_PUESTO}
+                                    </MenuItem>
+                                ))}
                         </TextField>
-                    </Grid>
-                    <Grid
-                        item md={4} sm={12} xs={12}>
-                        <TextField
-                            name="date_end"
-                            fullWidth
-                            label="Fecha Fin Adenda"
-                            type='date'
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            onChange={handleInputChange}
-                            value={fields.date_end}
-
-                        />
                     </Grid>
                     <Grid item md={12} />
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="working_condition"
+                            name="coD_CONDICION"
                             fullWidth
                             select
                             label="Condición Laboral"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.working_condition}
+                            value={fields.coD_CONDICION}
                         >
-                            <MenuItem value="a">
-                                D LEG 728
+                            <MenuItem value="0">
+                                Sin especificar
                             </MenuItem>
-                            <MenuItem value="b">
-                                D LEG 728
-                            </MenuItem>
+                            {condicion &&
+                                condicion.map(condicion => (
+                                    <MenuItem value={condicion.coD_CONDICION}>
+                                        {condicion.noM_CONDICION}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="type_employee"
+                            name="coD_TIPOTRABAJ"
                             fullWidth
                             select
                             label="Tipo Trabajador"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.type_employee}
+                            value={fields.coD_TIPOTRABAJ}
                         >
-                            <MenuItem value="a">
-                                FUNCIONARIO
+                            <MenuItem value="0" >
+                                Sin especificar
                             </MenuItem>
-                            <MenuItem value="b">
-                                FUNCIONARIO
-                            </MenuItem>
-                        </TextField>
-                    </Grid>
-                    <Grid
-                        item md={4} sm={12} xs={12}>
-                        <TextField
-                            name="workshift"
-                            fullWidth
-                            select
-                            label="Turno Laboral"
-                            type="text"
-                            onChange={handleInputChange}
-                            value={fields.workshift}
-                        >
-                            <MenuItem value="a">
-
-                            </MenuItem>
+                            {typeWorker &&
+                                typeWorker.map(typeWorker => (
+                                    <MenuItem value={typeWorker.coD_TIPOTRABAJ}>
+                                        {typeWorker.noM_TIPOTRABAJ}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
                     <Grid item md={12} />
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="fund"
+                            name="coD_AFP"
                             fullWidth
                             select
                             label="Fondo A.F.P"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.fund}
+                            value={fields.coD_AFP}
                         >
-                            <MenuItem value="a">
-                                ONP
+                            <MenuItem value="0" >
+                                Sin especificar
                             </MenuItem>
+                            {afps &&
+                                afps.map(afp => (
+                                    <MenuItem value={afp.coD_AFP}>
+                                        {afp.noM_AFP}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
-                    <Grid
-                        item md={3} sm={12} xs={12}>
+
+                    <Grid item md={3} sm={12} xs={12}>
                         <TextField
-                            name="affiliate"
-                            fullWidth
-                            label="Afiliado A.F.P"
-                            type="date"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            onChange={handleInputChange}
-                            value={fields.affiliate}
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid
-                        item md={2} sm={12} xs={12}>
-                        <TextField
-                            name="plaza"
+                            name="nuM_PLAZA"
                             fullWidth
                             label="Plaza"
-                            type="number"
+                            type='text'
+                            //error={inputError.nuM_DOC}
                             onChange={handleInputChange}
-                            value={fields.plaza}
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid
-                        item md={3} sm={12} xs={12}>
-                        <TextField
-                            name="level"
-                            fullWidth
-                            select
-                            label="Nivel"
-                            type="text"
-                            onChange={handleInputChange}
-                            value={fields.level}
-                        >
-                            <MenuItem value="a">
-                                1
-                            </MenuItem>
-                        </TextField>
+                            value={fields.nuM_PLAZA}
+                        />
                     </Grid>
                     <Grid item md={12} />
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="salary_bank"
+                            name="coD_BCOSUELDO"
                             fullWidth
                             select
                             label="Banco Sueldo"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.salary_bank}
+                            value={fields.coD_BCOSUELDO}
                         >
-                            <MenuItem value="a">
-                                BANCO CONTINENTAL
+                            <MenuItem value="0">
+                                Sin especificar
                             </MenuItem>
+                            {banks &&
+                                banks.map(bank => (
+                                    <MenuItem value={bank.coD_BANCO}>
+                                        {bank.noM_BANCO}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="salary_account"
+                            name="nuM_CTASUELDO"
                             fullWidth
                             label="Cuenta Sueldo"
-                            type="text"
+                            type='text'
                             onChange={handleInputChange}
-                            value={fields.salary_account}
+                            value={fields.nuM_CTASUELDO}
                         >
                         </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="number_CCL"
+                            name="nuM_CCI"
                             fullWidth
-                            label="Numero C.C.L"
+                            label="Numero C.C.I"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.number_CCL}
+                            value={fields.nuM_CCI}
                         >
                         </TextField>
                     </Grid>
@@ -783,40 +442,46 @@ const RegisterSteps = () => {
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="bank_CTS"
+                            name="coD_BCOCTS"
                             fullWidth
                             select
                             label="Banco CTS"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.bank_CTS}
+                            value={fields.coD_BCOCTS}
                         >
-                            <MenuItem value="a">
-
+                            <MenuItem value="0">
+                                Sin especificar
                             </MenuItem>
+                            {banks &&
+                                banks.map(bank => (
+                                    <MenuItem value={bank.coD_BANCO}>
+                                        {bank.noM_BANCO}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="count_CTS"
+                            name="nuM_CTACTS"
                             fullWidth
                             label="Cuenta CTS"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.count_CTS}
+                            value={fields.nuM_CTACTS}
                         >
                         </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="code_CUSPP"
+                            name="coD_CUSPP"
                             fullWidth
                             label="Codigo CUSPP"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.code_CUSPP}
+                            value={fields.coD_CUSPP}
                         >
                         </TextField>
                     </Grid>
@@ -824,44 +489,56 @@ const RegisterSteps = () => {
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="job_type"
+                            name="inD_REGLABORAL"
                             fullWidth
                             select
                             label="Tipo Reg. Laboral"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.job_type}
+                            value={fields.inD_REGLABORAL}
                         >
-                            <MenuItem value="a">
-                                728(Privado)
+                            <MenuItem value="1">
+                                276 (Publico)
+                            </MenuItem>
+                            <MenuItem value="2">
+                                728 (Privado)
+                            </MenuItem>
+                            <MenuItem value="3">
+                                Sin especificar
                             </MenuItem>
                         </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="pension_type"
+                            name="inD_REGPENSION"
                             fullWidth
                             select
                             label="Tipo Reg. Pension"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.pension_type}
+                            value={fields.inD_REGPENSION}
                         >
-                            <MenuItem value="a">
+                            <MenuItem value="1">
                                 ONP
+                            </MenuItem>
+                            <MenuItem value="2">
+                                AFP
+                            </MenuItem>
+                            <MenuItem value="3">
+                                NINGUNO
                             </MenuItem>
                         </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="code_ESSALUD"
+                            name="coD_ESSALUD"
                             fullWidth
                             label="Codigo ESSALUD"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.code_ESSALUD}
+                            value={fields.coD_ESSALUD}
                         >
                         </TextField>
                     </Grid>
@@ -869,516 +546,337 @@ const RegisterSteps = () => {
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="labor_regimen"
+                            name="coD_REGLABORAL"
                             fullWidth
                             select
                             label="Regimen Laboral"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.labor_regimen}
+                            value={fields.coD_REGLABORAL}
                         >
-                            <MenuItem value="a">
-                                PRIVADO LABORAL DECRETO
+                            <MenuItem value="0" >
+                                Sin especificar
                             </MenuItem>
+                            {rLaboral &&
+                                rLaboral.map(rLaboral => (
+                                    <MenuItem value={rLaboral.coD_REGLABORAL}>
+                                        {rLaboral.noM_REGLABORAL}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="pension_regimen"
+                            name="coD_REGPENSION"
                             fullWidth
                             select
                             label="Regimen Pension"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.pension_regimen}
+                            value={fields.coD_REGPENSION}
                         >
-                            <MenuItem value="a">
-                                DECRETO LEY 1999
+                            <MenuItem value="0" >
+                                Sin especificar
                             </MenuItem>
+                            {rPension &&
+                                rPension.map(rPension => (
+                                    <MenuItem value={rPension.coD_REGPENSION}>
+                                        {rPension.noM_REGPENSION}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="health_regimen"
+                            name="coD_SEGSALUD"
                             fullWidth
                             select
                             label="Regimen Seg. Salud"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.health_regimen}
+                            value={fields.coD_SEGSALUD}
                         >
-                            <MenuItem value="a">
-                                DECRETO LEY 1999
+                            <MenuItem value="0">
+                                Sin especificar
                             </MenuItem>
+                            {rSalud &&
+                                rSalud.map(rSalud => (
+                                    <MenuItem value={rSalud.coD_SEGSALUD}>
+                                        {rSalud.noM_SEGSALUD}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
                     <Grid item md={12} />
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="labor_occupation"
+                            name="coD_OCUPLABORAL"
                             fullWidth
                             select
                             label="Ocupación Laboral"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.labor_occupation}
+                            value={fields.coD_OCUPLABORAL}
                         >
-                            <MenuItem value="a">
-                                JEFE DE EMPLEADO DE OFICINA
+                            <MenuItem value="0">
+                                Sin especificar
                             </MenuItem>
+                            {ocupacionLaboral &&
+                                ocupacionLaboral.map(ocupacionLaboral => (
+                                    <MenuItem value={ocupacionLaboral.coD_OCUPLABORAL}>
+                                        {ocupacionLaboral.noM_OCUPLABORAL}
+                                    </MenuItem>
+                                ))}
                         </TextField>
+
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="special_situation"
+                            name="inD_SITESPECIAL"
                             fullWidth
                             select
                             label="Situacion Especial"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.special_situation}
+                            value={fields.inD_SITESPECIAL}
                         >
-                            <MenuItem value="a">
+                            <MenuItem value="0">
                                 Ninguna
+                            </MenuItem>
+                            <MenuItem value="1">
+                                Directivo
+                            </MenuItem>
+                            <MenuItem value="2">
+                                Confianza
                             </MenuItem>
                         </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="occupation_category"
+                            name="coD_CATOCUPACION"
                             fullWidth
                             select
                             label="Categoria Ocupación"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.occupation_category}
+                            value={fields.coD_CATOCUPACION}
                         >
-                            <MenuItem value="a">
-                                FUNCIONARIO
+                            <MenuItem value="0">
+                                Sin especificar
                             </MenuItem>
+                            {categoriaOcupacional &&
+                                categoriaOcupacional.map(categoriaOcupacional => (
+                                    <MenuItem value={categoriaOcupacional.coD_CATOCUPACION}>
+                                        {categoriaOcupacional.noM_CATOCUPACION}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
                     <Grid item md={12} />
                     <Grid
                         item md={2} sm={12} xs={12}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    onChange={handleInputChange}
-                                    name="disability"
-                                    value={fields.disability} />
-                            }
+                        <TextField
+                            name="inD_DISCAPACIDAD"
+                            fullWidth
+                            select
                             label="Dispacitación"
-                        />
+                            type="text"
+                            onChange={handleInputChange}
+                            value={fields.inD_DISCAPACIDAD}
+                        >
+                            <MenuItem value="0">
+                                No
+                            </MenuItem>
+                            <MenuItem value="1">
+                                Sí
+                            </MenuItem>
+                        </TextField>
                     </Grid>
                     <Grid
                         item md={2} sm={12} xs={12}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    onChange={handleInputChange}
-                                    name="unionized"
-                                    value={fields.unionized} />
-                            }
+                        <TextField
+                            name="inD_SINDICALIZADO"
+                            fullWidth
+                            select
                             label="Sindicalizado"
-                        />
+                            type="text"
+                            onChange={handleInputChange}
+                            value={fields.inD_SINDICALIZADO}
+                        >
+                            <MenuItem value="0">
+                                No
+                            </MenuItem>
+                            <MenuItem value="1">
+                                Sí
+                            </MenuItem>
+                        </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="tax_agreement"
+                            name="inD_DOBLETRIBUTO"
                             fullWidth
                             select
                             label="Convenio Evitar Doble Tributación"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.tax_agreement}
+                            value={fields.inD_DOBLETRIBUTO}
                         >
-                            <MenuItem value="a">
-                                Ninguno
+                            <MenuItem value="0">
+                                Ninguna
+                            </MenuItem>
+                            <MenuItem value="1">
+                                Canada
                             </MenuItem>
                         </TextField>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="type_pay"
+                            name="inD_TIPOPAGO"
                             fullWidth
                             select
                             label="Tipo de Pago"
                             type="text"
                             onChange={handleInputChange}
-                            value={fields.type_pay}
+                            value={fields.inD_TIPOPAGO}
                         >
-                            <MenuItem value="a">
+                            <MenuItem value="0">
+                                Sin especificar
+                            </MenuItem>
+                            <MenuItem value="1">
+                                Efectivo
+                            </MenuItem>
+                            <MenuItem value="2">
                                 Deposito Cta
+                            </MenuItem>
+                            <MenuItem value="3">
+                                Otros
                             </MenuItem>
                         </TextField>
                     </Grid>
                     <Grid item md={12} />
                     <Grid
                         item md={2} sm={12} xs={12}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    onChange={handleInputChange}
-                                    name="t_register"
-                                    value={fields.t_register} />
-                            }
-                            label="T_Registro"
-                        />
-                    </Grid>
-                    <Grid
-                        item md={3} sm={12} xs={12}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    onChange={handleInputChange}
-                                    name="pay_not_AFP"
-                                    value={fields.pay_not_AFP} />
-                            }
-                            label="No paga Prima seguro AFP"
-                        />
-                    </Grid>
-                    <Grid
-                        item md={3} sm={12} xs={12}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    onChange={handleInputChange}
-                                    name="older"
-                                    value={fields.older} />
-                            }
-                            label="Mayor de 65 años"
-                        />
-                    </Grid>
-                    <Grid
-                        item md={4} sm={12} xs={12}>
                         <TextField
-                            name="current_age"
+                            name="inD_PLAME"
                             fullWidth
-                            label="Edad Actual"
-                            type="number"
+                            select
+                            label="T_Registro"
+                            type="text"
                             onChange={handleInputChange}
-                            value={fields.current_age}
+                            value={fields.inD_PLAME}
                         >
+                            <MenuItem value="S">
+                                Sí
+                            </MenuItem>
+                            <MenuItem value="N">
+                                No
+                            </MenuItem>
+                        </TextField>
+                    </Grid>
+                    <Grid
+                        item md={2} sm={12} xs={12}>
+                        <TextField
+                            name="inD_NOSEGUROAFP"
+                            fullWidth
+                            select
+                            label="No paga Prima seguro AFP"
+                            type="text"
+                            onChange={handleInputChange}
+                            value={fields.inD_NOSEGUROAFP}
+                        >
+                            <MenuItem value="S">
+                                Sí
+                            </MenuItem>
+                            <MenuItem value="N">
+                                No
+                            </MenuItem>
                         </TextField>
                     </Grid>
                     <Grid item md={12} />
                     <Grid
                         item md={12} sm={12} xs={12}>
                         <TextField
-                            name="observations"
-                            fullWidth
                             label="Observaciones"
-                            type="text"
+                            multiline
+                            fullWidth
+                            rows={4}
+                            name="obS_TRABAJADOR"
                             onChange={handleInputChange}
-                            value={fields.observations}
-                        >
-                        </TextField>
+                            value={fields.obS_TRABAJADOR}
+                        />
                     </Grid>
                     <Grid item md={12} />
+                    <Grid item md={12}>
+                        <h3>Contrato</h3>
+                    </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
-                        <TextField
-                            name="date_of_admission_select"
-                            fullWidth
-                            select
-                            label="Fecha de ingreso"
-                            onChange={handleInputChange}
-                            value={fields.date_of_admission_select}
-
-                        >
-                            <MenuItem value="a">
-                                20/01/2020
-                            </MenuItem>
-                        </TextField>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DesktopDatePicker
+                                label="Inicio de contrato"
+                                inputFormat="dd-MM-yyyy"
+                                value={moment(fields.feC_INI_CONTRATO).format()}
+                                onChange={e =>
+                                    handleInputChangeDate(e, 'feC_INI_CONTRATO')}
+                                renderInput={(params) => <TextField fullWidth {...params} />}
+                            />
+                        </LocalizationProvider>
+                    </Grid>
+                    <Grid
+                        item md={4} sm={12} xs={12}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DesktopDatePicker
+                                label="Fin de contrato"
+                                inputFormat="dd-MM-yyyy"
+                                value={moment(fields.feC_FIN_CONTRATO).format()}
+                                onChange={e =>
+                                    handleInputChangeDate(e, 'feC_FIN_CONTRATO')}
+                                renderInput={(params) => <TextField fullWidth {...params} />}
+                            />
+                        </LocalizationProvider>
                     </Grid>
                     <Grid
                         item md={4} sm={12} xs={12}>
                         <TextField
-                            name="termination_date_select"
-                            fullWidth
-                            select
-                            label="Fecha de Fin"
-                            onChange={handleInputChange}
-                            value={fields.termination_date_select}
-
-                        >
-                            <MenuItem value="a">
-                                00/00/0000
-                            </MenuItem>
-                        </TextField>
-                    </Grid>
-                    <Grid
-                        item md={4} sm={12} xs={12}>
-                        <TextField
-                            name="contract_number"
+                            name="nrO_CONTRATO"
                             fullWidth
                             label="Numero de Contrato"
                             onChange={handleInputChange}
-                            value={fields.contract_number}
-
+                            value={fields.nrO_CONTRATO}
+                            type="text"
                         >
                         </TextField>
                     </Grid>
-                    <Grid item md={12} />
-                    <Grid
-                        item md={4} sm={12} xs={12}>
-                        <TextField
-                            name="register_for"
-                            fullWidth
-                            label="Registrado por"
-                            onChange={handleInputChange}
-                            value={fields.register_for}
+                </>
+            )
 
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid
-                        item md={2} sm={12} xs={12}>
-                        <TextField
-                            name="date_register"
-                            fullWidth
-                            type='date'
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            onChange={handleInputChange}
-                            value={fields.date_register}
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid
-                        item md={4} sm={12} xs={12}>
-                        <TextField
-                            name="update_for"
-                            fullWidth
-                            label="Modificado por"
-                            onChange={handleInputChange}
-                            value={fields.update_for}
+        }
 
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid
-                        item md={2} sm={12} xs={12}>
-                        <TextField
-                            name="update_for"
-                            fullWidth
-                            type='date'
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            onChange={handleInputChange}
-                            value={fields.date_update}
-                        >
-                        </TextField>
-                    </Grid>
-
-                    <Grid item md={12} />
-                    <Grid item md={12}>
-                        <Button onClick={backStep} variant="contained">Retroceder</Button>
-                        <Button style={{ marginLeft: '30px' }} onClick={nextStep} variant="contained">Siguiente</Button>
-                    </Grid>
-                </Grid>
-            </>
-
-        )
     }
-    else if (step === 2){
-        return (
+
+    return (
         <>
             <Grid container spacing={2}>
-                    <Grid item md={12} sm={12}>
-                        <h2>Carga Familiar  -  Registro</h2>
-                    </Grid>
-                    <Grid item md={4} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Código Empleado"
-                            name="code_employee"
-                            onChange={handleInputChange}
-                            value={fields.code_employee}
-                        />
-                    </Grid>
-
-
-                    <Grid item md={2} sm={12} xs={12}>
-                        <TextField
-                            name="status"
-                            fullWidth
-                            select
-                            label="Estado"
-                            onChange={handleInputChange}
-                            value={fields.status}
-                        >
-                            <MenuItem value="A"  >
-                                Activo
-                            </MenuItem>
-                            <MenuItem value="I" >
-                                Inactivo
-                            </MenuItem>
-                        </TextField>
-                    </Grid>
-                    <Grid item md={12} />
-                    <Grid item md={6} sm={12} xs={12}>
-                    <TextField
-                            name="full_name"
-                            fullWidth
-                            label="Apellido y Nombre"
-                            onChange={handleInputChange}
-                            type='text'
-                            inputProps={
-                                { readOnly: true, }
-                            }
-                            value={`${fields.first_lastname} ${fields.second_lastname} ${fields.name}`}
-                        >
-                        </TextField>
-                    </Grid>
-                    {/* Separación con  <Grid item md={12} /> */}
-                    <Grid item md={12} />
-                    <Grid item md={3} sm={12} xs={12}>
-                    <TextField
-                            fullWidth
-                            label="Parentesco"
-                            name="relationship"
-                            select
-                            onChange={handleInputChange}
-                            value={fields.relationship}
-                        >
-                            <MenuItem value="A">
-                                Conyuge-A
-                            </MenuItem>
-                            <MenuItem value="B" >
-                                Conyuge-B
-                            </MenuItem>
-                        </TextField>
-                    </Grid>
-
-                    <Grid item md={4} sm={12} xs={12}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    onChange={handleInputChange}
-                                    name="dependent"
-                                    value={fields.dependent} />
-                            }
-                            label="Dependiente"
-                        />
-                    </Grid>
-                    <Grid item md={12} />
-                    <Grid item md={4} sm={12} xs={12}>
-                        <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        onChange={handleInputChange}
-                                        name="legal_burden"
-                                        value={fields.legal_burden} />
-                                }
-                                label="Carga Judicial"
-                            />
-                    </Grid>
-                    <Grid item md={12} />
-                    <Grid item md={12} sm={12}>
-                        <h2>Datos Judiciales</h2>
-                    </Grid>
-                    <Grid item md={2} sm={12} xs={12}>
-                    <TextField
-                            name="type_burden"
-                            fullWidth
-                            select
-                            label="Tipo"
-                            onChange={handleInputChange}
-                            value={fields.type_burden}
-                        >
-                            <MenuItem value="A">
-                                Tipo legal-A
-                            </MenuItem>
-                            <MenuItem value="B" >
-                                Tipo Legal-B
-                            </MenuItem>
-                        </TextField>
-                    </Grid>
-                    <Grid item md={12} />
-                    {/* Monto Fijo */}
-                    <Grid item md={2} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Monto Fijo"
-                            name="fixed_amount"
-                            onChange={handleInputChange}
-                            value={fields.fixed_amount}
-                        />
-                    </Grid>
-                    {/* Porcentaje  */}
-                    <Grid item md={2} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Porcentaje(%)"
-                            name="percentage"
-                            onChange={handleInputChange}
-                            value={fields.percentage}
-                        />
-                    </Grid>
-                    <Grid item md={12} />
-                    {/* Banco */}
-                    <Grid item md={4} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Banco"
-                            select
-                            name="bank"
-                            onChange={handleInputChange}
-                            value={fields.bank}
-                        >
-                            <MenuItem value="A">
-                                Banco-A
-                            </MenuItem>
-                            <MenuItem value="B" >
-                                Banco-B
-                            </MenuItem>
-                        </TextField>
-                    </Grid>
-                    <Grid item md={12} />
-                    <Grid item md={4} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Cuenta Banco"
-                            name="bank_account"
-                            onChange={handleInputChange}
-                            value={fields.bank_account}
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid item md={12} />
-                    <Grid item md={4} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Número C.C.I."
-                            name="number_c_c_i"
-                            onChange={handleInputChange}
-                            value={fields.number_c_c_i}
-                        >
-                        </TextField>
-                    </Grid>
-
-                    <Grid item md={12} />
-                    {/* Planillas */}
-
-                    <fieldset>
-                        dasda
-                    </fieldset>
+                {Steps()}
+                <Grid item md={12} xs={12} />
+                <Grid item md={12}>
+                    <Button variant="contained" onClick={() => {
+                        handleFields();
+                    }}>
+                        Registrar
+                    </Button>
                 </Grid>
-                
+            </Grid>
         </>
-        )
-        
-    }
+    )
+
+
 }
 export default RegisterSteps;

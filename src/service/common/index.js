@@ -41,4 +41,111 @@ export const getDistrictsByProvince = async (idD, idP) => {
     console.log(err);
   }
 };
- 
+
+export const getBanks = async () => {
+  try{
+    const response = await fetch(`${URL}/Banco/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+export const getTypeWorker = async () => {
+  try{
+    const response = await fetch(`${URL}/TipoTrabajador/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+export const getRSalud = async () => {
+  try{
+    const response = await fetch(`${URL}/RegimenSegsalud/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+export const getRPension = async () => {
+  try{
+    const response = await fetch(`${URL}/RegimenPension/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+export const getPuestoLaboral = async () => {
+  try{
+    const response = await fetch(`${URL}/PuestoLaboral/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+export const getUnidad = async () => {
+  try{
+    const response = await fetch(`${URL}/UnidadOrganizacional/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+export const getCondicion = async () => {
+  try{
+    const response = await fetch(`${URL}/CondicionLaboral/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+export const getRLaboral = async () => {
+  try{
+    const response = await fetch(`${URL}/RegimenLaboral/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+
+export const getOcupacionL = async () => {
+  try{
+    const response = await fetch(`${URL}/OcupacionLaboral/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+export const getCategoriaO = async () => {
+  try{
+    const response = await fetch(`${URL}/CategoriaOcupacional/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+
+
+
+
+
+

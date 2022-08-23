@@ -1,9 +1,13 @@
-import './App.css';
-import Router from './routers';
+import { ThemeProvider } from "@emotion/react";
+import "./App.css";
+import Router from "./routers";
+import theme from "./theme";
 
 function App() {
   return (
-    <Router/>
+    <ThemeProvider theme={theme}>
+      <Router />
+    </ThemeProvider>
   );
 }
 

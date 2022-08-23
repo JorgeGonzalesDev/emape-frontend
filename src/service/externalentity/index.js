@@ -1,8 +1,9 @@
 import { baseURL } from '../config';
-import * as METHOD from '../methods';
-const URL = `${baseURL}/Trabajador`;
+import * as METHOD from '../methods'
+const URL = `${baseURL}/EntidadExterna`;
 
-export const listWorkers = async () => {
+
+export const listExternalEntity = async () => {
   try {
     const response = await fetch(`${URL}/Get`);
     const data = await response.json();
@@ -12,7 +13,7 @@ export const listWorkers = async () => {
   }
 };
 
-export const getWorker = async (id) => {
+export const getExternalEntity = async (id) => {
   try {
     const response = await fetch(`${URL}/Get/${id}`);
     const data = await response.json();
@@ -22,7 +23,7 @@ export const getWorker = async (id) => {
   }
 };
 
-export const AddOrUpdateWorker = async (body) => {
+export const AddOrUpdateExternalEntity = async (body) => {
   try {
     const response = await fetch(`${URL}/InsertOrUpdate`, METHOD.POST(body));
     const data = await response.json();
@@ -32,7 +33,7 @@ export const AddOrUpdateWorker = async (body) => {
   }
 };
 
-export const deleteWorker = async (body) => {
+export const deleteExternalEntity= async (body) => {
   try {
     const response = await fetch(`${URL}/Delete`, METHOD.DELETE(body));
     const data = await response.json();
@@ -41,3 +42,4 @@ export const deleteWorker = async (body) => {
     console.log(err);
   }
 };
+

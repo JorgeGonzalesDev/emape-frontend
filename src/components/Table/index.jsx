@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const StyledGridOverlay = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -256,6 +257,11 @@ export default function DataGridDemo(
                 columns={columns}
                 disableSelectionOnClick
                 getRowId={id}
+                initialState={{
+                    pagination: {
+                      pageSize: 25,
+                    },
+                  }}
                 localeText={tableES}
             />
         </Box>

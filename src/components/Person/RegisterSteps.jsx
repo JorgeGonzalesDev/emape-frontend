@@ -1,12 +1,7 @@
-// import { Grid, TextField, MenuItem, Button, Alert, AlertTitle } from "@mui/material";
 import { getStateCivil, getDepartments, getProvincesByDepartment, getDistrictsByProvince } from "../../service/common";
 import { getLevelEducate } from "../../service/nivelEducate";
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import moment from 'moment';
 import Swal from "sweetalert2";
-// import { AddOrUpdatePerson, getPerson } from "../../service/person";
 import { useParams } from "react-router-dom";
 import { getProfessions } from "../../service/profession";
 import { Grid, Button, MenuItem, TextField } from "@mui/material";
@@ -15,218 +10,6 @@ import { AddOrUpdatePerson, getPerson } from "../../service/person";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-
-// const RegisterSteps = () => {
-
-//     const [fields, setFields] = useState({
-//         'coD_PERS': '',
-//         'feC_USUREG': moment.utc(new Date()).format('YYYY/MM/DD'),
-//         'state': '',
-//         'inD_DOC': '',
-//         'nuM_DOC': '',
-//         'nuM_RUC': '',
-//         'deS_APELLP': '',
-//         'deS_APELLM': '',
-//         'noM_PERS': '',
-//         'noM_ABR': '',
-//         'inD_SEXO': '',
-//         'feC_NACIM': moment.utc(new Date()).format('YYYY/MM/DD'),
-//         'coD_NACDPT': '',
-//         'coD_NACPRV': '',
-//         'coD_NACDIS': '',
-//         'age': '',
-//         'deS_DIRACT': '',
-//         'locate': '',
-//         'deS_DIRALTERNA': '',
-//         'coD_DIRDPT': '',
-//         'coD_DIRPRV': '',
-//         'coD_DIRDIS': '',
-//         'coD_ESTCIVIL': '',
-//         'coD_GRDINSTRUC': '',
-//         'coD_PROFES': '',
-//         'nuM_TLF': '',
-//         'nuM_CELULAR': '',
-//         'txT_EMAIL': '',
-//         'txT_OBSERV': '',
-//     });
-
-
-//     const [stateCivil, setStateCivil] = useState([]);
-//     const [levelEducate, setLevelEducate] = useState([]);
-//     const [professions, setProfessions] = useState([]);
-//     const [departmentsNac, setDepartmentsNac] = useState([]);
-//     const [provincesNac, setProvincesNac] = useState([]);
-//     const [districtsNac, setDistrictsNac] = useState([]);
-
-//     const { id } = useParams();
-
-//     const loadData = async () => {
-
-//         if (id) {
-//             const response = await getPerson(id)
-//             if (response.listado) {
-//                 setFields(response.listado[0]);
-//                 getProvinces(response.listado[0]['coD_NACDPT']);
-//                 getDistricts(response.listado[0]['coD_NACPRV']);
-//                 getProvincesNac(response.listado[0]['coD_DIRPRV']);
-//                 getDistrictsNac(response.listado[0]['coD_DIRPRV']);
-//             } else {
-//                 window.location = "/maestro/persona"
-//             }
-//         }
-
-//         const responseStateCivil = await getStateCivil();
-//         const responseLevelEducate = await getLevelEducate();
-//         const responseDepartments = await getDepartments();
-//         const responseProfessions = await getProfessions();
-//         setStateCivil(responseStateCivil.listado);
-//         setLevelEducate(responseLevelEducate.listado);
-//         setDepartments(responseDepartments.listado);
-//         setDepartmentsNac(responseDepartments.listado);
-//         setProfessions(responseProfessions.listado);
-//     };
-
-//     const [inputError, setInputError] = useState(defaultErrors);
-
-//     const [errors, setErrors] = useState(false);
-
-//     const [step, setStep] = useState(0);
-
-//     const validateFields = () => {
-
-//         const copyFields = { ...fields };
-
-//         delete copyFields.coD_PERS;
-//         delete copyFields.coD_USUREG;
-//         delete copyFields.coD_USUMOD;
-
-//         if (step === 0) {
-//             delete copyFields.noM_ABR;
-//             delete copyFields.coD_NACPRV;
-//             delete copyFields.coD_NACDIS;
-//             delete copyFields.coD_NACDPT;
-//             delete copyFields.feC_NACIM;
-//             delete copyFields.age;
-//             delete copyFields.deS_DIRACT;
-//             delete copyFields.deS_DIRALTERNA;
-//             delete copyFields.coD_DIRDPT;
-//             delete copyFields.coD_DIRPRV;
-//             delete copyFields.coD_DIRDIS;
-//             delete copyFields.locate;
-//             delete copyFields.coD_ESTCIVIL;
-//             delete copyFields.coD_GRDINSTRUC;
-//             delete copyFields.coD_PROFES;
-//             delete copyFields.nuM_TLF;
-//             delete copyFields.nuM_CELULAR;
-//             delete copyFields.txT_EMAIL;
-//             delete copyFields.txT_OBSERV;
-//         }
-
-//         if (step === 1) {
-//             delete copyFields.deS_DIRACT;
-//             delete copyFields.deS_DIRALTERNA;
-//             delete copyFields.coD_DIRDPT;
-//             delete copyFields.coD_DIRPRV;
-//             delete copyFields.coD_DIRDIS;
-//             delete copyFields.locate;
-//             delete copyFields.coD_ESTCIVIL;
-//             delete copyFields.coD_GRDINSTRUC;
-//             delete copyFields.coD_PROFES;
-//             delete copyFields.nuM_TLF;
-//             delete copyFields.nuM_CELULAR;
-//             delete copyFields.txT_EMAIL;
-//             delete copyFields.txT_OBSERV;
-//         }
-
-//         if (step === 2) {
-//             delete copyFields.coD_ESTCIVIL;
-//             delete copyFields.coD_GRDINSTRUC;
-//             delete copyFields.coD_PROFES;
-//             delete copyFields.nuM_TLF;
-//             delete copyFields.nuM_CELULAR;
-//             delete copyFields.txT_EMAIL;
-//             delete copyFields.txT_OBSERV;
-//         }
-
-//         let errors = {};
-
-//         Object.keys(copyFields).forEach(key => {
-//             if (copyFields[key] === '' || copyFields[key] === 0) {
-
-//                 console.log(
-//                     `El campo ${key} => ${copyFields[key]} no puede estar vacío`
-//                 );
-
-//                 errors[`${key}`] = true;
-//             }
-//         });
-
-//         if (Object.keys(errors).length > 0) {
-
-//             setInputError(errors);
-//             setErrors(true)
-//             return false;
-//         }
-
-//         setErrors(false)
-//         setInputError(defaultErrors);
-//         return true;
-
-//     }
-
-//     function validatetxT_EMAIL(txT_EMAIL) {
-//         var re = /\S+@\S+\.\S+/;
-//         return re.test(txT_EMAIL);
-//     }
-
-//     const signUpPerson = async () => {
-
-//         await AddOrUpdatePerson(fields);
-
-//         //window.location = "/maestro/persona"
-
-//         alert('Enviado satisfactoriamente');
-
-//     }
-
-//     const nextStep = async () => {
-
-//         if (step === 0) {
-//             fields.noM_ABR = `${fields.deS_APELLP} ${fields.deS_APELLM} ${fields.noM_PERS}`
-//         };
-
-//         const validate = validateFields();
-
-//         if (!validate) return;
-
-//         console.log(fields);
-
-//         if (step === 3) {
-
-//             if (!id) {
-//                 fields.coD_PERS = 0;
-//             }
-
-//             return signUpPerson();
-
-//         }
-
-//         setStep(step + 1)
-
-//     }
-
-//     const backStep = () => setStep(step - 1);
-
-//     return (
-
-//         <>
-//             {errors &&
-//                 <Alert severity="error">
-//                     <AlertTitle>Error</AlertTitle>
-//                     Por favor, complete todos los campos
-//                 </Alert>}
-
-
 
 const RegisterSteps = () => {
 
@@ -252,7 +35,7 @@ const RegisterSteps = () => {
         deS_APELLM: "",
         noM_PERS: "",
         noM_ABR: "",
-        inD_SEXO: 0,
+        inD_SEXO: "",
         feC_NACIM: moment(new Date()).format(),
         coD_NACDPT: 0,
         coD_NACPRV: 0,
@@ -263,7 +46,7 @@ const RegisterSteps = () => {
         coD_DIRPRV: 0,
         coD_DIRDIS: 0,
         coD_ESTCIVIL: 0,
-        coD_GRDINSTRUC: 1,
+        coD_GRDINSTRUC: 0,
         coD_PROFES: 0,
         nuM_TLF: "",
         nuM_CELULAR: "",

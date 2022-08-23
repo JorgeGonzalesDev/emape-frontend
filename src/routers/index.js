@@ -6,7 +6,6 @@ import Master from '../views/Master';
 import Person from '../views/Person';
 import Document from '../views/Document';
 import Employee from '../views/Employee';
-import RegisterT from '../views/Employee/register';
 import General from '../views/General';
 import LevelEducate from '../views/General/LevelEducate';
 import MaquetadoCarlos from '../views/MaquetadoCarlos';
@@ -21,6 +20,10 @@ import PersonalAction from '../views/Labor/PersonalAction';
 import LaborPuesto from '../views/Labor/PuestoLaboral/LaborPuesto';
 import Profession from '../views/General/Profession';
 import Position from '../views/General/Position';
+import ExternalEntity from '../views/General/ExternalEntity';
+import RegisterE from '../views/General/ExternalEntity/Register';
+import RegisterWorker from '../views/Employee/registerWorker';
+import RegisterT from '../views/Employee/register';
 
 
 const Router = () => {
@@ -62,6 +65,18 @@ const Router = () => {
             <Route
                 path="/maestro/generales/position"
                 element={<Position />}
+            />
+            <Route
+                path="/maestro/generales/entidadExterna"
+                element={<ExternalEntity />}
+            />
+            <Route
+                path="/maestro/generales/entidadExterna/Register"
+                element={<RegisterE />}
+            />
+            <Route
+                path="/maestro/generales/entidadExterna/Register/:id"
+                element={<RegisterE />}
             />
             <Route
                 path="/maestro/labor"
@@ -120,7 +135,15 @@ const Router = () => {
                 element={<Employee />}
             />
             <Route
-                path='/trabajador/register'
+                path='/trabajador/listar/personas'
+                element={<RegisterWorker />}
+            />
+            <Route
+                path='/trabajador/registrar'
+                element={<RegisterT />}
+            />
+            <Route
+                path='/trabajador/registrar/:id'
                 element={<RegisterT />}
             />
         </Routes>

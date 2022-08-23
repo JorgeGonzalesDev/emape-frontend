@@ -7,22 +7,18 @@ import ListEd from "../../components/MaquetadoMiguel/Educacion/ListEducacion";
 import { useState } from "react";
 
 const MaquetadoMiguel = () => {
-
-
-    return (
-
-        <div>
-            <ResponsiveAppBar />
-            <div style={{ padding: '50px' }} >
-                <Experiencia  />
-                <ListE />
-                <Educacion /> 
-                <ListEd />
-            </div>
+  return (
+    <div>
+      <ResponsiveAppBar>
+        <div style={{ padding: "50px" }}>
+          <Experiencia />
+          <ListE />
+          <Educacion />
+          <ListEd />
         </div>
-    );
-    
-
-}
+      </ResponsiveAppBar>
+    </div>
+  );
+};
 
 export default MaquetadoMiguel;

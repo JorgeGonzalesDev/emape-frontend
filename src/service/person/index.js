@@ -1,5 +1,5 @@
 import { baseURL } from '../config';
-import * as METHOD from '../methods'
+import * as METHOD from '../methods';
 const URL = `${baseURL}/Persona`;
 
 
