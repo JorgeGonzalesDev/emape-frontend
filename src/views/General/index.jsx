@@ -25,12 +25,12 @@ const General = () => {
               </Link>
             </Grid>
             <Grid item>
-              <Link to="" style={{ textDecoration: "none" }}>
+              <Link to="#" style={{ textDecoration: "none" }}>
                 <BasicCard title="Estudios" color="gray" />
               </Link>
             </Grid>
             <Grid item>
-              <Link to="" style={{ textDecoration: "none" }}>
+              <Link to="#" style={{ textDecoration: "none" }}>
                 <BasicCard title="Entidad Externa" color="gray" />
               </Link>
             </Grid>

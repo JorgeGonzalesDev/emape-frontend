@@ -1,155 +1,159 @@
-import { Routes, Route } from 'react-router-dom';
-
-import Home from '../views/Home';
-import Register from '../views/Person/Register';
-import Master from '../views/Master';
-import Person from '../views/Person';
-import Document from '../views/Document';
-import Employee from '../views/Employee';
-import General from '../views/General';
-import LevelEducate from '../views/General/LevelEducate';
-import MaquetadoCarlos from '../views/MaquetadoCarlos';
-import AFP from '../views/AFP';
-import MaquetadoMiguel from '../views/MaquetadoMiguel';
-import Labor from '../views/Labor';
-import LaborPosition from '../views/Labor/LaborPosition/LaborPosition';
-import RegisterCargo from '../views/Labor/LaborPosition/RegisterPosition';
-import RegisterPuesto from '../views/Labor/PuestoLaboral/RegisterPuesto';
-import WorkingCondition from '../views/Labor/WorkingCondition';
-import PersonalAction from '../views/Labor/PersonalAction';
-import LaborPuesto from '../views/Labor/PuestoLaboral/LaborPuesto';
-import Profession from '../views/General/Profession';
-import Position from '../views/General/Position';
-import ExternalEntity from '../views/General/ExternalEntity';
-import RegisterE from '../views/General/ExternalEntity/Register';
-import RegisterWorker from '../views/Employee/registerWorker';
-import RegisterT from '../views/Employee/register';
-
+import { Routes, Route, Navigate } from "react-router-dom";
+import { Suspense, lazy, useContext } from "react";
+import UserContext from "../context/User/UserContext";
+import BarLoader from "react-spinners/BarLoader";
+const Home = lazy(() => import("../views/Home"));
+const Register = lazy(() => import("../views/Person/Register"));
+const Master = lazy(() => import("../views/Master"));
+const Person = lazy(() => import("../views/Person"));
+const Document = lazy(() => import("../views/Document"));
+const Employee = lazy(() => import("../views/Employee"));
+const General = lazy(() => import("../views/General"));
+const LevelEducate = lazy(() => import("../views/General/LevelEducate"));
+const MaquetadoCarlos = lazy(() => import("../views/MaquetadoCarlos"));
+const AFP = lazy(() => import("../views/AFP"));
+const MaquetadoMiguel = lazy(() => import("../views/MaquetadoMiguel"));
+const Labor = lazy(() => import("../views/Labor"));
+const LaborPosition = lazy(() =>
+  import("../views/Labor/LaborPosition/LaborPosition")
+);
+const RegisterCargo = lazy(() =>
+  import("../views/Labor/LaborPosition/RegisterPosition")
+);
+const RegisterPuesto = lazy(() =>
+  import("../views/Labor/PuestoLaboral/RegisterPuesto")
+);
+const WorkingCondition = lazy(() => import("../views/Labor/WorkingCondition"));
+const PersonalAction = lazy(() => import("../views/Labor/PersonalAction"));
+const LaborPuesto = lazy(() =>
+  import("../views/Labor/PuestoLaboral/LaborPuesto")
+);
+const Profession = lazy(() => import("../views/General/Profession"));
+const Position = lazy(() => import("../views/General/Position"));
+const ExternalEntity = lazy(() => import("../views/General/ExternalEntity"));
+const RegisterE = lazy(() =>
+  import("../views/General/ExternalEntity/Register")
+);
+const RegisterWorker = lazy(() => import("../views/Employee/registerWorker"));
+const RegisterT = lazy(() => import("../views/Employee/register"));
 
 const Router = () => {
-
-    return (
-        <Routes>
-            <Route
-                path="/MaquetadoMiguel"
-                element={<MaquetadoMiguel />}
-            />
-            <Route
-                path="/maquetadoCarlos"
-                element={<MaquetadoCarlos />}
-            />
-            <Route
-                path="/"
-                element={<Home />}
-            />
-            <Route
-                path="/maestro"
-                element={<Master />}
-            />
-            <Route
-                path="/legajo"
-                element={<Document />}
-            />
-            <Route
-                path="/maestro/generales"
-                element={<General />}
-            />
-            <Route
-                path="/maestro/generales/nivelEducativo"
-                element={<LevelEducate />}
-            />
-            <Route
-                path="/maestro/generales/profesiones"
-                element={<Profession />}
-            />
-            <Route
-                path="/maestro/generales/position"
-                element={<Position />}
-            />
-            <Route
-                path="/maestro/generales/entidadExterna"
-                element={<ExternalEntity />}
-            />
-            <Route
-                path="/maestro/generales/entidadExterna/Register"
-                element={<RegisterE />}
-            />
-            <Route
-                path="/maestro/generales/entidadExterna/Register/:id"
-                element={<RegisterE />}
-            />
-            <Route
-                path="/maestro/labor"
-                element={<Labor />}
-            />
-            <Route
-                path="/maestro/Labor/cargoLaboral"
-                element={<LaborPosition />}
-            />
-            <Route
-                path="/maestro/Labor/registrar"
-                element={<RegisterCargo />}
-            />
-            <Route
-                path="/maestro/Labor/registrar/:id"
-                element={<RegisterCargo />}
-            />
-            <Route
-                path="/maestro/Labor/registrarPuesto"
-                element={<RegisterPuesto />}
-            />
-            <Route
-                path="/maestro/Labor/registrarPuesto/:id"
-                element={<RegisterPuesto />}
-            />
-            <Route
-                path="/maestro/Labor/condicionLaboral"
-                element={<WorkingCondition />}
-            />
-            <Route
-                path="/maestro/Labor/accionPersonal"
-                element={<PersonalAction />}
-            />
-            <Route
-                path="/maestro/Labor/puestoLaboral"
-                element={<LaborPuesto />}
-            />
-            <Route
-                path="/maestro/persona"
-                element={<Person />}
-            />
-            <Route
-                path="/maestro/AFP"
-                element={<AFP />}
-            />
-            <Route
-                path="/maestro/persona/registrar"
-                element={<Register />}
-            />
-            <Route
-                path="/maestro/persona/registrar/:id"
-                element={<Register />}
-            />
-            <Route
-                path='/trabajador/'
-                element={<Employee />}
-            />
-            <Route
-                path='/trabajador/listar/personas'
-                element={<RegisterWorker />}
-            />
-            <Route
-                path='/trabajador/registrar'
-                element={<RegisterT />}
-            />
-            <Route
-                path='/trabajador/registrar/:id'
-                element={<RegisterT />}
-            />
-        </Routes>
-    );
-
-}
+  const { logged } = useContext(UserContext);
+  return (
+    <Suspense
+      fallback={<BarLoader color="#2E3B55" height="10px" width="100%" />}
+    >
+      <Routes>
+        <Route path="/MaquetadoMiguel" element={<MaquetadoMiguel />} />
+        <Route path="/maquetadoCarlos" element={<MaquetadoCarlos />} />
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/maestro"
+          element={logged ? <Master /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/legajo"
+          element={logged ? <Document /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/generales"
+          element={logged ? <General /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/generales/nivelEducativo"
+          element={logged ? <LevelEducate /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/generales/profesiones"
+          element={logged ? <Profession /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/generales/position"
+          element={logged ? <Position /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/generales/entidadExterna"
+          element={logged ? <ExternalEntity /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/generales/entidadExterna/Register"
+          element={logged ? <RegisterE /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/generales/entidadExterna/Register/:id"
+          element={logged ? <RegisterE /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/labor"
+          element={logged ? <Labor /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/Labor/cargoLaboral"
+          element={logged ? <LaborPosition /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/Labor/registrar"
+          element={logged ? <RegisterCargo /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/Labor/registrar/:id"
+          element={logged ? <RegisterCargo /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/Labor/registrarPuesto"
+          element={logged ? <RegisterPuesto /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/Labor/registrarPuesto/:id"
+          element={logged ? <RegisterPuesto /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/Labor/condicionLaboral"
+          element={logged ? <WorkingCondition /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/Labor/accionPersonal"
+          element={logged ? <PersonalAction /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/Labor/puestoLaboral"
+          element={logged ? <LaborPuesto /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/persona"
+          element={logged ? <Person /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/AFP"
+          element={logged ? <AFP /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/persona/registrar"
+          element={logged ? <Register /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/maestro/persona/registrar/:id"
+          element={logged ? <Register /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/trabajador/"
+          element={logged ? <Employee /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/trabajador/listar/personas"
+          element={logged ? <RegisterWorker /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/trabajador/registrar"
+          element={logged ? <RegisterT /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/trabajador/registrar/:id"
+          element={logged ? <RegisterT /> : <Navigate to="/" />}
+        />
+      </Routes>
+    </Suspense>
+  );
+};
 
 export default Router;
-

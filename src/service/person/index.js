@@ -13,6 +13,16 @@ export const listPerson = async () => {
   }
 };
 
+export const listPersonNoWorker = async () => {
+  try {
+    const response = await fetch(`${URL}/GetNoTrabajador`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const getPerson = async (id) => {
   try {
     const response = await fetch(`${URL}/Get/${id}`);

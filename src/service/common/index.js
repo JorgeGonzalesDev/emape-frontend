@@ -143,6 +143,27 @@ export const getCategoriaO = async () => {
   }
 };
 
+export const getTurno = async () => {
+  try{
+    const response = await fetch(`${URL}/TurnoLaboral/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+export const getTipoPago = async () => {
+  try{
+    const response = await fetch(`${URL}/TipoPago/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+
 
 
 

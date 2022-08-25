@@ -4,7 +4,7 @@ import { deletePerson, listPerson } from "../../service/person";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import PersonOffIcon from "@mui/icons-material/PersonOff";
 import { Button, MenuItem, Stack } from "@mui/material";
 import {
   GridActionsCellItem,
@@ -90,7 +90,7 @@ const Person = () => {
     {
       field: "acciones",
       type: "actions",
-      disableExport: true,
+      disableExport: false,
       getActions: (cellValues) => [
         <Link
           to={`/maestro/persona/registrar/${cellValues.row.coD_PERS}`}
@@ -99,7 +99,7 @@ const Person = () => {
           <GridActionsCellItem icon={<EditIcon />} label="Edit" />
         </Link>,
         <GridActionsCellItem
-          icon={<DeleteIcon />}
+          icon={<PersonOffIcon />}
           label="Delete"
           onClick={(event) => {
             destroy(event, cellValues.row.coD_PERS);
@@ -191,8 +191,8 @@ const Person = () => {
             <span>&nbsp;&nbsp;&nbsp;Agregar</span>
           </Button>
         </Link>
-        <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
+        <GridToolbarColumnsButton />
         <GridToolbarDensitySelector />
         <GridToolbarExport
           printOptions={{
@@ -204,7 +204,6 @@ const Person = () => {
               "feC_NACIM",
               "inD_SEXO",
               "inD_ESTADO",
-              "acciones",
             ],
           }}
         />

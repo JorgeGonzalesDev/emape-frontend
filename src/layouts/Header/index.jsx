@@ -1,4 +1,4 @@
-import * as React from "react";
+import { Fragment, useState, useEffect, useContext } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import ListSubheader from "@mui/material/ListSubheader";
 import Box from "@mui/material/Box";
@@ -20,62 +20,28 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { ExpandLess, ExpandMore, Home, StarBorder } from "@mui/icons-material";
-import { Collapse } from "@mui/material";
+import { Button, Collapse } from "@mui/material";
 import * as ROUTES from "../../contants/routes";
 import { Link } from "react-router-dom";
-import HomeIcon from '@mui/icons-material/Home';
-import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
-import EngineeringIcon from '@mui/icons-material/Engineering';
-
+import HomeIcon from "@mui/icons-material/Home";
+import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
+import EngineeringIcon from "@mui/icons-material/Engineering";
+import UserContext from "../../context/User/UserContext";
+import jwt_decode from "jwt-decode";
+import General, {
+  Cargo,
+  Personal,
+  Profesion,
+} from "../../components/Svg/General";
+//import Cargo from '../../components/Svg/Cargo';
+import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
+//import Profesion from '../../components/Svg/Profesion';
+import BrandingWatermarkOutlinedIcon from "@mui/icons-material/BrandingWatermarkOutlined";
+//import Personal from '../../components/Svg/Personal';
+import GroupWorkOutlinedIcon from "@mui/icons-material/GroupWorkOutlined";
 const drawerWidth = 240;
 
 //const of array of objects
-const listMenu = [
-  {
-    name: "Maestro",
-    path: "/maestro",
-    icon: <InboxIcon />,
-    submenu: [
-      {
-        name: "General",
-        path: "/maestro",
-        icon: <InboxIcon />,
-      },
-      {
-        name: "Laborales",
-        path: "/laborales",
-        icon: <InboxIcon />,
-      },
-      {
-        name: "Persona",
-        path: "/persona",
-        icon: <InboxIcon />,
-      },
-      {
-        name: "AFP",
-        path: "/afp",
-        icon: <InboxIcon />,
-      },
-    ],
-  },
-  {
-    name: "Legajo",
-    path: "/legajo",
-    icon: <MailIcon />,
-    submenu: [
-      {
-        name: "Trabajador",
-        path: "/legajo",
-        icon: <InboxIcon />,
-      },
-      {
-        name: "Reportes",
-        path: "/reportes",
-        icon: <InboxIcon />,
-      },
-    ],
-  },
-];
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
@@ -123,15 +89,17 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function PersistentDrawerLeft({ children }) {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const [openmaestro, setOpenMaestro] = React.useState(false);
-  const [openlegajo, setOpenLegajo] = React.useState(false);
-  const [opengenerales, setOpenGenerales] = React.useState(false);
-  const [openlaborales, setOpenLaborales] = React.useState(false);
-  const [openniveles, setOpenNiveles] = React.useState(false);
-  const [openreportes, setOpenReportes] = React.useState(false);
-  const [openestudios, setOpenEstudios] = React.useState(false);
-  const [openentidadexterna, setOpenEntidadExterna] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [openmaestro, setOpenMaestro] = useState(false);
+  const [openlegajo, setOpenLegajo] = useState(false);
+  const [opengenerales, setOpenGenerales] = useState(false);
+  const [openlaborales, setOpenLaborales] = useState(false);
+  const [openniveles, setOpenNiveles] = useState(false);
+  const [openreportes, setOpenReportes] = useState(false);
+  const [openestudios, setOpenEstudios] = useState(false);
+  const [openentidadexterna, setOpenEntidadExterna] = useState(false);
+  const { logout } = useContext(UserContext);
+  const [userName, setUserName] = useState("");
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -163,8 +131,15 @@ export default function PersistentDrawerLeft({ children }) {
   const handleClickEntidadExterna = () => {
     setOpenEntidadExterna(!openentidadexterna);
   };
-  React.useEffect(() => {
-    console.log(listMenu);
+  const logoutBtn = () => {
+    logout();
+  };
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+    let decoded = jwt_decode(token);
+    //get first element of object
+    let name = Object.values(decoded)[0];
+    setUserName(name);
   }, []);
   return (
     <Box sx={{ display: "flex" }}>
@@ -180,9 +155,15 @@ export default function PersistentDrawerLeft({ children }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             SIGRH
           </Typography>
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+            {userName}
+          </Typography>
+          <Button color="inherit" onClick={logoutBtn}>
+            Cerrar sesión
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -218,8 +199,11 @@ export default function PersistentDrawerLeft({ children }) {
             </ListSubheader>
           }
         >
-          <React.Fragment >
-            <Link to="/inicio" style={{ textDecoration: 'none', color: '#202020' }}>
+          <Fragment>
+            <Link
+              to="/inicio"
+              style={{ textDecoration: "none", color: "#202020" }}
+            >
               <ListItemButton>
                 <ListItemIcon>
                   <HomeIcon />
@@ -228,8 +212,7 @@ export default function PersistentDrawerLeft({ children }) {
               </ListItemButton>
             </Link>
             <ListItemButton onClick={handleClickMaestro}>
-              <ListItemIcon>
-              </ListItemIcon>
+              <ListItemIcon></ListItemIcon>
               <ListItemText primary="Maestro" />
               {openmaestro ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
@@ -237,7 +220,7 @@ export default function PersistentDrawerLeft({ children }) {
               <List component="div" disablePadding>
                 <ListItemButton onClick={handleClickGenerales} sx={{ pl: 3 }}>
                   <ListItemIcon>
-                    <InboxIcon />
+                    <General />
                   </ListItemIcon>
                   <ListItemText primary="Generales" />
                   {opengenerales ? <ExpandLess /> : <ExpandMore />}
@@ -245,40 +228,52 @@ export default function PersistentDrawerLeft({ children }) {
                 <Collapse in={opengenerales} timeout="auto" unmountOnExit>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
-                      <StarBorder />
+                      <Cargo />
                     </ListItemIcon>
                     <ListItem>
-                      <Link to={ROUTES.POSITION}>
+                      <Link
+                        to={ROUTES.POSITION}
+                        style={{ textDecoration: "none", color: "#202020" }}
+                      >
                         <ListItemText primary="Cargo" />
                       </Link>
                     </ListItem>
                   </ListItemButton>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
-                      <StarBorder />
+                      <SchoolOutlinedIcon />
                     </ListItemIcon>
                     <ListItem>
-                      <Link to={ROUTES.EDUCATIONLEVEL}>
+                      <Link
+                        to={ROUTES.EDUCATIONLEVEL}
+                        style={{ textDecoration: "none", color: "#202020" }}
+                      >
                         <ListItemText primary="Nivel Educativo" />
                       </Link>
                     </ListItem>
                   </ListItemButton>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
-                      <StarBorder />
+                      <Profesion />
                     </ListItemIcon>
                     <ListItem>
-                      <Link to={ROUTES.PROFESSIONS}>
+                      <Link
+                        to={ROUTES.PROFESSIONS}
+                        style={{ textDecoration: "none", color: "#202020" }}
+                      >
                         <ListItemText primary="Profesiones" />
                       </Link>
                     </ListItem>
                   </ListItemButton>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
-                      <StarBorder />
+                      <BrandingWatermarkOutlinedIcon />
                     </ListItemIcon>
                     <ListItem>
-                      <Link to={ROUTES.ENTIDADEXTERNA}>
+                      <Link
+                        to={ROUTES.ENTIDADEXTERNA}
+                        style={{ textDecoration: "none", color: "#202020" }}
+                      >
                         <ListItemText primary="Entidad Externa" />
                       </Link>
                     </ListItem>
@@ -306,7 +301,7 @@ export default function PersistentDrawerLeft({ children }) {
               <List component="div" disablePadding>
                 <ListItemButton onClick={handleClickLaborales} sx={{ pl: 3 }}>
                   <ListItemIcon>
-                    <InboxIcon />
+                    <GroupWorkOutlinedIcon />
                   </ListItemIcon>
                   <ListItemText primary="Laborales" />
                   {openlaborales ? <ExpandLess /> : <ExpandMore />}
@@ -314,46 +309,61 @@ export default function PersistentDrawerLeft({ children }) {
                 <Collapse in={openlaborales} timeout="auto" unmountOnExit>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
-                      <StarBorder />
+                      <Personal width={20} height={20} />
                     </ListItemIcon>
                     <ListItem>
-                      <Link to={ROUTES.JOBTITLE}>
+                      <Link
+                        to={ROUTES.JOBTITLE}
+                        style={{ textDecoration: "none", color: "#202020" }}
+                      >
                         <ListItemText primary="Cargo Laboral" />
                       </Link>
                     </ListItem>
                   </ListItemButton>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
-                      <StarBorder />
+                      <Personal width={20} height={20} />
                     </ListItemIcon>
                     <ListItem>
-                      <Link to={ROUTES.WORKCONDITION}>
+                      <Link
+                        to={ROUTES.WORKCONDITION}
+                        style={{ textDecoration: "none", color: "#202020" }}
+                      >
                         <ListItemText primary="Condición Laboral" />
                       </Link>
                     </ListItem>
                   </ListItemButton>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
-                      <StarBorder />
+                      <Personal width={20} height={20} />
                     </ListItemIcon>
                     <ListItem>
-                      <Link to={ROUTES.PERSONALACTION}>
+                      <Link
+                        to={ROUTES.PERSONALACTION}
+                        style={{ textDecoration: "none", color: "#202020" }}
+                      >
                         <ListItemText primary="Acción Personal" />
                       </Link>
                     </ListItem>
                   </ListItemButton>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
-                      <StarBorder />
+                      <Personal width={20} height={20} />
                     </ListItemIcon>
                     <ListItem>
-                      <Link to={ROUTES.JOBCATEGORY}>
+                      <Link
+                        to={ROUTES.JOBCATEGORY}
+                        style={{ textDecoration: "none", color: "#202020" }}
+                      >
                         <ListItemText primary="Puesto Laboral" />
                       </Link>
                     </ListItem>
                   </ListItemButton>
                 </Collapse>
-                <Link to={ROUTES.PERSON} style={{ textDecoration: 'none', color: '#202020' }}>
+                <Link
+                  to={ROUTES.PERSON}
+                  style={{ textDecoration: "none", color: "#202020" }}
+                >
                   <ListItemButton sx={{ pl: 3 }}>
                     <ListItemIcon>
                       <EmojiPeopleIcon />
@@ -368,7 +378,10 @@ export default function PersistentDrawerLeft({ children }) {
                     <StarBorder />
                   </ListItemIcon>
                   <ListItem>
-                    <Link to={ROUTES.AFP}>
+                    <Link
+                      to={ROUTES.AFP}
+                      style={{ textDecoration: "none", color: "#202020" }}
+                    >
                       <ListItemText primary="AFP" />
                     </Link>
                   </ListItem>
@@ -387,17 +400,19 @@ export default function PersistentDrawerLeft({ children }) {
                 {/* add */}
               </List>
             </Collapse>
-          </React.Fragment>
-          <React.Fragment>
+          </Fragment>
+          <Fragment>
             <ListItemButton onClick={handleClickLegajo}>
-              <ListItemIcon>
-              </ListItemIcon>
+              <ListItemIcon></ListItemIcon>
               <ListItemText primary="Legajo" />
               {openlegajo ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={openlegajo} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <Link to={ROUTES.EMPLOYEE} style={{ textDecoration: 'none', color: '#202020' }}>
+                <Link
+                  to={ROUTES.EMPLOYEE}
+                  style={{ textDecoration: "none", color: "#202020" }}
+                >
                   <ListItemButton sx={{ pl: 3 }}>
                     <ListItemIcon>
                       <EngineeringIcon />
@@ -417,7 +432,7 @@ export default function PersistentDrawerLeft({ children }) {
                 {/* add */}
               </List>
             </Collapse>
-          </React.Fragment>
+          </Fragment>
         </List>
         <Divider />
       </Drawer>

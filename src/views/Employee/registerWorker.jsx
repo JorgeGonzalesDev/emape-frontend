@@ -1,6 +1,6 @@
 import ResponsiveAppBar from "../../layouts/Header";
 import DataGridDemo from "../../components/Table";
-import { listPerson } from "../../service/person";
+import { listPersonNoWorker } from "../../service/person";
 import { useState, useEffect } from "react";
 import {
     GridToolbarContainer,
@@ -10,9 +10,12 @@ import {
     GridActionsCellItem
 } from "@mui/x-data-grid";
 import moment from "moment";
-import { Link } from "react-router-dom";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RegisterSteps from "../../components/Employee/RegisterSteps";
+import { Grid, Button } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
 
 const RegisterWorker = () => {
 
@@ -21,9 +24,15 @@ const RegisterWorker = () => {
     const [personData, setPersonData] = useState({});
 
     const loadData = async () => {
-        const response = await listPerson();
+        const response = await listPersonNoWorker();
         setData(response.listado);
     };
+
+    let navigate = useNavigate();
+
+    const navigateBack = () => {
+        navigate(-1)
+    }
 
     useEffect(() => {
         loadData();
@@ -31,6 +40,10 @@ const RegisterWorker = () => {
 
     const handleForm = async () => {
         setForms(true);
+    }
+
+    const reverseForm = async () => {
+        setForms(false);
     }
 
 
@@ -81,7 +94,6 @@ const RegisterWorker = () => {
             getActions: (cellValues) => [
                 <GridActionsCellItem
                     onClick={async () => {
-                        console.log(cellValues.row);
                         setPersonData(cellValues.row);
                         await handleForm();
                     }}
@@ -107,42 +119,61 @@ const RegisterWorker = () => {
         );
     }
 
-    if (!forms) {
-        return (
-            <>
-                <ResponsiveAppBar>
-                    <div
-                        style={{
-                            padding: "40px 30px 0px 30px",
-                            display: "flex",
-                            height: "100%",
-                        }}
-                    >
-                        <div style={{ flexGrow: 1 }}>
-                            <DataGridDemo
-                                id={(row) => row.coD_PERS}
-                                rows={data}
-                                columns={columns}
-                                toolbar={CustomToolbar}
-                            />
-                        </div>
-                    </div>
-                </ResponsiveAppBar>
-            </>
-        )
-    } else if (forms) {
+    const Forms = () => {
 
-        return (
-            <>
-                <ResponsiveAppBar>
-                    <div style={{ padding: "20px 30px 0px 30px" }}>
-                        <RegisterSteps codePerson={personData?.coD_PERS} fullName={`${personData?.deS_APELLP} ${personData?.deS_APELLM} ${personData.noM_PERS}`} />
+        if (!forms) {
+            return (
+                <>
+                    <Grid item md={12} xs={12}>
+                        <Button variant="outlined" onClick={() => {
+                            navigateBack();
+                        }}>
+                            < ArrowForwardIosIcon /> Regresar
+                        </Button>
+                    </Grid>
+                    <div style={{ flexGrow: 1, marginTop: 15 }}>
+                        <DataGridDemo
+                            id={(row) => row.coD_PERS}
+                            rows={data}
+                            columns={columns}
+                            toolbar={CustomToolbar}
+                        />
                     </div>
-                </ResponsiveAppBar>
-            </>
-        )
+                </>
+            )
+        } else if (forms) {
 
+            return (
+                <>
+                    <Grid item md={12} xs={12}>
+                        <Button variant="outlined" onClick={() => {
+                            reverseForm();
+                        }}>
+                            < ArrowForwardIosIcon /> Regresar
+                        </Button>
+                    </Grid>
+                    <RegisterSteps codePerson={personData?.coD_PERS} fullName={`${personData?.deS_APELLP} ${personData?.deS_APELLM} ${personData.noM_PERS}`} />
+                </>
+            )
+
+        }
     }
+
+    return (
+        <>
+            <ResponsiveAppBar>
+                <div
+                    style={{
+                        padding: "10px 30px 0px 30px",
+                        height: "100%",
+                    }}
+                >
+                    {Forms()}
+                </div>
+            </ResponsiveAppBar>
+        </>
+    )
+
 
 };
 

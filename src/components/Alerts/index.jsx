@@ -35,8 +35,8 @@ export const AlertDelete = async () => {
     }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire(
-                'Eliminado!',
-                'Su registro ha sido eliminado.',
+                'Accion realizado satisfactoriamente',
+                '',
                 'success'
             )
             res = true;
