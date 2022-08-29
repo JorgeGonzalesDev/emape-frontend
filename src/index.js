@@ -5,13 +5,15 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import UserState from "./context/User/UserState";
-
+import MenuState from "./context/Menu/MenuStatus";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
-    <UserState>
-      <App />
-    </UserState>
+    <MenuState>
+      <UserState>
+        <App />
+      </UserState>
+    </MenuState>
   </BrowserRouter>
 );
 

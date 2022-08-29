@@ -35,7 +35,7 @@ const RegisterE = lazy(() =>
   import("../views/General/ExternalEntity/Register")
 );
 const RegisterWorker = lazy(() => import("../views/Employee/registerWorker"));
-const RegisterT = lazy(() => import("../views/Employee/register"));
+const BasicTabs = lazy(() => import("../views/Employee/menuWorker"));
 
 const Router = () => {
   const { logged } = useContext(UserContext);
@@ -140,16 +140,12 @@ const Router = () => {
           element={logged ? <Employee /> : <Navigate to="/" />}
         />
         <Route
+          path="/trabajador/menu/:id"
+          element={logged ? <BasicTabs /> : <Navigate to="/" />}
+        />
+        <Route
           path="/trabajador/listar/personas"
           element={logged ? <RegisterWorker /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/trabajador/registrar"
-          element={logged ? <RegisterT /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/trabajador/registrar/:id"
-          element={logged ? <RegisterT /> : <Navigate to="/" />}
         />
       </Routes>
     </Suspense>

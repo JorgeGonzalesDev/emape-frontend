@@ -1,11 +1,17 @@
-import React, { useReducer, useState } from "react";
+import { React, useState } from "react";
+import { ThemeProvider } from "@emotion/react";
 import UserContext from "../../context/User/UserContext";
 import { baseURLLog } from "../../service/config";
 import { useNavigate } from "react-router-dom";
+import ResponsiveAppBar from "../../layouts/Header";
+import theme from "../../theme"
+import Swal from "sweetalert2";
+
 import axios from "axios";
 const UserState = ({ children }) => {
   const navigate = useNavigate();
   const [logged, setLogged] = useState(window.localStorage.getItem("token"));
+  const [success, setSuccess] = useState(window.localStorage.getItem("auth"));
   const URL = `${baseURLLog}/token`;
   const login = async (correo, password) => {
     try {
@@ -17,16 +23,48 @@ const UserState = ({ children }) => {
         localStorage.setItem("token", JSON.stringify(res.data.accessToken))
       );
       navigate("/maestro");
+      setSuccess(localStorage.setItem("auth", true));
     } catch {
       localStorage.removeItem("token");
-      alert("Usuario o contraseña incorrectos");
-      navigate("/");
+      localStorage.removeItem("auth")
+
+      return await Swal.fire({
+        icon: 'error',
+        title: `Usuario y Contraseña<br>incorrectas`,
+        showConfirmButton: false,
+        timer: 1500
+      })
+
     }
   };
   const logout = async () => {
     localStorage.removeItem("token");
-    navigate("/");
+    localStorage.removeItem("auth");
+    return window.location = "/"
   };
+
+  const Navbar = () => {
+
+    if (success) {
+      return (
+        <>
+          <ResponsiveAppBar>
+            <div style={{ padding: "0px 30px 0px 30px" }}>
+              {children}
+            </div>
+          </ResponsiveAppBar>
+        </>
+      )
+    } else {
+      return (
+        <>
+          {children}
+        </>
+      )
+    }
+
+  }
+
   return (
     <UserContext.Provider
       value={{
@@ -36,9 +74,13 @@ const UserState = ({ children }) => {
         logout,
       }}
     >
-      {children}
+      <ThemeProvider theme={theme}>
+        {Navbar()}
+      </ThemeProvider>
     </UserContext.Provider>
   );
+
+
 };
 
 export default UserState;

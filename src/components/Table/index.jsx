@@ -244,9 +244,7 @@ export default function DataGridDemo(
     };
 
     return (
-
-
-        <Box sx={{ height: '77vh', width: '100%' }}>
+        <Box sx={{ height: '68vh', width: '100%' }}>
             <DataGrid
                 components={{
                     NoRowsOverlay: CustomNoRowsOverlay,

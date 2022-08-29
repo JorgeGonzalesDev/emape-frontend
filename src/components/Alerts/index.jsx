@@ -4,15 +4,14 @@ export const AlertAddUpdate = (id) => {
     if (id == 0) {
         Swal.fire({
             icon: 'success',
-            title: 'Dato agregado con exito',
+            title: 'Registrado con exito',
             showConfirmButton: false,
             timer: 1500
         })
     } else {
         Swal.fire({
             icon: 'success',
-            title: 'Dato actualizado con exito',
-            text: ' dasdsadsasad',
+            title: 'Actualizado con exito',
             showConfirmButton: false,
             timer: 1500
         })
@@ -20,17 +19,43 @@ export const AlertAddUpdate = (id) => {
 
 }
 
-export const AlertDelete = async () => {
-    let res = false;
+export const AlertError = async (message = "Ha ocurrido un error") => {
+    return Swal.fire({
+        icon: "error",
+        title: `${message}`,
+        showConfirmButton: false,
+        timer: 1500,
+    });
+}
 
+export const AlertSuccess = async (message = `Acción realizada <br>satisfactoriamente`) => {
+    return Swal.fire({
+        icon: "success",
+        title: `${message}`,
+        showConfirmButton: false,
+        timer: 1500,
+    });
+}
+
+export const AlertWarning = async (message = `Ha ocurrido algo`) => {
+    return Swal.fire({
+        icon: "warning",
+        title: `${message}`,
+        showConfirmButton: false,
+        timer: 1500,
+    });
+}
+
+export const AlertDelete = async (message = "Estas seguro?", text = "") => {
+    let res = false;
     await Swal.fire({
-        title: 'Estas seguro?',
-        text: "No podrás revertir esto!",
+        title: `${message}`,
+        text: `${text}`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Si',
+        confirmButtonColor: '#008f39',
+        cancelButtonColor: '#7B817B',
+        confirmButtonText: 'Confirmar',
         cancelButtonText: 'Cancelar',
     }).then((result) => {
         if (result.isConfirmed) {

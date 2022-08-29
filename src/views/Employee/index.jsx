@@ -1,12 +1,10 @@
-import ResponsiveAppBar from "../../layouts/Header";
 import DataGridDemo from "../../components/Table";
 import { useState, useEffect } from "react";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonOffIcon from '@mui/icons-material/PersonOff';
-import { Grid, Button } from "@mui/material";
+import { Stack, Button } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import {
   GridToolbarContainer,
@@ -38,7 +36,7 @@ const Employee = () => {
     setData(response.listado);
   };
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const navigateBack = () => {
     navigate(-1)
@@ -62,7 +60,7 @@ const Employee = () => {
   const handleCodeWorker = async (data) => {
     setDataWorker(data)
     setCodeW(data.coD_TRABAJADOR);
-    setForms(true);
+    navigate(`/trabajador/menu/${data.coD_TRABAJADOR}`)
   }
 
   const reverseForm = async () => {
@@ -111,7 +109,7 @@ const Employee = () => {
       headerName: "Estado",
       width: 150,
       valueGetter: (params) =>
-        `${params.row.dPersona?.inD_ESTADO === "A" ? "Activo" : "Inactivo"}`,
+        `${params.row?.inD_ESTADO === "A" ? "Activo" : "Inactivo"}`,
     },
     // {
     //   field: "T_Reg",
@@ -171,7 +169,15 @@ const Employee = () => {
     if (!forms) {
       return (
         <>
-          <div style={{ flexGrow: 1, marginTop: 15 }}>
+          <div style={{ flexGrow: 1 }}>
+            <Stack
+              direction="row"
+              spacing={1} xs={{ display: 'flex' }}
+            >
+              <div>
+                <h1>Trabajadores</h1>
+              </div>
+            </Stack>
             <DataGridDemo
               id={(row) => row.coD_TRABAJADOR}
               rows={data}
@@ -185,14 +191,7 @@ const Employee = () => {
 
       return (
         <>
-          <Grid item md={12} xs={12}>
-            <Button variant="outlined" onClick={() => {
-              reverseForm();
-            }}>
-              < ArrowForwardIosIcon /> Regresar
-            </Button>
-          </Grid>
-          <RegisterSteps codePerson={0} fullName={`${dataWorker.dPersona.deS_APELLP} ${dataWorker.dPersona.deS_APELLM} ${dataWorker.dPersona.noM_PERS}`} codeW={codeW} />
+          <RegisterSteps back={reverseForm} codePerson={0} fullName={`${dataWorker.dPersona.deS_APELLP} ${dataWorker.dPersona.deS_APELLM} ${dataWorker.dPersona.noM_PERS}`} codeW={codeW} />
         </>
       )
 
@@ -201,16 +200,7 @@ const Employee = () => {
 
   return (
     <>
-      <ResponsiveAppBar>
-        <div
-          style={{
-            padding: "10px 30px 0px 30px",
-            height: "100%",
-          }}
-        >
-          {Forms()}
-        </div>
-      </ResponsiveAppBar>
+      {Forms()}
     </>
   )
 

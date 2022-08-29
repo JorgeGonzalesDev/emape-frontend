@@ -10,7 +10,6 @@ export const listExternalEntity = async () => {
     return data;
   } catch (err) {
     console.log(err);
-    
   }
 };
 

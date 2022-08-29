@@ -39,6 +39,7 @@ import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import BrandingWatermarkOutlinedIcon from "@mui/icons-material/BrandingWatermarkOutlined";
 //import Personal from '../../components/Svg/Personal';
 import GroupWorkOutlinedIcon from "@mui/icons-material/GroupWorkOutlined";
+import MenuContext from "../../context/Menu/Menu.Context";
 const drawerWidth = 240;
 
 //const of array of objects
@@ -89,21 +90,20 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function PersistentDrawerLeft({ children }) {
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [openmaestro, setOpenMaestro] = useState(false);
   const [openlegajo, setOpenLegajo] = useState(false);
   const [opengenerales, setOpenGenerales] = useState(false);
-  const [openlaborales, setOpenLaborales] = useState(false);
-  const [openniveles, setOpenNiveles] = useState(false);
-  const [openreportes, setOpenReportes] = useState(false);
-  const [openestudios, setOpenEstudios] = useState(false);
-  const [openentidadexterna, setOpenEntidadExterna] = useState(false);
+  const [openasistencia, setOpenAsistencia] = useState(false);
+  const [openasistenciamaestro, setOpenAsistenciaMaestro] = useState(false);
+  const [openconfiguracion, setOpenConfiguracion] = useState(false);
   const { logout } = useContext(UserContext);
+  const { loadMenu, menu } = useContext(MenuContext);
   const [userName, setUserName] = useState("");
+  const [idUser, setIdUser] = useState("");
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -116,31 +116,33 @@ export default function PersistentDrawerLeft({ children }) {
   const handleClickGenerales = () => {
     setOpenGenerales(!opengenerales);
   };
-  const handleClickLaborales = () => {
-    setOpenLaborales(!openlaborales);
+  const handleClickAsistenciaMaestro = () => {
+    setOpenAsistenciaMaestro(!openasistenciamaestro);
   };
-  const handleClickNiveles = () => {
-    setOpenNiveles(!openniveles);
+  const handleClickConfiguracion = () => {
+    setOpenConfiguracion(!openconfiguracion);
   };
-  const handleClickReportes = () => {
-    setOpenReportes(!openreportes);
-  };
-  const handleClickEstudios = () => {
-    setOpenEstudios(!openestudios);
-  };
-  const handleClickEntidadExterna = () => {
-    setOpenEntidadExterna(!openentidadexterna);
+  const handleClickAsistencia = () => {
+    setOpenAsistencia(!openasistencia);
   };
   const logoutBtn = () => {
     logout();
   };
+
   useEffect(() => {
     let token = localStorage.getItem("token");
     let decoded = jwt_decode(token);
     //get first element of object
     let name = Object.values(decoded)[0];
+    let id = Object.values(decoded)[1];
+    const seveId = async () => {
+      await setIdUser(id);
+    };
+    seveId();
+    loadMenu(id);
     setUserName(name);
   }, []);
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -199,240 +201,359 @@ export default function PersistentDrawerLeft({ children }) {
             </ListSubheader>
           }
         >
-          <Fragment>
-            <Link
-              to="/inicio"
-              style={{ textDecoration: "none", color: "#202020" }}
-            >
-              <ListItemButton>
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Inicio" />
-              </ListItemButton>
-            </Link>
-            <ListItemButton onClick={handleClickMaestro}>
-              <ListItemIcon></ListItemIcon>
-              <ListItemText primary="Maestro" />
-              {openmaestro ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={openmaestro} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItemButton onClick={handleClickGenerales} sx={{ pl: 3 }}>
+          {menu ? (
+            <>
+              <Link
+                to="/inicio"
+                style={{ textDecoration: "none", color: "#202020" }}
+              >
+                <ListItemButton>
                   <ListItemIcon>
-                    <General />
+                    <HomeIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Generales" />
-                  {opengenerales ? <ExpandLess /> : <ExpandMore />}
+                  <ListItemText primary="Inicio" />
                 </ListItemButton>
-                <Collapse in={opengenerales} timeout="auto" unmountOnExit>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <Cargo />
-                    </ListItemIcon>
-                    <ListItem>
-                      <Link
-                        to={ROUTES.POSITION}
-                        style={{ textDecoration: "none", color: "#202020" }}
-                      >
-                        <ListItemText primary="Cargo" />
-                      </Link>
-                    </ListItem>
-                  </ListItemButton>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <SchoolOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItem>
-                      <Link
-                        to={ROUTES.EDUCATIONLEVEL}
-                        style={{ textDecoration: "none", color: "#202020" }}
-                      >
-                        <ListItemText primary="Nivel Educativo" />
-                      </Link>
-                    </ListItem>
-                  </ListItemButton>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <Profesion />
-                    </ListItemIcon>
-                    <ListItem>
-                      <Link
-                        to={ROUTES.PROFESSIONS}
-                        style={{ textDecoration: "none", color: "#202020" }}
-                      >
-                        <ListItemText primary="Profesiones" />
-                      </Link>
-                    </ListItem>
-                  </ListItemButton>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <BrandingWatermarkOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItem>
-                      <Link
-                        to={ROUTES.ENTIDADEXTERNA}
-                        style={{ textDecoration: "none", color: "#202020" }}
-                      >
-                        <ListItemText primary="Entidad Externa" />
-                      </Link>
-                    </ListItem>
-                  </ListItemButton>
-                  <ListItemButton onClick={handleClickEstudios} sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <InboxIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Estudios" />
-                    {openestudios ? <ExpandLess /> : <ExpandMore />}
-                  </ListItemButton>
-                  <ListItemButton
-                    onClick={handleClickEntidadExterna}
-                    sx={{ pl: 4 }}
-                  >
-                    <ListItemIcon>
-                      <InboxIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Entidad Externa" />
-                    {openentidadexterna ? <ExpandLess /> : <ExpandMore />}
-                  </ListItemButton>
-                </Collapse>
-                {/* add */}
-              </List>
-              <List component="div" disablePadding>
-                <ListItemButton onClick={handleClickLaborales} sx={{ pl: 3 }}>
-                  <ListItemIcon>
-                    <GroupWorkOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Laborales" />
-                  {openlaborales ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={openlaborales} timeout="auto" unmountOnExit>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <Personal width={20} height={20} />
-                    </ListItemIcon>
-                    <ListItem>
-                      <Link
-                        to={ROUTES.JOBTITLE}
-                        style={{ textDecoration: "none", color: "#202020" }}
-                      >
-                        <ListItemText primary="Cargo Laboral" />
-                      </Link>
-                    </ListItem>
-                  </ListItemButton>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <Personal width={20} height={20} />
-                    </ListItemIcon>
-                    <ListItem>
-                      <Link
-                        to={ROUTES.WORKCONDITION}
-                        style={{ textDecoration: "none", color: "#202020" }}
-                      >
-                        <ListItemText primary="Condición Laboral" />
-                      </Link>
-                    </ListItem>
-                  </ListItemButton>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <Personal width={20} height={20} />
-                    </ListItemIcon>
-                    <ListItem>
-                      <Link
-                        to={ROUTES.PERSONALACTION}
-                        style={{ textDecoration: "none", color: "#202020" }}
-                      >
-                        <ListItemText primary="Acción Personal" />
-                      </Link>
-                    </ListItem>
-                  </ListItemButton>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <Personal width={20} height={20} />
-                    </ListItemIcon>
-                    <ListItem>
-                      <Link
-                        to={ROUTES.JOBCATEGORY}
-                        style={{ textDecoration: "none", color: "#202020" }}
-                      >
-                        <ListItemText primary="Puesto Laboral" />
-                      </Link>
-                    </ListItem>
-                  </ListItemButton>
-                </Collapse>
-                <Link
-                  to={ROUTES.PERSON}
-                  style={{ textDecoration: "none", color: "#202020" }}
-                >
-                  <ListItemButton sx={{ pl: 3 }}>
-                    <ListItemIcon>
-                      <EmojiPeopleIcon />
-                    </ListItemIcon>
-                    <ListItem>
-                      <ListItemText primary="Persona" />
-                    </ListItem>
-                  </ListItemButton>
-                </Link>
-                <ListItemButton sx={{ pl: 3 }}>
-                  <ListItemIcon>
-                    <StarBorder />
-                  </ListItemIcon>
-                  <ListItem>
-                    <Link
-                      to={ROUTES.AFP}
-                      style={{ textDecoration: "none", color: "#202020" }}
-                    >
-                      <ListItemText primary="AFP" />
-                    </Link>
-                  </ListItem>
-                </ListItemButton>
-                {/* add */}
-              </List>
-              <List component="div" disablePadding>
-                <ListItemButton onClick={handleClickNiveles} sx={{ pl: 3 }}>
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Niveles" />
-                  {openniveles ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-
-                {/* add */}
-              </List>
-            </Collapse>
-          </Fragment>
-          <Fragment>
-            <ListItemButton onClick={handleClickLegajo}>
-              <ListItemIcon></ListItemIcon>
-              <ListItemText primary="Legajo" />
-              {openlegajo ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={openlegajo} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <Link
-                  to={ROUTES.EMPLOYEE}
-                  style={{ textDecoration: "none", color: "#202020" }}
-                >
-                  <ListItemButton sx={{ pl: 3 }}>
-                    <ListItemIcon>
-                      <EngineeringIcon />
-                    </ListItemIcon>
-                    <ListItem>
-                      <ListItemText primary="Trabajador" />
-                    </ListItem>
-                  </ListItemButton>
-                </Link>
-                <ListItemButton onClick={handleClickReportes} sx={{ pl: 3 }}>
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Reportes" />
-                  {openreportes ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                {/* add */}
-              </List>
-            </Collapse>
-          </Fragment>
+              </Link>
+              {menu.length === 7 && (
+                <>
+                  <Fragment>
+                    <ListItemButton onClick={handleClickMaestro}>
+                      <ListItemIcon></ListItemIcon>
+                      <ListItemText primary="LEGAJO TRABAJADOR" />
+                      {openmaestro ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openmaestro} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        <ListItemButton
+                          onClick={handleClickGenerales}
+                          sx={{ pl: 3 }}
+                        >
+                          <ListItemIcon>
+                            <General />
+                          </ListItemIcon>
+                          <ListItemText primary="MAESTROS" />
+                          {opengenerales ? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        <Collapse
+                          in={opengenerales}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <Cargo />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.POSITION}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="Cargo" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <SchoolOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.EDUCATIONLEVEL}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="Nivel Educativo" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <Profesion />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.PROFESSIONS}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="Profesión" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <BrandingWatermarkOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.ENTIDADEXTERNA}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="Estudios" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <BrandingWatermarkOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.ENTIDADEXTERNA}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="Entidad Externa" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <BrandingWatermarkOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.WORKCONDITION}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="Condición Laboral" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <BrandingWatermarkOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.PERSONALACTION}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="Acción Personal" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <BrandingWatermarkOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.JOBCATEGORY}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="Puesto Laboral" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <BrandingWatermarkOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.AFP}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="AFP" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <BrandingWatermarkOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.PERSON}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="Persona" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                        </Collapse>
+                        {/* add */}
+                        <ListItemButton
+                          onClick={handleClickLegajo}
+                          sx={{ pl: 3 }}
+                        >
+                          <ListItemIcon>
+                            <General />
+                          </ListItemIcon>
+                          <ListItemText primary="LEGAJO" />
+                          {openlegajo ? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        <Collapse in={openlegajo} timeout="auto" unmountOnExit>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <Cargo />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.EMPLOYEE}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="Trabajador" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              <SchoolOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={ROUTES.EDUCATIONLEVEL}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary="Reportes" />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
+                        </Collapse>
+                      </List>
+                    </Collapse>
+                  </Fragment>
+                  <Fragment>
+                    <ListItemButton onClick={handleClickAsistencia}>
+                      <ListItemIcon></ListItemIcon>
+                      <ListItemText primary="CONTROL DE ASISTENCIA" />
+                      {openasistencia ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openasistencia} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        <ListItemButton
+                          onClick={handleClickAsistenciaMaestro}
+                          sx={{ pl: 3 }}
+                        >
+                          <ListItemIcon>
+                            <InboxIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="MAESTROS" />
+                          {openasistenciamaestro ? (
+                            <ExpandLess />
+                          ) : (
+                            <ExpandMore />
+                          )}
+                        </ListItemButton>
+                        {/* add */}
+                        <Collapse
+                          in={openasistenciamaestro}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <Link
+                            to={ROUTES.EMPLOYEE}
+                            style={{ textDecoration: "none", color: "#202020" }}
+                          >
+                            <ListItemButton sx={{ pl: 3 }}>
+                              <ListItemIcon>
+                                <EngineeringIcon />
+                              </ListItemIcon>
+                              <ListItem>
+                                <ListItemText primary="Tipo Papeletas" />
+                              </ListItem>
+                            </ListItemButton>
+                          </Link>
+                          <Link
+                            to={ROUTES.EMPLOYEE}
+                            style={{ textDecoration: "none", color: "#202020" }}
+                          >
+                            <ListItemButton sx={{ pl: 3 }}>
+                              <ListItemIcon>
+                                <EngineeringIcon />
+                              </ListItemIcon>
+                              <ListItem>
+                                <ListItemText primary="Motivo Laboral" />
+                              </ListItem>
+                            </ListItemButton>
+                          </Link>
+                          <Link
+                            to={ROUTES.EMPLOYEE}
+                            style={{ textDecoration: "none", color: "#202020" }}
+                          >
+                            <ListItemButton sx={{ pl: 3 }}>
+                              <ListItemIcon>
+                                <EngineeringIcon />
+                              </ListItemIcon>
+                              <ListItem>
+                                <ListItemText primary="Turno Laboral" />
+                              </ListItem>
+                            </ListItemButton>
+                          </Link>
+                        </Collapse>
+                        <ListItemButton
+                          onClick={handleClickConfiguracion}
+                          sx={{ pl: 3 }}
+                        >
+                          <ListItemIcon>
+                            <InboxIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="CONFIGURACIÓN" />
+                          {openconfiguracion ? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        <Collapse
+                          in={openconfiguracion}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <Link
+                            to={ROUTES.EMPLOYEE}
+                            style={{ textDecoration: "none", color: "#202020" }}
+                          >
+                            <ListItemButton sx={{ pl: 3 }}>
+                              <ListItemIcon>
+                                <EngineeringIcon />
+                              </ListItemIcon>
+                              <ListItem>
+                                <ListItemText primary="Reloj" />
+                              </ListItem>
+                            </ListItemButton>
+                          </Link>
+                        </Collapse>
+                      </List>
+                    </Collapse>
+                  </Fragment>
+                </>
+              )}
+            </>
+          ) : (
+            <h1>cARGANDO</h1>
+          )}
         </List>
         <Divider />
       </Drawer>

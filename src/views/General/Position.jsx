@@ -131,50 +131,48 @@ const Position = () => {
 
   return (
     <>
-      <ResponsiveAppBar>
-        <div style={{ padding: "50px", display: "flex", height: "100%" }}>
-          <div style={{ flexGrow: 1 }}>
-            <DataGridDemo
-              id={(row) => row.coD_CAR}
-              rows={data}
-              columns={columns}
-              toolbar={CustomToolbar}
-            />
-          </div>
+      <div style={{ padding: "50px", display: "flex", height: "100%" }}>
+        <div style={{ flexGrow: 1 }}>
+          <DataGridDemo
+            id={(row) => row.coD_CAR}
+            rows={data}
+            columns={columns}
+            toolbar={CustomToolbar}
+          />
         </div>
-        <MUIModal ref={levelCargo}>
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item md={12} xs={12}>
-              <h1>{fields.coD_CAR ? "Actualizar" : "Registrar"}</h1>
-            </Grid>
-            <Grid item md={12} xs={6}>
-              <TextField
-                name="deS_CAR"
-                onChange={handleInputChange}
-                value={fields.deS_CAR}
-                fullWidth
-                label="Descripción"
-              />
-            </Grid>
-            <Grid item md={12} xs={12} />
-            <Grid item md={12} xs={6}>
-              <TextField
-                name="abR_CAR"
-                onChange={handleInputChange}
-                value={fields.abR_CAR}
-                fullWidth
-                label="Abreviado"
-              />
-            </Grid>
-            <Grid item md={12} xs={12} />
-            <Grid item md={12} xs={6}>
-              <Button variant="contained" onClick={saveCargo}>
-                Enviar
-              </Button>
-            </Grid>
+      </div>
+      <MUIModal ref={levelCargo}>
+        <Grid container spacing={2} justifyContent="center">
+          <Grid item md={12} xs={12}>
+            <h1>{fields.coD_CAR ? "Actualizar" : "Registrar"}</h1>
           </Grid>
-        </MUIModal>
-      </ResponsiveAppBar>
+          <Grid item md={12} xs={6}>
+            <TextField
+              name="deS_CAR"
+              onChange={handleInputChange}
+              value={fields.deS_CAR}
+              fullWidth
+              label="Descripción"
+            />
+          </Grid>
+          <Grid item md={12} xs={12} />
+          <Grid item md={12} xs={6}>
+            <TextField
+              name="abR_CAR"
+              onChange={handleInputChange}
+              value={fields.abR_CAR}
+              fullWidth
+              label="Abreviado"
+            />
+          </Grid>
+          <Grid item md={12} xs={12} />
+          <Grid item md={12} xs={6}>
+            <Button variant="contained" onClick={saveCargo}>
+              Enviar
+            </Button>
+          </Grid>
+        </Grid>
+      </MUIModal>
     </>
   );
 };

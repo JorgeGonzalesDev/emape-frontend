@@ -3,33 +3,34 @@ import { useState, useEffect } from "react";
 import { getCargo } from "../../service/position";
 import { listAFPS } from "../../service/afp";
 import {
-    getBanks, getTypeWorker,
-    getRSalud, getRPension,
+    getBanks, getTypeWorker, getRSalud, getRPension,
     getPuestoLaboral, getUnidad, getCondicion,
     getRLaboral, getOcupacionL, getCategoriaO, getTipoPago, getTurno
 } from "../../service/common";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { AddOrUpdateWorker, getWorker } from "../../service/worker";
+import { AddOrUpdateWorker } from "../../service/worker";
 import moment from "moment";
-import Swal from "sweetalert2";
-
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { useNavigate } from "react-router-dom";
+import { AlertError, AlertSuccess, AlertWarning } from "../Alerts";
 
 const RegisterSteps = ({
     codePerson = 0,
     fullName = "",
-    codeW = null,
+    back,
+    dataWorker = null,
 }) => {
 
     const [fields, setFields] = useState({
         coD_TRABAJADOR: 0,
         coD_PERS: codePerson,
         coD_UORG: 0,
-        feC_CUSPP: moment(new Date()).format(),
-        feC_INGRESO: moment(new Date()).format(),
+        feC_CUSPP: "",
+        feC_INGRESO: "",
         coD_CAR: 0,
-        feC_CESE: moment(new Date()).format(),
+        feC_CESE: "",
         coD_PUESTO: 0,
         coD_CONDICION: 0,
         coD_TIPOTRABAJ: 0,
@@ -60,48 +61,25 @@ const RegisterSteps = ({
         obS_TRABAJADOR: "",
         inD_NOSEGUROAFP: "S",
         nrO_CONTRATO: "",
-        feC_INI_CONTRATO: moment(new Date()).format(),
-        feC_FIN_CONTRATO: moment(new Date()).format(),
+        feC_INI_CONTRATO: "",
+        feC_FIN_CONTRATO: "",
     });
 
     const defaultErrors = {
-        coD_UORG: false,
-        coD_CAR: false,
-        coD_PUESTO: false,
-        coD_CONDICION: false,
-        coD_TIPOTRABAJ: false,
-        inD_ESTADO: false,
-        coD_AFP: false,
-        nuM_PLAZA: false,
-        coD_BCOSUELDO: false,
-        nuM_CTASUELDO: false,
-        nuM_CCI: false,
-        coD_BCOCTS: false,
-        nuM_CTACTS: false,
-        coD_CUSPP: false,
-        coD_TURNO: false,
-        inD_REGLABORAL: false,
-        inD_REGPENSION: false,
-        coD_ESSALUD: false,
-        coD_SEGSALUD: false,
-        coD_REGLABORAL: false,
-        coD_REGPENSION: false,
-        coD_OCUPLABORAL: false,
-        coD_CATOCUPACION: false,
-        inD_DISCAPACIDAD: false,
-        inD_SINDICALIZADO: false,
-        inD_SITESPECIAL: false,
-        inD_DOBLETRIBUTO: false,
-        inD_TIPOPAGO: false,
-        inD_PLAME: false,
-        obS_TRABAJADOR: false,
-        inD_NOSEGUROAFP: false,
-        nrO_CONTRATO: false,
+        feC_INGRESO: true,
+        coD_AFP: true,
+        inD_REGLABORAL: true,
+        inD_REGPENSION: true,
+        coD_CONDICION: true,
+        coD_REGLABORAL: true,
+        coD_OCUPLABORAL: true,
+        coD_CATOCUPACION: true,
+        coD_TIPOTRABAJ: true,
+        coD_REGPENSION: true,
+        coD_SEGSALUD: true,
     };
 
     const [inputError, setInputError] = useState(defaultErrors);
-
-    const [step, setStep] = useState(1);
     const [positions, setPositions] = useState([]);
     const [afps, setAfps] = useState([]);
     const [banks, setBanks] = useState([]);
@@ -114,54 +92,28 @@ const RegisterSteps = ({
     const [rLaboral, setRLaboral] = useState([]);
     const [ocupacionLaboral, setOcupacionLaboral] = useState([]);
     const [categoriaOcupacional, setCategoriaOcupacional] = useState([]);
+    const navigate = useNavigate();
     // const [turno, setTurno] = useState([]);
     // const [tipoPago, setTipoPago] = useState([]);
 
     const loadData = async () => {
 
-        if (codeW) {
-            const response = await getWorker(codeW);
-            setFields({
-                coD_TRABAJADOR: response.listado[0]['coD_TRABAJADOR'],
-                coD_PERS: response.listado[0]['coD_PERS'],
-                coD_UORG: response.listado[0]['coD_UORG'],
-                feC_INGRESO: response.listado[0]['feC_INGRESO'],
-                inD_ESTADO: response.listado[0]['inD_ESTADO'],
-                coD_CAR: response.listado[0]['coD_CAR'],
-                feC_CESE: response.listado[0]['feC_CESE'],
-                coD_PUESTO: response.listado[0]['coD_PUESTO'],
-                coD_CONDICION: response.listado[0]['coD_CONDICION'],
-                coD_TIPOTRABAJ: response.listado[0]['coD_TIPOTRABAJ'],
-                coD_AFP: response.listado[0]['coD_AFP'],
-                nuM_PLAZA: response.listado[0]['nuM_PLAZA'],
-                coD_BCOSUELDO: response.listado[0]['coD_BCOSUELDO'],
-                nuM_CTASUELDO: response.listado[0]['nuM_CTASUELDO'],
-                nuM_CCI: response.listado[0]['nuM_CCI'],
-                coD_BCOCTS: response.listado[0]['coD_BCOCTS'],
-                nuM_CTACTS: response.listado[0]['nuM_CTACTS'],
-                coD_CUSPP: response.listado[0]['coD_CUSPP'],
-                inD_REGLABORAL: response.listado[0]['inD_REGLABORAL'],
-                inD_REGPENSION: response.listado[0]['inD_REGPENSION'],
-                //COD_TURNO: response.listado[0]['COD_TURNO'],
-                coD_ESSALUD: response.listado[0]['coD_ESSALUD'],
-                feC_CUSPP: response.listado[0]['feC_CUSPP'],
-                coD_SEGSALUD: response.listado[0]['coD_SEGSALUD'],
-                coD_REGLABORAL: response.listado[0]['coD_REGLABORAL'],
-                coD_REGPENSION: response.listado[0]['coD_REGPENSION'],
-                coD_OCUPLABORAL: response.listado[0]['coD_OCUPLABORAL'],
-                coD_CATOCUPACION: response.listado[0]['coD_CATOCUPACION'],
-                inD_DISCAPACIDAD: response.listado[0]['inD_DISCAPACIDAD'],
-                inD_SINDICALIZADO: response.listado[0]['inD_SINDICALIZADO'],
-                inD_SITESPECIAL: response.listado[0]['inD_SITESPECIAL'],
-                inD_DOBLETRIBUTO: response.listado[0]['inD_DOBLETRIBUTO'],
-                inD_TIPOPAGO: response.listado[0]['inD_TIPOPAGO'],
-                inD_PLAME: response.listado[0]['inD_PLAME'],
-                obS_TRABAJADOR: response.listado[0]['obS_TRABAJADOR'],
-                inD_NOSEGUROAFP: response.listado[0]['inD_NOSEGUROAFP'],
-                nrO_CONTRATO: response.listado[0]['nrO_CONTRATO'],
-                feC_INI_CONTRATO: response.listado[0]['feC_INI_CONTRATO'],
-                feC_FIN_CONTRATO: response.listado[0]['feC_FIN_CONTRATO'],
-            })
+        if (dataWorker) {
+            setInputError({
+                feC_INGRESO: false,
+                coD_AFP: false,
+                inD_ESTADO: false,
+                inD_REGLABORAL: false,
+                inD_REGPENSION: false,
+                coD_CONDICION: false,
+                coD_REGLABORAL: false,
+                coD_OCUPLABORAL: false,
+                coD_CATOCUPACION: false,
+                coD_TIPOTRABAJ: false,
+                coD_REGPENSION: false,
+                coD_SEGSALUD: false,
+            });
+            setFields(dataWorker);
         }
 
         const responsePositions = await getCargo();
@@ -197,7 +149,7 @@ const RegisterSteps = ({
 
     useEffect(() => {
         loadData();
-    }, []);
+    }, [dataWorker]);
 
     const handleInputChange = event => {
 
@@ -225,18 +177,30 @@ const RegisterSteps = ({
 
         delete copyFields.coD_TRABAJADOR;
         delete copyFields.coD_PERS;
-        delete copyFields.feC_INGRESO;
+        delete copyFields.coD_UORG;
+        delete copyFields.feC_CUSPP;
+        delete copyFields.coD_CAR;
         delete copyFields.feC_CESE;
+        delete copyFields.coD_PUESTO;
+        delete copyFields.nuM_PLAZA;
+        delete copyFields.coD_BCOSUELDO;
+        delete copyFields.nuM_CTASUELDO;
+        delete copyFields.nuM_CCI;
+        delete copyFields.coD_BCOCTS;
+        delete copyFields.nuM_CTACTS;
+        delete copyFields.coD_CUSPP;
+        delete copyFields.coD_ESSALUD;
+        delete copyFields.inD_DISCAPACIDAD;
+        delete copyFields.inD_SINDICALIZADO;
+        delete copyFields.inD_SITESPECIAL;
+        delete copyFields.inD_DOBLETRIBUTO;
+        delete copyFields.inD_TIPOPAGO;
+        delete copyFields.inD_PLAME;
+        delete copyFields.obS_TRABAJADOR;
+        delete copyFields.inD_NOSEGUROAFP;
+        delete copyFields.nrO_CONTRATO;
         delete copyFields.feC_INI_CONTRATO;
         delete copyFields.feC_FIN_CONTRATO;
-        delete copyFields.feC_CUSPP;
-        delete copyFields.inD_SINDICALIZADO;
-        delete copyFields.inD_DISCAPACIDAD;
-        delete copyFields.inD_DOBLETRIBUTO;
-        delete copyFields.inD_NOSEGUROAFP;
-        delete copyFields.inD_PLAME;
-        delete copyFields.inD_SITESPECIAL;
-
 
         let errors = {};
 
@@ -254,10 +218,11 @@ const RegisterSteps = ({
         if (Object.keys(errors).length > 0) {
 
             setInputError(errors);
+            AlertWarning("Hay campos obligatorios vacios");
             return false;
         }
 
-        setInputError(defaultErrors);
+        setInputError(errors);
         return true;
 
     }
@@ -272,63 +237,40 @@ const RegisterSteps = ({
 
         if (response.code === 0) {
 
-            await Swal.fire({
-                icon: 'success',
-                title: `${response.message}`,
-                showConfirmButton: false,
-                timer: 1500
-            })
+            await AlertSuccess(`${response.message}`)
 
-            return window.location = "/trabajador"
+            return navigate("/trabajador")
 
         } else {
-            return Swal.fire({
-                icon: 'error',
-                title: `${response.message}`,
-                showConfirmButton: false,
-                timer: 1500
-            })
+            return await AlertError(`${response.message}`)
         }
 
     }
 
+    const color = "yellow";
 
     return (
         <>
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
                 <Grid item md={12} sm={12}>
-                    <h1>{fields.coD_TRABAJADOR ? "Actualizar Trabajador" : "Registrar Trabajador"}</h1>
+                    <span style={{ fontSize: 25, fontWeight: 'bolder' }} >{fields.coD_TRABAJADOR ? "Actualizar Trabajador" : "Registrar Trabajador"}</span>
+                    <p>{fullName}</p>
+                    <p style={{ color: 'red', fontSize: 15 }}>(Los campos con * son obligatorios)</p>
                 </Grid>
                 <Grid item md={12} sm={12}>
-                    <h2>Datos Generales</h2>
-                </Grid>
-                <Grid
-                    item md={4} xs={12}>
-                    <TextField
-                        fullWidth
-                        size="small"
-                        label="Nombre"
-                        type='text'
-                        inputProps={
-                            { readOnly: true, }
-                        }
-                        value={`${fullName}`}
-                    />
+                    <h3>Datos Generales</h3>
                 </Grid>
                 <Grid item md={2} sm={12} xs={12}>
                     <TextField
                         name="inD_ESTADO"
                         fullWidth
                         select
-                        label="Estado"
+                        label="Estado *"
                         onChange={handleInputChange}
                         size="small"
                         error={inputError.inD_ESTADO}
                         value={fields.inD_ESTADO}
                     >
-                        <MenuItem value="0" disabled>
-                            Sin seleccionar
-                        </MenuItem>
                         <MenuItem value="A" >
                             Activo
                         </MenuItem>
@@ -337,9 +279,7 @@ const RegisterSteps = ({
                         </MenuItem>
                     </TextField>
                 </Grid>
-                <Grid item md={12} />
-                <Grid
-                    item md={4} sm={12} xs={12}>
+                <Grid item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_UORG"
                         fullWidth
@@ -362,10 +302,12 @@ const RegisterSteps = ({
                             ))}
                     </TextField>
                 </Grid>
+
+                <Grid item md={12} />
                 <Grid item md={3} sm={12} xs={12}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
-                            label="Fecha de ingreso"
+                            label="Fecha de ingreso *"
                             inputFormat="dd-MM-yyyy"
                             value={moment(fields.feC_INGRESO).format()}
                             onChange={e =>
@@ -382,6 +324,12 @@ const RegisterSteps = ({
                             label="Fecha de cese"
                             inputFormat="dd-MM-yyyy"
                             value={moment(fields.feC_CESE).format()}
+                            errorStyle={{
+                                backgroundColor: 'white',
+                                svg: { color },
+                                input: { color },
+                                label: { color }
+                            }}
                             onChange={e =>
                                 handleInputChangeDate(e, 'feC_CESE')}
                             renderInput={(params) => <TextField fullWidth
@@ -447,7 +395,7 @@ const RegisterSteps = ({
                         size="small"
                         error={inputError.coD_CONDICION}
                         select
-                        label="Condición Laboral"
+                        label="Condición Laboral *"
                         type="text"
                         onChange={handleInputChange}
                         value={fields.coD_CONDICION}
@@ -471,7 +419,7 @@ const RegisterSteps = ({
                         size="small"
                         error={inputError.coD_TIPOTRABAJ}
                         select
-                        label="Tipo Trabajador"
+                        label="Tipo Trabajador *"
                         type="text"
                         onChange={handleInputChange}
                         value={fields.coD_TIPOTRABAJ}
@@ -520,7 +468,7 @@ const RegisterSteps = ({
                         size="small"
                         error={inputError.coD_AFP}
                         select
-                        label="Fondo A.F.P"
+                        label="Fondo A.F.P *"
                         type="text"
                         onChange={handleInputChange}
                         value={fields.coD_AFP}
@@ -678,7 +626,7 @@ const RegisterSteps = ({
                         size="small"
                         error={inputError.inD_REGLABORAL}
                         select
-                        label="Tipo Reg. Laboral"
+                        label="Tipo Reg. Laboral *"
                         type="text"
                         onChange={handleInputChange}
                         value={fields.inD_REGLABORAL}
@@ -705,7 +653,7 @@ const RegisterSteps = ({
                         size="small"
                         error={inputError.inD_REGPENSION}
                         select
-                        label="Tipo Reg. Pension"
+                        label="Tipo Reg. Pension *"
                         type="text"
                         onChange={handleInputChange}
                         value={fields.inD_REGPENSION}
@@ -747,7 +695,7 @@ const RegisterSteps = ({
                         size="small"
                         error={inputError.coD_REGLABORAL}
                         select
-                        label="Regimen Laboral"
+                        label="Regimen Laboral *"
                         type="text"
                         onChange={handleInputChange}
                         value={fields.coD_REGLABORAL}
@@ -771,7 +719,7 @@ const RegisterSteps = ({
                         size="small"
                         error={inputError.coD_REGPENSION}
                         select
-                        label="Regimen Pension"
+                        label="Regimen Pension *"
                         type="text"
                         onChange={handleInputChange}
                         value={fields.coD_REGPENSION}
@@ -795,7 +743,7 @@ const RegisterSteps = ({
                         size="small"
                         error={inputError.coD_SEGSALUD}
                         select
-                        label="Regimen Seg. Salud"
+                        label="Regimen Seg. Salud *"
                         type="text"
                         onChange={handleInputChange}
                         value={fields.coD_SEGSALUD}
@@ -820,7 +768,7 @@ const RegisterSteps = ({
                         size="small"
                         error={inputError.coD_OCUPLABORAL}
                         select
-                        label="Ocupación Laboral"
+                        label="Ocupación Laboral *"
                         type="text"
                         onChange={handleInputChange}
                         value={fields.coD_OCUPLABORAL}
@@ -869,7 +817,7 @@ const RegisterSteps = ({
                         size="small"
                         error={inputError.coD_CATOCUPACION}
                         select
-                        label="Categoria Ocupación"
+                        label="Categoria Ocupación *"
                         type="text"
                         onChange={handleInputChange}
                         value={fields.coD_CATOCUPACION}
@@ -1083,11 +1031,15 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid item md={12} xs={12} />
-                <Grid item md={12}>
-                    <Button variant="contained" onClick={() => {
-                        handleFields();
-                    }}>
-                        Guardar
+                <Grid item md={12} xs={12} sx={{ marginTop: 2 }}>
+                    <Button onClick={() => {
+                        back()
+                    }} variant="contained">
+                        < ArrowBackIosNewIcon />
+                        Regresar
+                    </Button>
+                    <Button style={{ marginLeft: 10 }} onClick={handleFields} variant="contained" >
+                        Registrar
                     </Button>
                 </Grid>
             </Grid>

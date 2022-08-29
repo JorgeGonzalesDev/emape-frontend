@@ -11,21 +11,20 @@ import {
   FormControl,
 } from "@mui/material";
 import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import UserContext from "../../context/User/UserContext";
 
 const Home = () => {
-  const navigate = useNavigate();
   const { logged, login, setLogged } = useContext(UserContext);
   const [fields, setFields] = useState({
-    email: "",
+    user: "",
     password: "",
   });
+
   useEffect(() => {
     setLogged(window.localStorage.getItem("token"));
     if (logged) {
-      navigate("/maestro");
+      window.location = "/maestro";
     }
   }, [login]);
 
@@ -50,7 +49,7 @@ const Home = () => {
   };
 
   const handleLogin = () => {
-    login(fields.email, fields.password);
+    login(fields.user, fields.password);
   };
 
   return (
@@ -62,17 +61,17 @@ const Home = () => {
         <Grid>
           <TextField
             fullWidth
-            type="email"
+            type="text"
             onChange={handleInputChange}
-            label="Email"
+            label="Usuario"
             variant="outlined"
-            name="email"
+            name="user"
           />
         </Grid>
         <Grid style={{ marginTop: "20px" }}>
           <FormControl variant="outlined" fullWidth>
             <InputLabel htmlFor="outlined-adornment-password">
-              Password
+              Contraseña
             </InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
@@ -96,9 +95,9 @@ const Home = () => {
             />
           </FormControl>
         </Grid>
-        <Grid style={{ marginTop: "50px", textAlign: "center" }}>
+        <Grid style={{ marginTop: "40px", textAlign: "center" }}>
           <Button onClick={handleLogin} variant="contained">
-            Login
+            Iniciar sesión
           </Button>
         </Grid>
       </Paper>

@@ -12,7 +12,7 @@ import {
 import moment from "moment";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RegisterSteps from "../../components/Employee/RegisterSteps";
-import { Grid, Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
@@ -28,7 +28,7 @@ const RegisterWorker = () => {
         setData(response.listado);
     };
 
-    let navigate = useNavigate();
+    const navigate = useNavigate();
 
     const navigateBack = () => {
         navigate(-1)
@@ -124,14 +124,18 @@ const RegisterWorker = () => {
         if (!forms) {
             return (
                 <>
-                    <Grid item md={12} xs={12}>
-                        <Button variant="outlined" onClick={() => {
-                            navigateBack();
-                        }}>
-                            < ArrowForwardIosIcon /> Regresar
-                        </Button>
-                    </Grid>
-                    <div style={{ flexGrow: 1, marginTop: 15 }}>
+                    <div style={{ flexGrow: 1 }}>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            style={{ marginBottom: 30 }}
+                        >
+                            <Button variant="outlined" onClick={() => {
+                                navigateBack();
+                            }}>
+                                < ArrowForwardIosIcon /> Regresar
+                            </Button>
+                        </Stack>
                         <DataGridDemo
                             id={(row) => row.coD_PERS}
                             rows={data}
@@ -145,14 +149,7 @@ const RegisterWorker = () => {
 
             return (
                 <>
-                    <Grid item md={12} xs={12}>
-                        <Button variant="outlined" onClick={() => {
-                            reverseForm();
-                        }}>
-                            < ArrowForwardIosIcon /> Regresar
-                        </Button>
-                    </Grid>
-                    <RegisterSteps codePerson={personData?.coD_PERS} fullName={`${personData?.deS_APELLP} ${personData?.deS_APELLM} ${personData.noM_PERS}`} />
+                    <RegisterSteps back={reverseForm} codePerson={personData?.coD_PERS} fullName={`${personData?.deS_APELLP} ${personData?.deS_APELLM} ${personData.noM_PERS}`} />
                 </>
             )
 
@@ -161,16 +158,7 @@ const RegisterWorker = () => {
 
     return (
         <>
-            <ResponsiveAppBar>
-                <div
-                    style={{
-                        padding: "10px 30px 0px 30px",
-                        height: "100%",
-                    }}
-                >
-                    {Forms()}
-                </div>
-            </ResponsiveAppBar>
+            {Forms()}
         </>
     )
 

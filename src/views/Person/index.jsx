@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
-import { Button, MenuItem, Stack } from "@mui/material";
+import { Button, MenuItem, Stack, Tooltip, IconButton } from "@mui/material";
 import {
   GridActionsCellItem,
   GridToolbarContainer,
@@ -36,7 +36,7 @@ const Person = () => {
   }, []);
 
   const destroy = async (event, id) => {
-    const resultado = await AlertDelete();
+    const resultado = await AlertDelete("Estas seguro de desactivar este registro?");
     if (resultado) {
       const dataDelete = {
         coD_PERS: id,
@@ -48,6 +48,30 @@ const Person = () => {
 
   const columns = [
     {
+      field: "acciones",
+      type: "actions",
+      disableExport: false,
+      getActions: (cellValues) => [
+        <Link
+          to={`/maestro/persona/registrar/${cellValues.row.coD_PERS}`}
+          style={{ textDecoration: "none" }}
+        >
+          <Tooltip title="Editar">
+            <IconButton>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        </Link>,
+        <Tooltip title="Desactivar">
+          <IconButton onClick={(event) => {
+            destroy(event, cellValues.row.coD_PERS);
+          }}>
+            <PersonOffIcon />
+          </IconButton>
+        </Tooltip>,
+      ],
+    },
+    {
       field: "coD_PERS",
       headerName: "Código",
       width: 120,
@@ -57,8 +81,7 @@ const Person = () => {
       headerName: "Apellidos y Nombres",
       width: 400,
       valueGetter: (params) =>
-        `${params.row.deS_APELLP || ""} ${params.row.deS_APELLM || ""} ${
-          params.row.noM_PERS || ""
+        `${params.row.deS_APELLP || ""} ${params.row.deS_APELLM || ""} ${params.row.noM_PERS || ""
         }`,
     },
     {
@@ -71,7 +94,7 @@ const Person = () => {
       headerName: "Nacimiento",
       width: 160,
       valueGetter: (params) =>
-        `${moment(params.row.feC_NACIM).format("DD-MM-YYYY")}`,
+        `${moment(params.row.feC_NACIM).format("DD/MM/YYYY")}`,
     },
     {
       field: "inD_SEXO",
@@ -86,26 +109,6 @@ const Person = () => {
       width: 130,
       valueGetter: (params) =>
         `${params.row.inD_ESTADO === "A" ? "Activo" : "Inactivo"}`,
-    },
-    {
-      field: "acciones",
-      type: "actions",
-      disableExport: false,
-      getActions: (cellValues) => [
-        <Link
-          to={`/maestro/persona/registrar/${cellValues.row.coD_PERS}`}
-          style={{ textDecoration: "none" }}
-        >
-          <GridActionsCellItem icon={<EditIcon />} label="Edit" />
-        </Link>,
-        <GridActionsCellItem
-          icon={<PersonOffIcon />}
-          label="Delete"
-          onClick={(event) => {
-            destroy(event, cellValues.row.coD_PERS);
-          }}
-        />,
-      ],
     },
   ];
 
@@ -188,7 +191,7 @@ const Person = () => {
         >
           <Button size="small" variant="text">
             <PersonAddIcon />
-            <span>&nbsp;&nbsp;&nbsp;Agregar</span>
+            <span>&nbsp;&nbsp;&nbsp;Registrar</span>
           </Button>
         </Link>
         <GridToolbarFilterButton />
@@ -213,33 +216,22 @@ const Person = () => {
 
   return (
     <>
-      <ResponsiveAppBar>
-        <div
-          style={{
-            padding: "0px 30px 0px 30px",
-            display: "flex",
-            height: "100%",
-          }}
+      <div style={{ flexGrow: 1 }}>
+        <Stack
+          direction="row"
+          spacing={1} xs={{ mb: 1, display: 'flex' }}
         >
-          <div style={{ flexGrow: 1 }}>
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{ mb: 1, justifyContent: "right" }}
-            >
-              <Button size="medium" variant="contained">
-                ? Ayuda
-              </Button>
-            </Stack>
-            <DataGridDemo
-              id={(row) => row.coD_PERS}
-              rows={data}
-              columns={columns}
-              toolbar={CustomToolbar}
-            />
+          <div>
+            <h1>Personas</h1>
           </div>
-        </div>
-      </ResponsiveAppBar>
+        </Stack>
+        <DataGridDemo
+          id={(row) => row.coD_PERS}
+          rows={data}
+          columns={columns}
+          toolbar={CustomToolbar}
+        />
+      </div>
     </>
   );
 };

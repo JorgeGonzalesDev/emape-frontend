@@ -130,50 +130,48 @@ const LevelEducate = () => {
 
   return (
     <>
-      <ResponsiveAppBar>
-        <div style={{ padding: "50px", display: "flex", height: "100%" }}>
-          <div style={{ flexGrow: 1 }}>
-            <DataGridDemo
-              id={(row) => row.coD_GRDINSTRUC}
-              rows={data}
-              columns={columns}
-              toolbar={CustomToolbar}
-            />
-          </div>
+      <div style={{ padding: "50px", display: "flex", height: "100%" }}>
+        <div style={{ flexGrow: 1 }}>
+          <DataGridDemo
+            id={(row) => row.coD_GRDINSTRUC}
+            rows={data}
+            columns={columns}
+            toolbar={CustomToolbar}
+          />
         </div>
-        <MUIModal ref={levelEducateChild}>
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item md={12} xs={12}>
-              <h1>{fields.coD_GRDINSTRUC ? "Actualizar" : "Registrar"}</h1>
-            </Grid>
-            <Grid item md={12} xs={6}>
-              <TextField
-                name="deS_GRDINSTRUC"
-                onChange={handleInputChange}
-                value={fields.deS_GRDINSTRUC}
-                fullWidth
-                label="Nombre"
-              />
-            </Grid>
-            <Grid item md={12} xs={12} />
-            <Grid item md={12} xs={6}>
-              <TextField
-                name="abreviadO_GRADO"
-                onChange={handleInputChange}
-                value={fields.abreviadO_GRADO}
-                fullWidth
-                label="Abreviación"
-              />
-            </Grid>
-            <Grid item md={12} xs={12} />
-            <Grid item md={12} xs={6}>
-              <Button variant="contained" onClick={saveLevelEducate}>
-                Enviar
-              </Button>
-            </Grid>
+      </div>
+      <MUIModal ref={levelEducateChild}>
+        <Grid container spacing={2} justifyContent="center">
+          <Grid item md={12} xs={12}>
+            <h1>{fields.coD_GRDINSTRUC ? "Actualizar" : "Registrar"}</h1>
           </Grid>
-        </MUIModal>
-      </ResponsiveAppBar>
+          <Grid item md={12} xs={6}>
+            <TextField
+              name="deS_GRDINSTRUC"
+              onChange={handleInputChange}
+              value={fields.deS_GRDINSTRUC}
+              fullWidth
+              label="Nombre"
+            />
+          </Grid>
+          <Grid item md={12} xs={12} />
+          <Grid item md={12} xs={6}>
+            <TextField
+              name="abreviadO_GRADO"
+              onChange={handleInputChange}
+              value={fields.abreviadO_GRADO}
+              fullWidth
+              label="Abreviación"
+            />
+          </Grid>
+          <Grid item md={12} xs={12} />
+          <Grid item md={12} xs={6}>
+            <Button variant="contained" onClick={saveLevelEducate}>
+              Enviar
+            </Button>
+          </Grid>
+        </Grid>
+      </MUIModal>
     </>
   );
 };

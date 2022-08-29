@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 const Master = () => {
   return (
     <div>
-      <ResponsiveAppBar>
         <div style={{ padding: "50px" }}>
           <Grid container justifyContent="center" spacing={3}>
             <Grid item>
@@ -37,7 +36,6 @@ const Master = () => {
             </Grid>
           </Grid>
         </div>
-      </ResponsiveAppBar>
     </div>
   );
 };
