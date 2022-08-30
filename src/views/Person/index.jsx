@@ -23,7 +23,10 @@ import moment from "moment";
 import { AlertDelete } from "../../components/Alerts";
 var XLSX = require("xlsx");
 
-const Person = () => {
+const Person = ({
+  view = false
+}) => {
+
   const [data, setData] = useState([]);
 
   const loadData = async () => {
@@ -222,7 +225,7 @@ const Person = () => {
           spacing={1} xs={{ mb: 1, display: 'flex' }}
         >
           <div>
-            <h1>Personas</h1>
+            <h1>Personas {view ? "Visualizar" : ""}</h1>
           </div>
         </Stack>
         <DataGridDemo

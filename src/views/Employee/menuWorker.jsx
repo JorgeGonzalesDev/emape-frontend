@@ -11,6 +11,12 @@ import { Button, Stack } from "@mui/material";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { getWorker } from '../../service/worker';
 import { getPerson } from '../../service/person';
+import RegisterChild from '../../components/Employee/RegisterChild';
+import RegisterExp from '../../components/Employee/RegisterExp';
+import RegisterEducate from '../../components/Employee/RegisterEducate';
+import RegisterAction from '../../components/Employee/RegisterAction';
+import RegisterDocument from '../../components/Employee/RegisterDocument';
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -22,7 +28,7 @@ function TabPanel(props) {
             id={`simple-tabpanel-${index}`}
             aria-labelledby={`simple-tab-${index}`}
             {...other}
-        > 
+        >
             {value === index && (
                 <Box sx={{ p: "20px 0px 0px 0px" }}>
                     <Typography>{children}</Typography>
@@ -109,7 +115,7 @@ export default function BasicTabs() {
 
     useEffect(() => {
         loadData();
-    }, );
+    }, []);
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -129,23 +135,35 @@ export default function BasicTabs() {
                 spacing={1}
                 style={{ marginBottom: 30 }}
             >
-                <span style={{fontSize:20, fontWeight: "bolder"}}>Trabajador: {dataPerson.deS_APELLP} {dataPerson.deS_APELLM} {dataPerson.noM_PERS}</span> 
+                <span style={{ fontSize: 20, fontWeight: "bolder" }}>Trabajador: {dataPerson.deS_APELLP} {dataPerson.deS_APELLM} {dataPerson.noM_PERS}</span>
             </Stack>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                     <Tab label="Datos Laborales" />
-                    <Tab label="Item Two" />
-                    <Tab label="Item Three" />
+                    <Tab label="Carga Familiar" />
+                    <Tab label="Experienca Laboral" />
+                    <Tab label="Educación" />
+                    <Tab label="Acciones Laborales" />
+                    <Tab label="Documentos" />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
                 <RegisterSteps dataWorker={dataWorker} back={navigateBack} />
             </TabPanel>
-            <TabPanel value={value} index={1}>
-                <h1>dsads</h1>
+            <TabPanel value={value} index={1} back={navigateBack}>
+                <RegisterChild id={id} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-                Item Three
+                <RegisterExp id={id} />
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+                <RegisterEducate id={id} />
+            </TabPanel>
+            <TabPanel value={value} index={4}>
+                <RegisterAction id={id} />
+            </TabPanel>
+            <TabPanel value={value} index={5}>
+                <RegisterDocument id={id} />
             </TabPanel>
         </Box>
     );

@@ -1,7 +1,7 @@
 import DataGridDemo from "../../components/Table";
 import { listAFPS } from "../../service/afp";
 import { useState, useEffect } from "react";
-import ResponsiveAppBar from "../../layouts/Header";
+import { Stack } from "@mui/material";
 
 const AFP = () => {
   const [data, setData] = useState([]);
@@ -32,17 +32,21 @@ const AFP = () => {
 
   return (
     <>
-      <ResponsiveAppBar>
-        <div style={{ padding: "50px", display: "flex", height: "100%" }}>
-          <div style={{ flexGrow: 1 }}>
-            <DataGridDemo
-              id={(row) => row.coD_AFP}
-              rows={data}
-              columns={columns}
-            />
+        <div style={{ flexGrow: 1 }}>
+        <Stack
+          direction="row"
+          spacing={1} xs={{ mb: 1, display: 'flex' }}
+        >
+          <div>
+            <h1>AFP</h1>
           </div>
+        </Stack>
+          <DataGridDemo
+            id={(row) => row.coD_AFP}
+            rows={data}
+            columns={columns}
+          />
         </div>
-      </ResponsiveAppBar>
     </>
   );
 };

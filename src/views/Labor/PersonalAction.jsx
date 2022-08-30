@@ -1,7 +1,5 @@
-import ResponsiveAppBar from "../../layouts/Header";
 import DataGridDemo from "../../components/Table";
-import { Grid, Button } from "@mui/material";
-import { getCondicionLaboral } from "../../service/labor/workingCondition";
+import { Stack } from "@mui/material";
 import { useState, useEffect } from "react";
 
 const PersonalAction = () => {
@@ -18,12 +16,7 @@ const PersonalAction = () => {
 
   // }, []);
 
-  const rows = [
-    {
-      code: 1,
-      name: "Hola",
-    },
-  ];
+  const rows = [];
 
   const columns = [
     {
@@ -35,34 +28,26 @@ const PersonalAction = () => {
       field: "name",
       headerName: "Nombre",
       width: 500,
-    },
-    {
-      headerName: "Opciones",
-      renderCell: (params) => (
-        <strong>
-          <Button variant="contained" size="small" style={{ marginLeft: 16 }}>
-            Open
-          </Button>
-        </strong>
-      ),
-      editable: false,
-      sortable: false,
-    },
+    }
   ];
 
   return (
     <>
-      <ResponsiveAppBar>
-        <div style={{ padding: "50px", display: "flex", height: "100%" }}>
           <div style={{ flexGrow: 1 }}>
+          <Stack
+          direction="row"
+          spacing={1} xs={{ mb: 1, display: 'flex' }}
+        >
+          <div>
+            <h1>Acción Personal</h1>
+          </div>
+        </Stack>
             <DataGridDemo
               id={(row) => row.code}
               rows={rows}
               columns={columns}
             />
           </div>
-        </div>
-      </ResponsiveAppBar>
     </>
   );
 };

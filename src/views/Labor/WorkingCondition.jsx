@@ -1,8 +1,7 @@
-import ResponsiveAppBar from "../../layouts/Header";
 import DataGridDemo from "../../components/Table";
-import { Grid, Button } from "@mui/material";
 import { getCondicionLaboral } from "../../service/labor/workingCondition";
 import { useState, useEffect } from "react";
+import { Stack } from "@mui/material";
 
 const WorkingCondition = () => {
   const [data, setData] = useState([]);
@@ -31,34 +30,26 @@ const WorkingCondition = () => {
       field: "noM_ABR",
       headerName: "Abreviado",
       width: 400,
-    },
-    {
-      headerName: "Opciones",
-      renderCell: (params) => (
-        <strong>
-          <Button variant="contained" size="small" style={{ marginLeft: 16 }}>
-            Open
-          </Button>
-        </strong>
-      ),
-      editable: false,
-      sortable: false,
-    },
+    }
   ];
 
   return (
     <>
-      <ResponsiveAppBar>
-        <div style={{ padding: "50px", display: "flex", height: "100%" }}>
           <div style={{ flexGrow: 1 }}>
+          <Stack
+          direction="row"
+          spacing={1} xs={{ mb: 1, display: 'flex' }}
+        >
+          <div>
+            <h1>Condicional Laboral</h1>
+          </div>
+        </Stack>
             <DataGridDemo
               id={(row) => row.coD_CONDICION}
               rows={data}
               columns={columns}
             />
           </div>
-        </div>
-      </ResponsiveAppBar>
     </>
   );
 };

@@ -82,6 +82,26 @@ export const getRPension = async () => {
   }
 };
 
+export const getTipoPariente = async () => {
+  try{
+    const response = await fetch(`${URL}/TipoPariente/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
+export const getEntidadExt = async () => {
+  try{
+    const response = await fetch(`${URL}/EntidadExterna/Get`)
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
 export const getPuestoLaboral = async () => {
   try{
     const response = await fetch(`${URL}/PuestoLaboral/Get`)

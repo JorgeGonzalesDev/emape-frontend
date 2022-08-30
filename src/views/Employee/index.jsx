@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonOffIcon from '@mui/icons-material/PersonOff';
-import { Stack, Button } from "@mui/material";
+import { Stack, Button, Tooltip, IconButton } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -73,15 +73,18 @@ const Employee = () => {
       field: "Acciones",
       type: "actions",
       getActions: (cellValues) => [
-
-        <GridActionsCellItem onClick={() => { handleCodeWorker(cellValues.row) }} icon={<EditIcon />} label="Edit" />,
-        <GridActionsCellItem
-          icon={<PersonOffIcon />}
-          label="Delete"
-          onClick={(event) => {
+        <Tooltip title="Editar">
+          <IconButton onClick={() => { handleCodeWorker(cellValues.row) }}>
+            <EditIcon />
+          </IconButton>
+        </Tooltip>,
+        <Tooltip title="Desactivar">
+          <IconButton onClick={(event) => {
             destroy(event, cellValues.row.coD_TRABAJADOR);
-          }}
-        />,
+          }}>
+            <PersonOffIcon />
+          </IconButton>
+        </Tooltip>,
       ],
     },
     {
@@ -123,7 +126,7 @@ const Employee = () => {
       headerName: "Nacimiento",
       width: 160,
       valueGetter: (params) =>
-        `${moment(params.row.dPersona?.feC_NACIM).format("DD-MM-YYYY")}`,
+        `${moment(params.row.dPersona?.feC_NACIM).format("DD/MM/YYYY")}`,
     },
     {
       field: "inD_SEXO",

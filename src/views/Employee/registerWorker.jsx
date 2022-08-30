@@ -17,7 +17,13 @@ import { useNavigate } from 'react-router-dom';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 
-const RegisterWorker = () => {
+const RegisterWorker = (
+    {
+        pageView = 25,
+        height = '68vh',
+        view= false
+    }
+) => {
 
     const [data, setData] = useState([]);
     const [forms, setForms] = useState(false);
@@ -48,6 +54,26 @@ const RegisterWorker = () => {
 
 
     const columns = [
+        {
+            field: "acciones",
+            type: "actions",
+            disableExport: true,
+            getActions: (cellValues) => [
+                <GridActionsCellItem
+                    onClick={async () => {
+                        setPersonData(cellValues.row);
+                        await handleForm();
+                    }}
+                    icon={<AddCircleOutlineIcon />} label="Edit" />
+                // <GridActionsCellItem
+                //     icon={<DeleteIcon />}
+                //     label="Delete"
+                //     onClick={(event) => {
+                //         destroy(event, cellValues.row.coD_PERS);
+                //     }}
+                // />,
+            ],
+        },
         {
             field: "coD_PERS",
             headerName: "Código",
@@ -87,26 +113,6 @@ const RegisterWorker = () => {
         //     valueGetter: (params) =>
         //         `${params.row.inD_ESTADO === "A" ? "Activo" : "Inactivo"}`,
         // },
-        {
-            field: "acciones",
-            type: "actions",
-            disableExport: true,
-            getActions: (cellValues) => [
-                <GridActionsCellItem
-                    onClick={async () => {
-                        setPersonData(cellValues.row);
-                        await handleForm();
-                    }}
-                    icon={<AddCircleOutlineIcon />} label="Edit" />
-                // <GridActionsCellItem
-                //     icon={<DeleteIcon />}
-                //     label="Delete"
-                //     onClick={(event) => {
-                //         destroy(event, cellValues.row.coD_PERS);
-                //     }}
-                // />,
-            ],
-        },
     ];
 
     function CustomToolbar() {
@@ -137,10 +143,12 @@ const RegisterWorker = () => {
                             </Button>
                         </Stack>
                         <DataGridDemo
+                            height={height}
                             id={(row) => row.coD_PERS}
                             rows={data}
                             columns={columns}
                             toolbar={CustomToolbar}
+                            numberSize={pageView}
                         />
                     </div>
                 </>

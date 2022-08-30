@@ -1,86 +1,165 @@
-import { Grid, TextField, MenuItem, Button, Checkbox, FormControlLabel } from "@mui/material";
-import { useState } from "react";
+// import { Grid, TextField, MenuItem, Button, Alert, AlertTitle } from "@mui/material";
+import { getStateCivil, getDepartments, getProvincesByDepartment, getDistrictsByProvince } from "../../../service/common";
+// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import moment from 'moment';
+import Swal from "sweetalert2";
+// import { AddOrUpdatePerson, getPerson } from "../../service/person";
+import { useParams } from "react-router-dom";
+import { getTrabajadorEducacion } from "../../../service/employee/education";
+import { Grid, Button, MenuItem, TextField } from "@mui/material";
+import { useState, useEffect } from "react";
+import { AddOrUpdateTrabajadorEducacion } from "../../../service/employee/education";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 
 const Educacion = () => {
+    const { id } = useParams();
     const [fields, setFields] = useState({
-        'number_item': '',
-        'type': '',
-        'study': '',
-        'institution': '',
-        'date_beginning': '',
-        'date_term': '',
-        'degree_instruc':'',
-        'university':'',
-        'tuition_number':'',
-        'date_title':'',
-        'contents':'',
-        'register_for': '',
-        'update_for': '',
-        'date_register': '',
-        'date_update': '',
+        coD_TRAEDU: null,
+        coD_TRABAJADOR: null,
+        feC_INICIO: null,
+        feC_TERMINO: null,
+        noM_INSTITUCION: null,
+        noM_ESPECIALIDAD: null,
+        coD_GRDINSTRUC: null,
+        coD_ESTUDIO: null,
+        coD_ENTIDAD: null,
+        nuM_COLEGIATURA: null,
+        feC_TITULO: null,
+        deS_CONTENIDO: null,
+        feC_USUMOD: null,
+        coD_USUMOD: null,
+        feC_USUREG: null,
+        coD_USUREG: null
 
     });
+    const defaultErrors = {
+        coD_TRAEDU: false,
+        coD_TRABAJADOR: false,
+        feC_INICIO: false,
+        feC_TERMINO: false,
+        noM_INSTITUCION: false,
+        noM_ESPECIALIDAD: false,
+        coD_GRDINSTRUC: false,
+        coD_ESTUDIO: false,
+        coD_ENTIDAD: false,
+        nuM_COLEGIATURA: false,
+        feC_TITULO: false,
+        deS_CONTENIDO: false,
+        feC_USUMOD: false,
+        coD_USUMOD: false,
+        feC_USUREG: false,
+        coD_USUREG: false
+      };
+      const [inputError, setInputError] = useState(defaultErrors);
     const handleInputChange = event => {
         const { name, value } = event.target;
         setFields({ ...fields, [name]: value });
     }
 
-    const [step, setStep] = useState(0);
+    /*  */
+    const loadData = async () => {
+
+        if (id) {
+            const response = await getTrabajadorEducacion(id)
+            if (response.listado) {
+                setFields(
+                    {
+                        coD_TRAEDU: response.listado[0]['coD_TRAEDU'],
+                        coD_TRABAJADOR: response.listado[0]['coD_TRABAJADOR'],
+                        feC_INICIO: response.listado[0]['feC_INICIO'],
+                        feC_TERMINO: response.listado[0]['feC_TERMINO'],
+                        noM_INSTITUCION: response.listado[0]['noM_INSTITUCION'],
+                        noM_ESPECIALIDAD: response.listado[0]['noM_ESPECIALIDAD'],
+                        coD_GRDINSTRUC: response.listado[0]['coD_GRDINSTRUC'],
+                        coD_ESTUDIO: response.listado[0]['coD_ESTUDIO'],
+                        coD_ENTIDAD: response.listado[0]['coD_ENTIDAD'],
+                        nuM_COLEGIATURA: response.listado[0]['nuM_COLEGIATURA'],
+                        feC_TITULO: response.listado[0]['feC_TITULO'],
+                        deS_CONTENIDO: response.listado[0]['deS_CONTENIDO'],
+                        feC_USUMOD: response.listado[0]['feC_USUMOD'],
+                        coD_USUMOD: response.listado[0]['coD_USUMOD'],
+                        feC_USUREG: response.listado[0]['feC_USUREG'],
+                        coD_USUREG: response.listado[0]['coD_USUREG'],
+                        //dTipoAcciones: response.listado[0]['dTipoAcciones'],
+
+
+                    }
+                );
+            } else {
+                return window.location = "/MaquetadoMiguel/Education/"
+            }
+        }
+
+
+    };
 
     const validateFields = () => {
 
         const copyFields = { ...fields };
 
-        if (step === 0) {
-
-            delete copyFields.full_name;
-            delete copyFields.date_birthday;
-
-
-        }
+        delete copyFields.coD_TRAEDU;
 
         let errors = {};
 
         Object.keys(copyFields).forEach(key => {
-            if (copyFields[key] === '') {
-                console.log(
-                    `El campo ${key} => ${copyFields[key]} no puede estar vacío`
-                );
-
-                errors[`${key}`] = true;
-
+            if (copyFields[key] === '' || copyFields[key] === 0 || !copyFields[key]) {
+      
+              console.log(
+                `El campo ${key} => ${copyFields[key]} no puede estar vacío`
+              );
+      
+              errors[`${key}`] = true;
             }
-        });
-
+          });
         if (Object.keys(errors).length > 0) {
+    
+            setInputError(errors);
             return false;
-        }
-
-        return true;
+          }
+      
+          setInputError(defaultErrors);
+          return true;
 
     }
 
-    const backStep = () => setStep(step - 1);
-    const handleSubmit = () => alert('Datos enviado correctamente');
+      const handleFields = async () => {
 
-    const nextStep = () => {
+        const validate = validateFields();
 
-        // const validate = validateFields();
+        if (!validate) return;
 
-        // if (!validate) {
-        //     alert('Por favor, complete todos los campos');
-        //     return;
-        // }
+        const response = await AddOrUpdateTrabajadorEducacion(fields)
 
-        fields.full_name = `${fields.first_lastname} ${fields.second_lastname} ${fields.name}`;
+        if (response.code === 0) {
 
-        console.log(fields);
+            await Swal.fire({
+                icon: 'success',
+                title: `${response.message}`,
+                showConfirmButton: false,
+                timer: 1500
+            })
 
-        setStep(step + 1);
+            return window.location = "/MaquetadoMiguel/Education"
 
-    };
-    if (step === 0) {
+        } else {
+            return Swal.fire({
+                icon: 'error',
+                title: `${response.message}`,
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+
+    }
+
+      useEffect(() => {
+        loadData();
+      }, []);
         return (
             <>
                 <Grid container spacing={2}>
@@ -90,30 +169,52 @@ const Educacion = () => {
                     <Grid item md={2} sm={12} xs={12}>
                         <TextField
                             fullWidth
-                            label="N° Item"
-                            name="number_item"
+                            label="Cod. Trabajador Educación"
+                            name="coD_TRAEDU"
                             onChange={handleInputChange}
-                            value={fields.number_item}
+                            value={fields.coD_TRAEDU}
+                            error={inputError.coD_TRAEDU}
                         />
                     </Grid>
                     <Grid item md={12} />
                     <Grid item md={2} sm={12} xs={12}>
                         <TextField
                             fullWidth
-                            label="tipo"
-                            name="type"
+                            label="Cod. Trabajador"
+                            name="coD_TRABAJADOR"
                             onChange={handleInputChange}
-                            value={fields.type}
+                            value={fields.coD_TRABAJADOR}
+                            error={inputError.coD_TRABAJADOR}
                         />
                     </Grid>
                     <Grid item md={12} />
                     <Grid item md={2} sm={12} xs={12}>
                         <TextField
                             fullWidth
-                            label="Estudio"
-                            name="study"
+                            label="Fecha Inicio"
+                            name="feC_INICIO"
+                            type="date"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
                             onChange={handleInputChange}
-                            value={fields.study}
+                            value={fields.feC_INICIO}
+                            error={inputError.feC_INICIO}
+                        />
+                    </Grid>
+                    <Grid item md={12} />
+                    <Grid item md={2} sm={12} xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Fecha Termino"
+                            name="feC_TERMINO"
+                            type="date"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            onChange={handleInputChange}
+                            value={fields.feC_TERMINO}
+                            error={inputError.feC_TERMINO}
                         />
                     </Grid>
                     <Grid item md={12} />
@@ -121,30 +222,21 @@ const Educacion = () => {
                         <TextField
                             fullWidth
                             label="Institución"
-                            name="institution"
+                            name="noM_INSTITUCION"
                             onChange={handleInputChange}
-                            value={fields.institution}
+                            value={fields.noM_INSTITUCION}
+                            error={inputError.noM_INSTITUCION}
                         />
                     </Grid>
                     <Grid item md={12} />
                     <Grid item md={2} sm={12} xs={12}>
                         <TextField
                             fullWidth
-                            label="Inicio"
-                            name="date_beginning"
-                            placeholder="00/00/00"
+                            label="Especialidad"
+                            name="noM_ESPECIALIDAD"
                             onChange={handleInputChange}
-                            value={fields.date_beginning}
-                        />
-                    </Grid>
-                    <Grid item md={12} />
-                    <Grid item md={2} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Termino"
-                            name="date_term"
-                            onChange={handleInputChange}
-                            value={fields.date_term}
+                            value={fields.noM_ESPECIALIDAD}
+                            error={inputError.noM_ESPECIALIDAD}
                         />
                     </Grid>
                     <Grid item md={12} />
@@ -152,22 +244,22 @@ const Educacion = () => {
                     <Grid item md={2} sm={12} xs={12}>
                         <TextField
                             fullWidth
-                            label="Grado Instruc"
-                            name="degree_instruc"
-                            select
+                            label="Cod. Grado Instruccion"
+                            name="coD_GRDINSTRUC"
                             onChange={handleInputChange}
-                            value={fields.degree_instruc}
+                            value={fields.coD_GRDINSTRUC}
+                            error={inputError.coD_GRDINSTRUC}
                         />
                     </Grid>
                     <Grid item md={12} />
                     <Grid item md={2} sm={12} xs={12}>
                         <TextField
                             fullWidth
-                            label="Universidad"
-                            name="university"
-                            select
+                            label="Cod. Estudio"
+                            name="coD_ESTUDIO"
                             onChange={handleInputChange}
-                            value={fields.university}
+                            value={fields.coD_ESTUDIO}
+                            error={inputError.coD_ESTUDIO}
                         />
                     </Grid>
 
@@ -177,10 +269,24 @@ const Educacion = () => {
                     <Grid item md={2} sm={12} xs={12}>
                         <TextField
                             fullWidth
-                            label="N° Colegiatura"
-                            name="tuition_number"
+                            label="Cod. Entidad"
+                            name="coD_ENTIDAD"
                             onChange={handleInputChange}
-                            value={fields.tuition_number}
+                            value={fields.coD_ENTIDAD}
+                            error={inputError.coD_ENTIDAD}
+                        />
+                    </Grid>
+
+                    <Grid item md={12} />
+
+                    <Grid item md={2} sm={12} xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Nombre Colegiatura"
+                            name="nuM_COLEGIATURA"
+                            onChange={handleInputChange}
+                            value={fields.nuM_COLEGIATURA}
+                            error={inputError.nuM_COLEGIATURA}
                         />
                     </Grid>
 
@@ -190,81 +296,89 @@ const Educacion = () => {
                         <TextField
                             fullWidth
                             label="Fecha Titulo"
-                            name="date_title"
-                            onChange={handleInputChange}
-                            value={fields.date_title}
-                        />
-                    </Grid>
-
-                    <Grid item md={12} />
-
-                    <Grid item md={2} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Contenido"
-                            name="contents"
-                            multiline
-                            onChange={handleInputChange}
-                            value={fields.contents}
-                        />
-                    </Grid>
-
-                    <Grid item md={12} />
-
-                    <Grid item md={2} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Registrado por"
-                            name="register_for"
-                            onChange={handleInputChange}
-                            value={fields.register_for}
-                        />
-                    </Grid>
-
-                    <Grid item md={12} />
-                    <Grid item md={2} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            name="register_for"
-                            onChange={handleInputChange}
-                            value={fields.register_for}
-                        />
-                    </Grid>
-                    <Grid item md={2} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            name="date_register"
+                            name="feC_TITULO"
                             type="date"
-                            onChange={handleInputChange}
-                            value={fields.date_register}
-                        />
-                    </Grid>
-                    <Grid item md={12} />
-                    <Grid item md={2} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            name="update_for"
-                            onChange={handleInputChange}
-                            value={fields.update_for}
-                        />
-                    </Grid>
-                    <Grid item md={2} sm={12} xs={12}>
-                        <TextField
-                            fullWidth
-                            type='date'
-                            name="date_update"
                             InputLabelProps={{
                                 shrink: true,
                             }}
                             onChange={handleInputChange}
-                            value={fields.date_update}
+                            value={fields.feC_TITULO}
+                            error={inputError.feC_TITULO}
                         />
                     </Grid>
 
+                    <Grid item md={12} />
+
+                    <Grid item md={2} sm={12} xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Descripción Contenido"
+                            name="deS_CONTENIDO"
+                            onChange={handleInputChange}
+                            value={fields.deS_CONTENIDO}
+                            error={inputError.deS_CONTENIDO}
+                        />
+                    </Grid>
+
+                    <Grid item md={12} />
+                    <Grid item md={2} sm={12} xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Fecha Usuario Modificado"
+                            name="feC_USUMOD"
+                            type="date"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            onChange={handleInputChange}
+                            value={fields.feC_USUMOD}
+                            error={inputError.feC_USUMOD}
+                        />
+                    </Grid>
+                    <Grid item md={2} sm={12} xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Cod. Usuario Modificado"
+                            name="coD_USUMOD"
+                            onChange={handleInputChange}
+                            value={fields.coD_USUMOD}
+                            error={inputError.coD_USUMOD}
+                        />
+                    </Grid>
+                    <Grid item md={12} />
+                    <Grid item md={2} sm={12} xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Fecha Usuario Registrado"
+                            name="feC_USUREG"
+                            type="date"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            onChange={handleInputChange}
+                            value={fields.feC_USUREG}
+                            error={inputError.feC_USUREG}
+                        />
+                    </Grid>
+                    <Grid item md={2} sm={12} xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Cod. Usuario Registrado"
+                            name="coD_USUREG"
+                            onChange={handleInputChange}
+                            value={fields.coD_USUREG}
+                            error={inputError.coD_USUREG}
+                        />
+                    </Grid>
+                    <Grid item md={4} sm={12} xs={12}>
+                    <Button variant="contained" onClick={() => {
+                        handleFields();}}>
+                        {id ? 'Actualizar': 'Registrar'}
+                    </Button>
+                    </Grid>
                 </Grid>
             </>
         ) 
     }
-}
 
 export default Educacion;

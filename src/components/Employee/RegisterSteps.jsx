@@ -26,43 +26,43 @@ const RegisterSteps = ({
     const [fields, setFields] = useState({
         coD_TRABAJADOR: 0,
         coD_PERS: codePerson,
-        coD_UORG: 0,
-        feC_CUSPP: "",
-        feC_INGRESO: "",
-        coD_CAR: 0,
-        feC_CESE: "",
-        coD_PUESTO: 0,
-        coD_CONDICION: 0,
-        coD_TIPOTRABAJ: 0,
+        coD_UORG: null,
+        feC_CUSPP: null,
+        feC_INGRESO: null,
+        coD_CAR: null,
+        feC_CESE: new Date(),
+        coD_PUESTO: null,
+        coD_CONDICION: null,
+        coD_TIPOTRABAJ: null,
         inD_ESTADO: "A",
-        coD_AFP: 0,
-        nuM_PLAZA: "",
-        coD_BCOSUELDO: 0,
-        nuM_CTASUELDO: "",
-        nuM_CCI: "",
-        coD_BCOCTS: 0,
-        nuM_CTACTS: "",
-        coD_CUSPP: "",
+        coD_AFP: null,
+        nuM_PLAZA: null,
+        coD_BCOSUELDO: null,
+        nuM_CTASUELDO: null,
+        nuM_CCI: null,
+        coD_BCOCTS: null,
+        nuM_CTACTS: null,
+        coD_CUSPP: null,
         //coD_TURNO: 0,
-        inD_REGLABORAL: "",
-        inD_REGPENSION: "",
-        coD_ESSALUD: "",
-        coD_SEGSALUD: 0,
-        coD_REGLABORAL: 0,
-        coD_REGPENSION: 0,
-        coD_OCUPLABORAL: 0,
-        coD_CATOCUPACION: 0,
-        inD_DISCAPACIDAD: "0",
-        inD_SINDICALIZADO: "0",
-        inD_SITESPECIAL: "0",
-        inD_DOBLETRIBUTO: "0",
-        inD_TIPOPAGO: 0,
+        inD_REGLABORAL: null,
+        inD_REGPENSION: null,
+        coD_ESSALUD: null,
+        coD_SEGSALUD: null,
+        coD_REGLABORAL: null,
+        coD_REGPENSION: null,
+        coD_OCUPLABORAL: null,
+        coD_CATOCUPACION: null,
+        inD_DISCAPACIDAD: null,
+        inD_SINDICALIZADO: null,
+        inD_SITESPECIAL: null,
+        inD_DOBLETRIBUTO: null,
+        inD_TIPOPAGO: null,
         inD_PLAME: "S",
-        obS_TRABAJADOR: "",
+        obS_TRABAJADOR: null,
         inD_NOSEGUROAFP: "S",
-        nrO_CONTRATO: "",
-        feC_INI_CONTRATO: "",
-        feC_FIN_CONTRATO: "",
+        nrO_CONTRATO: null,
+        feC_INI_CONTRATO: null,
+        feC_FIN_CONTRATO: null,
     });
 
     const defaultErrors = {
@@ -264,6 +264,9 @@ const RegisterSteps = ({
                     <TextField
                         name="inD_ESTADO"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         select
                         label="Estado *"
                         onChange={handleInputChange}
@@ -283,6 +286,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_UORG"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_UORG}
                         select
@@ -313,6 +319,9 @@ const RegisterSteps = ({
                             onChange={e =>
                                 handleInputChangeDate(e, 'feC_INGRESO')}
                             renderInput={(params) => <TextField fullWidth
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
                                 size="small"
                                 error={inputError.feC_INGRESO} {...params} />}
                         />
@@ -333,6 +342,9 @@ const RegisterSteps = ({
                             onChange={e =>
                                 handleInputChangeDate(e, 'feC_CESE')}
                             renderInput={(params) => <TextField fullWidth
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
                                 size="small"
                                 {...params} />}
                         />
@@ -343,6 +355,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_CAR"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_CAR}
                         select
@@ -367,6 +382,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_PUESTO"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_PUESTO}
                         select
@@ -392,6 +410,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_CONDICION"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_CONDICION}
                         select
@@ -416,6 +437,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_TIPOTRABAJ"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_TIPOTRABAJ}
                         select
@@ -440,6 +464,9 @@ const RegisterSteps = ({
                         <TextField
                             name="coD_TURNO"
                             fullWidth
+                                        InputLabelProps={{
+              shrink: true
+            }}
                             size="small"
                             error={inputError.coD_TURNO}
                             select
@@ -465,6 +492,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_AFP"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_AFP}
                         select
@@ -493,6 +523,9 @@ const RegisterSteps = ({
                             onChange={e =>
                                 handleInputChangeDate(e, 'feC_CUSPP')}
                             renderInput={(params) => <TextField fullWidth
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
                                 size="small"
                                 error={inputError.feC_CUSPP} {...params} />}
                         />
@@ -502,6 +535,9 @@ const RegisterSteps = ({
                     <TextField
                         name="nuM_PLAZA"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.nuM_PLAZA}
                         label="Plaza"
@@ -517,6 +553,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_BCOSUELDO"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_BCOSUELDO}
                         select
@@ -541,6 +580,9 @@ const RegisterSteps = ({
                     <TextField
                         name="nuM_CTASUELDO"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.nuM_CTASUELDO}
                         label="Cuenta Sueldo"
@@ -555,6 +597,9 @@ const RegisterSteps = ({
                     <TextField
                         name="nuM_CCI"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.nuM_CCI}
                         label="Numero C.C.I"
@@ -570,6 +615,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_BCOCTS"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_BCOCTS}
                         select
@@ -594,6 +642,9 @@ const RegisterSteps = ({
                     <TextField
                         name="nuM_CTACTS"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.nuM_CTACTS}
                         label="Cuenta CTS"
@@ -608,6 +659,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_CUSPP"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_CUSPP}
                         label="Codigo CUSPP"
@@ -623,6 +677,9 @@ const RegisterSteps = ({
                     <TextField
                         name="inD_REGLABORAL"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.inD_REGLABORAL}
                         select
@@ -650,6 +707,9 @@ const RegisterSteps = ({
                     <TextField
                         name="inD_REGPENSION"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.inD_REGPENSION}
                         select
@@ -677,6 +737,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_ESSALUD"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_ESSALUD}
                         label="Codigo ESSALUD"
@@ -692,6 +755,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_REGLABORAL"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_REGLABORAL}
                         select
@@ -716,6 +782,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_REGPENSION"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_REGPENSION}
                         select
@@ -740,6 +809,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_SEGSALUD"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_SEGSALUD}
                         select
@@ -765,6 +837,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_OCUPLABORAL"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_OCUPLABORAL}
                         select
@@ -790,6 +865,9 @@ const RegisterSteps = ({
                     <TextField
                         name="inD_SITESPECIAL"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.inD_SITESPECIAL}
                         select
@@ -814,6 +892,9 @@ const RegisterSteps = ({
                     <TextField
                         name="coD_CATOCUPACION"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.coD_CATOCUPACION}
                         select
@@ -839,6 +920,9 @@ const RegisterSteps = ({
                     <TextField
                         name="inD_DISCAPACIDAD"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.inD_DISCAPACIDAD}
                         select
@@ -860,6 +944,9 @@ const RegisterSteps = ({
                     <TextField
                         name="inD_SINDICALIZADO"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.inD_SINDICALIZADO}
                         select
@@ -881,6 +968,9 @@ const RegisterSteps = ({
                     <TextField
                         name="inD_DOBLETRIBUTO"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.inD_DOBLETRIBUTO}
                         select
@@ -902,6 +992,9 @@ const RegisterSteps = ({
                     <TextField
                         name="inD_TIPOPAGO"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.inD_TIPOPAGO}
                         select
@@ -930,6 +1023,9 @@ const RegisterSteps = ({
                     <TextField
                         name="inD_PLAME"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.inD_PLAME}
                         select
@@ -951,6 +1047,9 @@ const RegisterSteps = ({
                     <TextField
                         name="inD_NOSEGUROAFP"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.inD_NOSEGUROAFP}
                         select
@@ -974,6 +1073,9 @@ const RegisterSteps = ({
                         label="Observaciones"
                         multiline
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.obS_TRABAJADOR}
                         rows={4}
@@ -996,6 +1098,9 @@ const RegisterSteps = ({
                             onChange={e =>
                                 handleInputChangeDate(e, 'feC_INI_CONTRATO')}
                             renderInput={(params) => <TextField fullWidth
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
                                 size="small"
                                 {...params} />}
                         />
@@ -1011,6 +1116,9 @@ const RegisterSteps = ({
                             onChange={e =>
                                 handleInputChangeDate(e, 'feC_FIN_CONTRATO')}
                             renderInput={(params) => <TextField fullWidth
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
                                 size="small"
                                 {...params} />}
                         />
@@ -1021,6 +1129,9 @@ const RegisterSteps = ({
                     <TextField
                         name="nrO_CONTRATO"
                         fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
                         size="small"
                         error={inputError.nrO_CONTRATO}
                         label="Numero de Contrato"

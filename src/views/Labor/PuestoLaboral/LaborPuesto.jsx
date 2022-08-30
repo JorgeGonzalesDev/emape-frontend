@@ -3,14 +3,12 @@ import {
   deletePuesto,
   AddOrUpdatePuesto,
 } from "../../../service/labor/laborPuesto";
-import ResponsiveAppBar from "../../../layouts/Header";
 import MUIModal from "../../../components/Modal";
 import DataGridDemo from "../../../components/Table";
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, Grid, TextField } from "@mui/material";
+import { Button, Grid, TextField, Stack } from "@mui/material";
 import {
   GridActionsCellItem,
   GridToolbarContainer,
@@ -82,16 +80,6 @@ const LaborPuesto = () => {
 
   const columns = [
     {
-      field: "coD_PUESTO",
-      headerName: "Código",
-      width: 200,
-    },
-    {
-      field: "noM_PUESTO",
-      headerName: "Nombre",
-      width: 500,
-    },
-    {
       field: "Acciones",
       type: "actions",
       getActions: (cellValues) => [
@@ -110,6 +98,16 @@ const LaborPuesto = () => {
           }}
         />,
       ],
+    },
+    {
+      field: "coD_PUESTO",
+      headerName: "Código",
+      width: 200,
+    },
+    {
+      field: "noM_PUESTO",
+      headerName: "Nombre",
+      width: 500,
     },
   ];
 
@@ -136,40 +134,44 @@ const LaborPuesto = () => {
   }
   return (
     <>
-      <ResponsiveAppBar>
-        <div style={{ padding: "50px", display: "flex", height: "100%" }}>
-          <div style={{ flexGrow: 1 }}>
-            <DataGridDemo
-              id={(row) => row.coD_PUESTO}
-              rows={data}
-              columns={columns}
-              toolbar={CustomToolbar}
-            />
+      <div style={{ flexGrow: 1 }}>
+        <Stack
+          direction="row"
+          spacing={1} xs={{ mb: 1, display: 'flex' }}
+        >
+          <div>
+            <h1>Puesto Laboral</h1>
           </div>
-        </div>
-        <MUIModal ref={levelLaborPuesto}>
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item md={12} xs={12}>
-              <h1>{fields.coD_PUESTO ? "Actualizar" : "Registrar"}</h1>
-            </Grid>
-            <Grid item md={12} xs={6}>
-              <TextField
-                name="noM_PUESTO"
-                onChange={handleInputChange}
-                value={fields.noM_PUESTO}
-                fullWidth
-                label="Nombre"
-              />
-            </Grid>
-            <Grid item md={12} xs={12} />
-            <Grid item md={12} xs={6}>
-              <Button variant="contained" onClick={saveLevelLaborPuesto}>
-                Enviar
-              </Button>
-            </Grid>
+        </Stack>
+        <DataGridDemo
+          id={(row) => row.coD_PUESTO}
+          rows={data}
+          columns={columns}
+          toolbar={CustomToolbar}
+        />
+      </div>
+      <MUIModal ref={levelLaborPuesto}>
+        <Grid container spacing={2} justifyContent="center">
+          <Grid item md={12} xs={12}>
+            <h1>{fields.coD_PUESTO ? "Actualizar" : "Registrar"}</h1>
           </Grid>
-        </MUIModal>
-      </ResponsiveAppBar>
+          <Grid item md={12} xs={6}>
+            <TextField
+              name="noM_PUESTO"
+              onChange={handleInputChange}
+              value={fields.noM_PUESTO}
+              fullWidth
+              label="Nombre"
+            />
+          </Grid>
+          <Grid item md={12} xs={12} />
+          <Grid item md={12} xs={6}>
+            <Button variant="contained" onClick={saveLevelLaborPuesto}>
+              Enviar
+            </Button>
+          </Grid>
+        </Grid>
+      </MUIModal>
     </>
   );
 };

@@ -11,4 +11,8 @@ export const PERSON = "/maestro/persona";
 export const AFP = "/maestro/AFP";
 export const EMPLOYEE = "/trabajador";
 export const ENTIDADEXTERNA = "/maestro/generales/entidadExterna";
+export const EXPERIENCIALABORAL = "/MaquetadoMiguel/LaborExperience";
+export const EducacionT = "/MaquetadoMiguel/Education";
+export const ACCIONESLABORALES = "/MaquetadoCarlos/LaborActions";
+export const DocumentosT = "/MaquetadoCarlos/Documentos";
 // agregar las medas rutas !!

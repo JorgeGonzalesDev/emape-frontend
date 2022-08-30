@@ -1,7 +1,6 @@
 import ResponsiveAppBar from "../../../layouts/Header";
-import RegisterSteps from "../../../components/ExternalEntity/RegisterSteps";
+import RegisterSteps from "../../../components/MaquetadoCarlos/AccionesLaborales/index";
 import { useState } from "react";
-
 
 
 const Register = () => {
@@ -9,7 +8,7 @@ const Register = () => {
     return (
         <div>
             <div style={{ padding: '50px' }} >
-                <RegisterSteps />
+            <RegisterSteps />
             </div>
         </div>
     );

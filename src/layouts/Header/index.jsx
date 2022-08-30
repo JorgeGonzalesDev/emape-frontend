@@ -17,29 +17,36 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { ExpandLess, ExpandMore, Home, StarBorder } from "@mui/icons-material";
 import { Button, Collapse } from "@mui/material";
 import * as ROUTES from "../../contants/routes";
 import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
-import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import UserContext from "../../context/User/UserContext";
 import jwt_decode from "jwt-decode";
+import SchoolIcon from "@mui/icons-material/School";
+import WorkIcon from "@mui/icons-material/Work";
+import PersonIcon from "@mui/icons-material/Person";
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import BadgeIcon from "@mui/icons-material/Badge";
 import General, {
   Cargo,
   Personal,
   Profesion,
 } from "../../components/Svg/General";
-//import Cargo from '../../components/Svg/Cargo';
-import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
-//import Profesion from '../../components/Svg/Profesion';
 import BrandingWatermarkOutlinedIcon from "@mui/icons-material/BrandingWatermarkOutlined";
-//import Personal from '../../components/Svg/Personal';
-import GroupWorkOutlinedIcon from "@mui/icons-material/GroupWorkOutlined";
 import MenuContext from "../../context/Menu/Menu.Context";
+import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
+import SettingsIcon from "@mui/icons-material/Settings";
+import HailIcon from "@mui/icons-material/Hail";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import SavingsIcon from "@mui/icons-material/Savings";
+import SensorOccupiedIcon from "@mui/icons-material/SensorOccupied";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import ArticleIcon from "@mui/icons-material/Article";
+import FeedIcon from "@mui/icons-material/Feed";
+import ArchiveIcon from "@mui/icons-material/Archive";
 const drawerWidth = 240;
 
 //const of array of objects
@@ -142,7 +149,48 @@ export default function PersistentDrawerLeft({ children }) {
     loadMenu(id);
     setUserName(name);
   }, []);
-
+  let menuFiltradoMaestros = menu.filter((item) => item.dMenu.coD_MENU <= 12);
+  let menuFiltradoLegado = menu.filter(
+    (item) => item.dMenu.coD_MENU === 14 || item.dMenu.coD_MENU === 15
+  );
+  let menuFiltradoAsistencia = menu.filter(
+    (item) => item.dMenu.coD_MENU >= 18 && item.dMenu.coD_MENU <= 20
+  );
+  let menuFiltradoReloj = menu.filter((item) => item.dMenu.coD_MENU === 22);
+  let sayings = new Map();
+  sayings.set(3, ROUTES.POSITION);
+  sayings.set(4, ROUTES.EDUCATIONLEVEL);
+  sayings.set(5, ROUTES.PROFESSIONS);
+  sayings.set(6, ROUTES.ENTIDADEXTERNA);
+  sayings.set(7, ROUTES.ENTIDADEXTERNA);
+  sayings.set(8, ROUTES.WORKCONDITION);
+  sayings.set(9, ROUTES.PERSONALACTION);
+  sayings.set(10, ROUTES.JOBCATEGORY);
+  sayings.set(11, ROUTES.AFP);
+  sayings.set(12, ROUTES.PERSON);
+  sayings.set(14, ROUTES.EMPLOYEE);
+  sayings.set(15, ROUTES.EDUCATIONLEVEL);
+  sayings.set(18, ROUTES.EDUCATIONLEVEL);
+  sayings.set(19, ROUTES.EDUCATIONLEVEL);
+  sayings.set(20, ROUTES.EDUCATIONLEVEL);
+  sayings.set(22, ROUTES.EDUCATIONLEVEL);
+  let iconsToMenu = new Map();
+  iconsToMenu.set(3, <BadgeIcon />);
+  iconsToMenu.set(4, <WorkspacePremiumIcon />);
+  iconsToMenu.set(5, <WorkIcon />);
+  iconsToMenu.set(6, <SchoolIcon />);
+  iconsToMenu.set(7, <BrandingWatermarkOutlinedIcon />);
+  iconsToMenu.set(8, <SensorOccupiedIcon />);
+  iconsToMenu.set(9, <BrandingWatermarkOutlinedIcon />);
+  iconsToMenu.set(10, <BadgeIcon />);
+  iconsToMenu.set(11, <SavingsIcon />);
+  iconsToMenu.set(12, <PersonIcon />);
+  iconsToMenu.set(14, <HailIcon />);
+  iconsToMenu.set(15, <AssignmentIcon />);
+  iconsToMenu.set(18, <ReceiptIcon />);
+  iconsToMenu.set(19, <ArticleIcon />);
+  iconsToMenu.set(20, <FeedIcon />);
+  iconsToMenu.set(22, <AccessTimeFilledIcon />);
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -181,15 +229,6 @@ export default function PersistentDrawerLeft({ children }) {
         anchor="left"
         open={open}
       >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
         <Divider />
         <List
           sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
@@ -197,43 +236,235 @@ export default function PersistentDrawerLeft({ children }) {
           aria-labelledby="nested-list-subheader"
           subheader={
             <ListSubheader component="div" id="nested-list-subheader">
+              <DrawerHeader>
               EMAPE
+                <IconButton onClick={handleDrawerClose}>
+                  {theme.direction === "ltr" ? (
+                    <ChevronLeftIcon />
+                  ) : (
+                    <ChevronRightIcon />
+                  )}
+                </IconButton>
+              </DrawerHeader>
             </ListSubheader>
           }
         >
-          {menu ? (
+          {menu.length === 1 && (
             <>
-              <Link
-                to="/inicio"
-                style={{ textDecoration: "none", color: "#202020" }}
-              >
-                <ListItemButton>
-                  <ListItemIcon>
-                    <HomeIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Inicio" />
-                </ListItemButton>
-              </Link>
-              {menu.length === 7 && (
-                <>
-                  <Fragment>
-                    <ListItemButton onClick={handleClickMaestro}>
-                      <ListItemIcon></ListItemIcon>
-                      <ListItemText primary="LEGAJO TRABAJADOR" />
-                      {openmaestro ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    <Collapse in={openmaestro} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding>
-                        <ListItemButton
-                          onClick={handleClickGenerales}
-                          sx={{ pl: 3 }}
-                        >
+              {menuFiltradoMaestros.map((item, index) => (
+                <Fragment key={index}>
+                  <ListItemButton onClick={handleClickMaestro}>
+                    <ListItemIcon></ListItemIcon>
+                    <ListItemText primary="LEGAJO TRABAJADOR" />
+                    {openmaestro ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openmaestro} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      <ListItemButton
+                        onClick={handleClickGenerales}
+                        sx={{ pl: 3 }}
+                      >
+                        <ListItemIcon>
+                          <EngineeringIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="MAESTROS" />
+                        {opengenerales ? <ExpandLess /> : <ExpandMore />}
+                      </ListItemButton>
+                      <Collapse in={opengenerales} timeout="auto" unmountOnExit>
+                        <ListItemButton sx={{ pl: 4 }}>
                           <ListItemIcon>
-                            <General />
+                            {iconsToMenu.get(item.dMenu.coD_MENU)}
                           </ListItemIcon>
-                          <ListItemText primary="MAESTROS" />
-                          {opengenerales ? <ExpandLess /> : <ExpandMore />}
+                          <ListItem>
+                            <Link
+                              to={sayings.get(item.dMenu.coD_MENU)}
+                              style={{
+                                textDecoration: "none",
+                                color: "#202020",
+                              }}
+                            >
+                              <ListItemText primary={item.dMenu.deS_MENU} />
+                            </Link>
+                          </ListItem>
                         </ListItemButton>
+                      </Collapse>
+                    </List>
+                  </Collapse>
+                </Fragment>
+              ))}
+            </>
+          )}
+          {menu.length === 1 && (
+            <>
+              {menuFiltradoLegado.map((item, index) => (
+                <Fragment key={index}>
+                  <ListItemButton onClick={handleClickMaestro}>
+                    <ListItemIcon></ListItemIcon>
+                    <ListItemText primary="LEGAJO TRABAJADOR" />
+                    {openmaestro ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openmaestro} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      <ListItemButton
+                        onClick={handleClickLegajo}
+                        sx={{ pl: 3 }}
+                      >
+                        <ListItemIcon>
+                          <ArchiveIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="LEGAJO" />
+                        {openlegajo ? <ExpandLess /> : <ExpandMore />}
+                      </ListItemButton>
+                      <Collapse in={openlegajo} timeout="auto" unmountOnExit>
+                        <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemIcon>
+                            {iconsToMenu.get(item.dMenu.coD_MENU)}
+                          </ListItemIcon>
+                          <ListItem>
+                            <Link
+                              to={sayings.get(item.dMenu.coD_MENU)}
+                              style={{
+                                textDecoration: "none",
+                                color: "#202020",
+                              }}
+                            >
+                              <ListItemText primary={item.dMenu.deS_MENU} />
+                            </Link>
+                          </ListItem>
+                        </ListItemButton>
+                        <Link
+                          to={ROUTES.EXPERIENCIALABORAL}
+                          style={{
+                            textDecoration: "none",
+                            color: "#202020",
+                          }}
+                        ></Link>
+                      </Collapse>
+                    </List>
+                  </Collapse>
+                </Fragment>
+              ))}
+            </>
+          )}
+          {menu.length === 1 && (
+            <>
+              {menuFiltradoAsistencia.map((item, index) => (
+                <Fragment key={index}>
+                  <ListItemButton onClick={handleClickAsistencia}>
+                    <ListItemIcon></ListItemIcon>
+                    <ListItemText primary="CONTROL DE ASISTENCIA" />
+                    {openasistencia ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openasistencia} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      <ListItemButton
+                        onClick={handleClickAsistenciaMaestro}
+                        sx={{ pl: 3 }}
+                      >
+                        <ListItemIcon>
+                          <EngineeringIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="MAESTROS" />
+                        {openasistenciamaestro ? (
+                          <ExpandLess />
+                        ) : (
+                          <ExpandMore />
+                        )}
+                      </ListItemButton>
+                      {/* add */}
+                      <Collapse
+                        in={openasistenciamaestro}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <Link
+                          to={sayings.get(item.dMenu.coD_MENU)}
+                          style={{ textDecoration: "none", color: "#202020" }}
+                        >
+                          <ListItemButton sx={{ pl: 3 }}>
+                            <ListItemIcon>
+                              {iconsToMenu.get(item.dMenu.coD_MENU)}
+                            </ListItemIcon>
+                            <ListItem>
+                              <ListItemText primary={item.dMenu.deS_MENU} />
+                            </ListItem>
+                          </ListItemButton>
+                        </Link>
+                      </Collapse>
+                    </List>
+                  </Collapse>
+                </Fragment>
+              ))}
+            </>
+          )}
+          {menu.length === 1 && (
+            <>
+              {menuFiltradoReloj.map((item, index) => (
+                <Fragment key={index}>
+                  <ListItemButton onClick={handleClickAsistencia}>
+                    <ListItemIcon></ListItemIcon>
+                    <ListItemText primary="CONTROL DE ASISTENCIA" />
+                    {openasistencia ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openasistencia} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      <ListItemButton
+                        onClick={handleClickConfiguracion}
+                        sx={{ pl: 3 }}
+                      >
+                        <ListItemIcon>
+                          <SettingsIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="CONFIGURACIÓN" />
+                        {openconfiguracion ? <ExpandLess /> : <ExpandMore />}
+                      </ListItemButton>
+                      <Collapse
+                        in={openconfiguracion}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <Link
+                          to={sayings.get(item.dMenu.coD_MENU)}
+                          style={{ textDecoration: "none", color: "#202020" }}
+                        >
+                          <ListItemButton sx={{ pl: 3 }}>
+                            <ListItemIcon>
+                              {iconsToMenu.get(item.dMenu.coD_MENU)}
+                            </ListItemIcon>
+                            <ListItem>
+                              <ListItemText primary={item.dMenu.deS_MENU} />
+                            </ListItem>
+                          </ListItemButton>
+                        </Link>
+                      </Collapse>
+                    </List>
+                  </Collapse>
+                </Fragment>
+              ))}
+            </>
+          )}
+          {menu.length >= 2 && menuFiltradoMaestros.length > 0 && (
+            <>
+              <Fragment>
+                <ListItemButton onClick={handleClickMaestro}>
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="LEGAJO TRABAJADOR" />
+                  {openmaestro ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={openmaestro} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItemButton
+                      onClick={handleClickGenerales}
+                      sx={{ pl: 3 }}
+                    >
+                      <ListItemIcon>
+                        <EngineeringIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="MAESTROS" />
+                      {opengenerales ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    {menuFiltradoMaestros.map((item, index) => (
+                      <Fragment key={index}>
                         <Collapse
                           in={opengenerales}
                           timeout="auto"
@@ -241,318 +472,184 @@ export default function PersistentDrawerLeft({ children }) {
                         >
                           <ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>
-                              <Cargo />
+                              {iconsToMenu.get(item.dMenu.coD_MENU)}
                             </ListItemIcon>
                             <ListItem>
                               <Link
-                                to={ROUTES.POSITION}
+                                to={sayings.get(item.dMenu.coD_MENU)}
                                 style={{
                                   textDecoration: "none",
                                   color: "#202020",
                                 }}
                               >
-                                <ListItemText primary="Cargo" />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              <SchoolOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={ROUTES.EDUCATIONLEVEL}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary="Nivel Educativo" />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              <Profesion />
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={ROUTES.PROFESSIONS}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary="Profesión" />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              <BrandingWatermarkOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={ROUTES.ENTIDADEXTERNA}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary="Estudios" />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              <BrandingWatermarkOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={ROUTES.ENTIDADEXTERNA}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary="Entidad Externa" />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              <BrandingWatermarkOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={ROUTES.WORKCONDITION}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary="Condición Laboral" />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              <BrandingWatermarkOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={ROUTES.PERSONALACTION}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary="Acción Personal" />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              <BrandingWatermarkOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={ROUTES.JOBCATEGORY}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary="Puesto Laboral" />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              <BrandingWatermarkOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={ROUTES.AFP}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary="AFP" />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              <BrandingWatermarkOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={ROUTES.PERSON}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary="Persona" />
+                                <ListItemText primary={item.dMenu.deS_MENU} />
                               </Link>
                             </ListItem>
                           </ListItemButton>
                         </Collapse>
-                        {/* add */}
-                        <ListItemButton
-                          onClick={handleClickLegajo}
-                          sx={{ pl: 3 }}
-                        >
-                          <ListItemIcon>
-                            <General />
-                          </ListItemIcon>
-                          <ListItemText primary="LEGAJO" />
-                          {openlegajo ? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
+                      </Fragment>
+                    ))}
+                  </List>
+                </Collapse>
+              </Fragment>
+            </>
+          )}
+          {menu.length >= 2 && menuFiltradoLegado.length > 0 && (
+            <>
+              <Fragment>
+                {menuFiltradoMaestros.length > 0 ? (
+                  <></>
+                ) : (
+                  <>
+                    <ListItemButton onClick={handleClickMaestro}>
+                      <ListItemIcon></ListItemIcon>
+                      <ListItemText primary="LEGAJO TRABAJADOR" />
+                      {openmaestro ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                  </>
+                )}
+                <Collapse in={openmaestro} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItemButton onClick={handleClickLegajo} sx={{ pl: 3 }}>
+                      <ListItemIcon>
+                        <ArchiveIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="LEGAJO" />
+                      {openlegajo ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    {menuFiltradoLegado.map((item, index) => (
+                      <Fragment key={index}>
                         <Collapse in={openlegajo} timeout="auto" unmountOnExit>
                           <ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>
-                              <Cargo />
+                              {iconsToMenu.get(item.dMenu.coD_MENU)}
                             </ListItemIcon>
                             <ListItem>
                               <Link
-                                to={ROUTES.EMPLOYEE}
+                                to={sayings.get(item.dMenu.coD_MENU)}
                                 style={{
                                   textDecoration: "none",
                                   color: "#202020",
                                 }}
                               >
-                                <ListItemText primary="Trabajador" />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              <SchoolOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={ROUTES.EDUCATIONLEVEL}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary="Reportes" />
+                                <ListItemText primary={item.dMenu.deS_MENU} />
                               </Link>
                             </ListItem>
                           </ListItemButton>
                         </Collapse>
-                      </List>
-                    </Collapse>
-                  </Fragment>
-                  <Fragment>
-                    <ListItemButton onClick={handleClickAsistencia}>
-                      <ListItemIcon></ListItemIcon>
-                      <ListItemText primary="CONTROL DE ASISTENCIA" />
-                      {openasistencia ? <ExpandLess /> : <ExpandMore />}
+                      </Fragment>
+                    ))}
+                  </List>
+                </Collapse>
+              </Fragment>
+            </>
+          )}
+          {menu.length >= 2 && menuFiltradoAsistencia.length > 0 && (
+            <>
+              <Fragment>
+                <ListItemButton onClick={handleClickAsistencia}>
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="CONTROL DE ASISTENCIA" />
+                  {openasistencia ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={openasistencia} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItemButton
+                      onClick={handleClickAsistenciaMaestro}
+                      sx={{ pl: 3 }}
+                    >
+                      <ListItemIcon>
+                        <EngineeringIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="MAESTROS" />
+                      {openasistenciamaestro ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
-                    <Collapse in={openasistencia} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding>
-                        <ListItemButton
-                          onClick={handleClickAsistenciaMaestro}
-                          sx={{ pl: 3 }}
-                        >
-                          <ListItemIcon>
-                            <InboxIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="MAESTROS" />
-                          {openasistenciamaestro ? (
-                            <ExpandLess />
-                          ) : (
-                            <ExpandMore />
-                          )}
-                        </ListItemButton>
-                        {/* add */}
+                    {menuFiltradoAsistencia.map((item, index) => (
+                      <Fragment key={index}>
                         <Collapse
                           in={openasistenciamaestro}
                           timeout="auto"
                           unmountOnExit
                         >
-                          <Link
-                            to={ROUTES.EMPLOYEE}
-                            style={{ textDecoration: "none", color: "#202020" }}
-                          >
-                            <ListItemButton sx={{ pl: 3 }}>
-                              <ListItemIcon>
-                                <EngineeringIcon />
-                              </ListItemIcon>
-                              <ListItem>
-                                <ListItemText primary="Tipo Papeletas" />
-                              </ListItem>
-                            </ListItemButton>
-                          </Link>
-                          <Link
-                            to={ROUTES.EMPLOYEE}
-                            style={{ textDecoration: "none", color: "#202020" }}
-                          >
-                            <ListItemButton sx={{ pl: 3 }}>
-                              <ListItemIcon>
-                                <EngineeringIcon />
-                              </ListItemIcon>
-                              <ListItem>
-                                <ListItemText primary="Motivo Laboral" />
-                              </ListItem>
-                            </ListItemButton>
-                          </Link>
-                          <Link
-                            to={ROUTES.EMPLOYEE}
-                            style={{ textDecoration: "none", color: "#202020" }}
-                          >
-                            <ListItemButton sx={{ pl: 3 }}>
-                              <ListItemIcon>
-                                <EngineeringIcon />
-                              </ListItemIcon>
-                              <ListItem>
-                                <ListItemText primary="Turno Laboral" />
-                              </ListItem>
-                            </ListItemButton>
-                          </Link>
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                              {iconsToMenu.get(item.dMenu.coD_MENU)}
+                            </ListItemIcon>
+                            <ListItem>
+                              <Link
+                                to={sayings.get(item.dMenu.coD_MENU)}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemText primary={item.dMenu.deS_MENU} />
+                              </Link>
+                            </ListItem>
+                          </ListItemButton>
                         </Collapse>
-                        <ListItemButton
-                          onClick={handleClickConfiguracion}
-                          sx={{ pl: 3 }}
-                        >
-                          <ListItemIcon>
-                            <InboxIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="CONFIGURACIÓN" />
-                          {openconfiguracion ? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
-                        <Collapse
-                          in={openconfiguracion}
-                          timeout="auto"
-                          unmountOnExit
-                        >
-                          <Link
-                            to={ROUTES.EMPLOYEE}
-                            style={{ textDecoration: "none", color: "#202020" }}
-                          >
-                            <ListItemButton sx={{ pl: 3 }}>
-                              <ListItemIcon>
-                                <EngineeringIcon />
-                              </ListItemIcon>
-                              <ListItem>
-                                <ListItemText primary="Reloj" />
-                              </ListItem>
-                            </ListItemButton>
-                          </Link>
-                        </Collapse>
-                      </List>
-                    </Collapse>
-                  </Fragment>
-                </>
-              )}
+                      </Fragment>
+                    ))}
+                    {menuFiltradoReloj.length > 0 ? (
+                      <>
+                        {menuFiltradoReloj.map((item, index) => (
+                          <Fragment key={index}>
+                            <Collapse
+                              in={openasistencia}
+                              timeout="auto"
+                              unmountOnExit
+                            >
+                              <List component="div" disablePadding>
+                                <ListItemButton
+                                  onClick={handleClickConfiguracion}
+                                  sx={{ pl: 3 }}
+                                >
+                                  <ListItemIcon>
+                                    <SettingsIcon />
+                                  </ListItemIcon>
+                                  <ListItemText primary="CONFIGURACIÓN" />
+                                  {openconfiguracion ? (
+                                    <ExpandLess />
+                                  ) : (
+                                    <ExpandMore />
+                                  )}
+                                </ListItemButton>
+                                <Collapse
+                                  in={openconfiguracion}
+                                  timeout="auto"
+                                  unmountOnExit
+                                >
+                                  <Link
+                                    to={sayings.get(item.dMenu.coD_MENU)}
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "#202020",
+                                    }}
+                                  >
+                                    <ListItemButton sx={{ pl: 3 }}>
+                                      <ListItemIcon>
+                                        {iconsToMenu.get(item.dMenu.coD_MENU)}
+                                      </ListItemIcon>
+                                      <ListItem>
+                                        <ListItemText
+                                          primary={item.dMenu.deS_MENU}
+                                        />
+                                      </ListItem>
+                                    </ListItemButton>
+                                  </Link>
+                                </Collapse>
+                              </List>
+                            </Collapse>
+                          </Fragment>
+                        ))}
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </List>
+                </Collapse>
+              </Fragment>
             </>
-          ) : (
-            <h1>cARGANDO</h1>
           )}
         </List>
         <Divider />

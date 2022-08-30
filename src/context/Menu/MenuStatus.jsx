@@ -9,7 +9,6 @@ const MenuState = ({ children }) => {
     try {
       const res = await axios.get(`${URL}${id}`);
       setMenu(res.data.listado);
-      console.log(res.data.listado);
     } catch (error) {
       console.log(error);
     }

@@ -32,29 +32,29 @@ const RegisterSteps = () => {
     coD_PERS: 0,
     inD_ESTADO: "A",
     inD_DOC: "1",
-    nuM_DOC: "",
-    nuM_RUC: "",
-    deS_APELLP: "",
-    deS_APELLM: "",
-    noM_PERS: "",
-    noM_ABR: "",
-    inD_SEXO: "",
-    feC_NACIM: "",
-    coD_NACDPT: "",
-    coD_NACPRV: "",
-    coD_NACDIS: "",
-    deS_DIRACT: "",
-    deS_DIRALTERNA: "",
-    coD_DIRDPT: "",
-    coD_DIRPRV: "",
-    coD_DIRDIS: "",
-    coD_ESTCIVIL: "",
-    coD_GRDINSTRUC: "",
-    coD_PROFES: "",
-    nuM_TLF: "",
-    nuM_CELULAR: "",
-    txT_EMAIL: "",
-    txT_OBSERV: "",
+    nuM_DOC: null,
+    nuM_RUC: null,
+    deS_APELLP: null,
+    deS_APELLM: null,
+    noM_PERS: null,
+    noM_ABR: null,
+    inD_SEXO: null,
+    feC_NACIM: null,
+    coD_NACDPT: null,
+    coD_NACPRV: null,
+    coD_NACDIS: null,
+    deS_DIRACT: null,
+    deS_DIRALTERNA: null,
+    coD_DIRDPT: null,
+    coD_DIRPRV: null,
+    coD_DIRDIS: null,
+    coD_ESTCIVIL: null,
+    coD_GRDINSTRUC: null,
+    coD_PROFES: null,
+    nuM_TLF: null,
+    nuM_CELULAR: null,
+    txT_EMAIL: null,
+    txT_OBSERV: null,
   });
 
   const defaultErrors = {
@@ -295,7 +295,7 @@ const RegisterSteps = () => {
   const savePerson = async () => {
     const validate = validateFields();
     if (!validate) return;
-    if (fields.txT_EMAIL != "") {
+    if (fields.txT_EMAIL != null) {
       if (!isValidEmail(fields.txT_EMAIL)) {
         return await AlertError("Corre electronico no valido")
       }
@@ -328,6 +328,9 @@ const RegisterSteps = () => {
           <TextField
             name="inD_ESTADO"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             select
             label="Estado *"
             onChange={handleInputChange}
@@ -348,6 +351,9 @@ const RegisterSteps = () => {
           <TextField
             name="inD_DOC"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             select
             size="small"
             label="Tipo Documento *"
@@ -367,6 +373,9 @@ const RegisterSteps = () => {
           <TextField
             name="nuM_DOC"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             label="Número de doc. *"
             type="text"
             size="small"
@@ -379,6 +388,9 @@ const RegisterSteps = () => {
           <TextField
             name="nuM_RUC"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             label="N° RUC"
             type="text"
             size="small"
@@ -392,6 +404,9 @@ const RegisterSteps = () => {
           <TextField
             name="deS_APELLP"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             label="Apellido Paterno *"
             type="text"
             size="small"
@@ -404,6 +419,9 @@ const RegisterSteps = () => {
           <TextField
             name="deS_APELLM"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             label="Apellido Materno *"
             type="text"
             size="small"
@@ -416,6 +434,9 @@ const RegisterSteps = () => {
           <TextField
             name="noM_PERS"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             label="Nombres *"
             type="text"
             size="small"
@@ -429,6 +450,9 @@ const RegisterSteps = () => {
           <TextField
             name="inD_SEXO"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             select
             label="Sexo *"
             size="small"
@@ -452,7 +476,10 @@ const RegisterSteps = () => {
               inputFormat="dd-MM-yyyy"
               value={moment(fields.feC_NACIM).format()}
               onChange={(e) => handleInputChangeDate(e, "feC_NACIM")}
-              renderInput={(params) => <TextField size="small" fullWidth {...params} />}
+              renderInput={(params) => <TextField size="small" fullWidth
+                InputLabelProps={{
+                  shrink: true
+                }} {...params} />}
             />
           </LocalizationProvider>
         </Grid>
@@ -461,6 +488,9 @@ const RegisterSteps = () => {
           <TextField
             name="coD_NACDPT"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             select
             label="Departamento"
             size="small"
@@ -480,6 +510,9 @@ const RegisterSteps = () => {
         <Grid item md={2} xs={12}>
           <TextField
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             name="coD_NACPRV"
             select
             label="Provincia"
@@ -500,6 +533,9 @@ const RegisterSteps = () => {
         <Grid item md={2} xs={12}>
           <TextField
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             name="coD_NACDIS"
             select
             label="Distrito"
@@ -526,6 +562,9 @@ const RegisterSteps = () => {
         <Grid item md={4} sm={12} xs={12}>
           <TextField
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             label="Dirección Principal"
             type="text"
             name="deS_DIRACT"
@@ -538,6 +577,9 @@ const RegisterSteps = () => {
         <Grid item md={4} sm={12} xs={12}>
           <TextField
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             label="Dirección Alterna"
             type="text"
             name="deS_DIRALTERNA"
@@ -552,6 +594,9 @@ const RegisterSteps = () => {
           <TextField
             name="coD_DIRDPT"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             select
             label="Departamento"
             size="small"
@@ -571,6 +616,9 @@ const RegisterSteps = () => {
         <Grid item md={2} xs={12}>
           <TextField
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             name="coD_DIRPRV"
             select
             label="Provincia"
@@ -591,6 +639,9 @@ const RegisterSteps = () => {
         <Grid item md={2} xs={12}>
           <TextField
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             name="coD_DIRDIS"
             select
             label="Distrito"
@@ -618,6 +669,9 @@ const RegisterSteps = () => {
           <TextField
             name="coD_ESTCIVIL"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             select
             label="Estado Civil *"
             size="small"
@@ -637,6 +691,9 @@ const RegisterSteps = () => {
         <Grid item md={4} xs={12}>
           <TextField
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             name="coD_GRDINSTRUC"
             select
             label="Nivel educativo"
@@ -657,6 +714,9 @@ const RegisterSteps = () => {
         <Grid item md={4} xs={12}>
           <TextField
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             name="coD_PROFES"
             select
             label="Profesión"
@@ -678,6 +738,9 @@ const RegisterSteps = () => {
         <Grid item md={2} sm={12} xs={12}>
           <TextField
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             label="Teléfono Fijo"
             type="text"
             name="nuM_TLF"
@@ -690,6 +753,9 @@ const RegisterSteps = () => {
         <Grid item md={2} sm={12} xs={12}>
           <TextField
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             label="Celular"
             type="text"
             name="nuM_CELULAR"
@@ -703,6 +769,9 @@ const RegisterSteps = () => {
         <Grid item md={3} sm={12} xs={12}>
           <TextField
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             label="Email"
             type="email"
             name="txT_EMAIL"
@@ -718,6 +787,9 @@ const RegisterSteps = () => {
             label="Observaciones"
             multiline
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             rows={4}
             name="txT_OBSERV"
             size="small"

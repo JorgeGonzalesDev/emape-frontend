@@ -3,15 +3,13 @@ import {
   deleteLevelEducate,
   AddOrUpdateLevelEducate,
 } from "../../service/nivelEducate";
-import ResponsiveAppBar from "../../layouts/Header";
 import MUIModal from "../../components/Modal";
 import DataGridDemo from "../../components/Table";
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 import SchoolIcon from "@mui/icons-material/School";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, Grid, TextField } from "@mui/material";
+import { Button, Grid, TextField, Stack } from "@mui/material";
 import {
   GridActionsCellItem,
   GridToolbarContainer,
@@ -65,21 +63,6 @@ const LevelEducate = () => {
 
   const columns = [
     {
-      field: "coD_GRDINSTRUC",
-      headerName: "Código",
-      width: 200,
-    },
-    {
-      field: "deS_GRDINSTRUC",
-      headerName: "Descripción",
-      width: 500,
-    },
-    {
-      field: "abreviadO_GRADO",
-      headerName: "Abreviado",
-      width: 400,
-    },
-    {
       field: "Acciones",
       type: "actions",
       getActions: (cellValues) => [
@@ -98,6 +81,21 @@ const LevelEducate = () => {
           }}
         />,
       ],
+    },
+    {
+      field: "coD_GRDINSTRUC",
+      headerName: "Código",
+      width: 200,
+    },
+    {
+      field: "deS_GRDINSTRUC",
+      headerName: "Descripción",
+      width: 500,
+    },
+    {
+      field: "abreviadO_GRADO",
+      headerName: "Abreviado",
+      width: 400,
     },
   ];
 
@@ -130,15 +128,21 @@ const LevelEducate = () => {
 
   return (
     <>
-      <div style={{ padding: "50px", display: "flex", height: "100%" }}>
-        <div style={{ flexGrow: 1 }}>
-          <DataGridDemo
-            id={(row) => row.coD_GRDINSTRUC}
-            rows={data}
-            columns={columns}
-            toolbar={CustomToolbar}
-          />
-        </div>
+      <div style={{ flexGrow: 1 }}>
+        <Stack
+          direction="row"
+          spacing={1} xs={{ mb: 1, display: 'flex' }}
+        >
+          <div>
+            <h1>Nivel Educativo</h1>
+          </div>
+        </Stack>
+        <DataGridDemo
+          id={(row) => row.coD_GRDINSTRUC}
+          rows={data}
+          columns={columns}
+          toolbar={CustomToolbar}
+        />
       </div>
       <MUIModal ref={levelEducateChild}>
         <Grid container spacing={2} justifyContent="center">

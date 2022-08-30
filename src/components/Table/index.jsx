@@ -2,8 +2,6 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
 
 const StyledGridOverlay = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -82,7 +80,9 @@ export default function DataGridDemo(
         toolbar = GridToolbar,
         rows,
         columns,
-        id
+        id,
+        numberSize = 25,
+        height = '68vh'
     }
 ) {
 
@@ -244,7 +244,7 @@ export default function DataGridDemo(
     };
 
     return (
-        <Box sx={{ height: '68vh', width: '100%' }}>
+        <Box sx={{ height: height, width: '100%' }}>
             <DataGrid
                 components={{
                     NoRowsOverlay: CustomNoRowsOverlay,
@@ -257,9 +257,9 @@ export default function DataGridDemo(
                 getRowId={id}
                 initialState={{
                     pagination: {
-                      pageSize: 25,
+                        pageSize: numberSize,
                     },
-                  }}
+                }}
                 localeText={tableES}
             />
         </Box>
