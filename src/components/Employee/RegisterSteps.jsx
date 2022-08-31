@@ -5,7 +5,7 @@ import { listAFPS } from "../../service/afp";
 import {
     getBanks, getTypeWorker, getRSalud, getRPension,
     getPuestoLaboral, getUnidad, getCondicion,
-    getRLaboral, getOcupacionL, getCategoriaO, getTipoPago, getTurno
+    getRLaboral, getOcupacionL, getCategoriaO
 } from "../../service/common";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -30,7 +30,7 @@ const RegisterSteps = ({
         feC_CUSPP: null,
         feC_INGRESO: null,
         coD_CAR: null,
-        feC_CESE: new Date(),
+        feC_CESE: null,
         coD_PUESTO: null,
         coD_CONDICION: null,
         coD_TIPOTRABAJ: null,
@@ -52,10 +52,10 @@ const RegisterSteps = ({
         coD_REGPENSION: null,
         coD_OCUPLABORAL: null,
         coD_CATOCUPACION: null,
-        inD_DISCAPACIDAD: null,
-        inD_SINDICALIZADO: null,
-        inD_SITESPECIAL: null,
-        inD_DOBLETRIBUTO: null,
+        inD_DISCAPACIDAD: "0",
+        inD_SINDICALIZADO: "0",
+        inD_SITESPECIAL: "0",
+        inD_DOBLETRIBUTO: "0",
         inD_TIPOPAGO: null,
         inD_PLAME: "S",
         obS_TRABAJADOR: null,
@@ -151,11 +151,29 @@ const RegisterSteps = ({
         loadData();
     }, [dataWorker]);
 
+    const isValidNumber = (value) => {
+        return /^[0-9]+$/.test(value);
+    }
+
     const handleInputChange = event => {
 
         const { name, type, checked, value } = event.target;
-
         const val = type === 'checkbox' ? checked : value;
+
+        if (name === "nuM_CCI" || name === "nuM_PLAZA" || name === "nrO_CONTRATO" || name === "coD_CUSPP" || name === "nuM_CTACTS" || name === "nuM_CTASUELDO") {
+            if (value.length === 0) {
+                setFields({
+                    ...fields,
+                    [name]: value,
+                });
+            } else if (isValidNumber(value)) {
+                setFields({
+                    ...fields,
+                    [name]: value,
+                });
+            }
+            return
+        }
 
         setFields({
             ...fields,
@@ -247,8 +265,6 @@ const RegisterSteps = ({
 
     }
 
-    const color = "yellow";
-
     return (
         <>
             <Grid container spacing={1}>
@@ -290,14 +306,13 @@ const RegisterSteps = ({
                             shrink: true
                         }}
                         size="small"
-                        error={inputError.coD_UORG}
                         select
                         label="Area Laboral"
                         type="text"
                         onChange={handleInputChange}
                         value={fields.coD_UORG}
                     >
-                        <MenuItem value="0" disabled>
+                        <MenuItem value={null}>
                             Sin especificar
                         </MenuItem>
                         {unidad &&
@@ -332,13 +347,7 @@ const RegisterSteps = ({
                         <DesktopDatePicker
                             label="Fecha de cese"
                             inputFormat="dd-MM-yyyy"
-                            value={moment(fields.feC_CESE).format()}
-                            errorStyle={{
-                                backgroundColor: 'white',
-                                svg: { color },
-                                input: { color },
-                                label: { color }
-                            }}
+                            value={fields.feC_CESE}
                             onChange={e =>
                                 handleInputChangeDate(e, 'feC_CESE')}
                             renderInput={(params) => <TextField fullWidth
@@ -366,7 +375,7 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_CAR}
                     >
-                        <MenuItem value="0" disabled>
+                        <MenuItem value={null}>
                             Sin especificar
                         </MenuItem>
                         {positions &&
@@ -393,7 +402,7 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_PUESTO}
                     >
-                        <MenuItem value="0" disabled>
+                        <MenuItem value={null}>
                             Sin especificar
                         </MenuItem>
                         {puestoL &&
@@ -421,9 +430,6 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_CONDICION}
                     >
-                        <MenuItem value="0" disabled>
-                            Sin especificar
-                        </MenuItem>
                         {condicion &&
                             condicion.map(condicion => (
                                 <MenuItem value={condicion.coD_CONDICION}>
@@ -448,9 +454,6 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_TIPOTRABAJ}
                     >
-                        <MenuItem value="0" disabled >
-                            Sin especificar
-                        </MenuItem>
                         {typeWorker &&
                             typeWorker.map(typeWorker => (
                                 <MenuItem value={typeWorker.coD_TIPOTRABAJ}>
@@ -503,9 +506,6 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_AFP}
                     >
-                        <MenuItem value="0" disabled >
-                            Sin especificar
-                        </MenuItem>
                         {afps &&
                             afps.map(afp => (
                                 <MenuItem value={afp.coD_AFP}>
@@ -519,7 +519,7 @@ const RegisterSteps = ({
                         <DesktopDatePicker
                             label="Afiliado AFP"
                             inputFormat="dd-MM-yyyy"
-                            value={moment(fields.feC_CUSPP).format()}
+                            value={fields.feC_CUSPP}
                             onChange={e =>
                                 handleInputChangeDate(e, 'feC_CUSPP')}
                             renderInput={(params) => <TextField fullWidth
@@ -564,7 +564,7 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_BCOSUELDO}
                     >
-                        <MenuItem value="0" disabled>
+                        <MenuItem value={null}>
                             Sin especificar
                         </MenuItem>
                         {banks &&
@@ -626,7 +626,7 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_BCOCTS}
                     >
-                        <MenuItem value="0" disabled>
+                        <MenuItem value={null}>
                             Sin especificar
                         </MenuItem>
                         {banks &&
@@ -688,9 +688,6 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.inD_REGLABORAL}
                     >
-                        <MenuItem value="0" disabled>
-                            Sin especificar
-                        </MenuItem>
                         <MenuItem value="1">
                             276 (Publico)
                         </MenuItem>
@@ -718,9 +715,6 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.inD_REGPENSION}
                     >
-                        <MenuItem value="0" disabled>
-                            Sin especificar
-                        </MenuItem>
                         <MenuItem value="1">
                             ONP
                         </MenuItem>
@@ -766,9 +760,6 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_REGLABORAL}
                     >
-                        <MenuItem value="0" disabled >
-                            Sin especificar
-                        </MenuItem>
                         {rLaboral &&
                             rLaboral.map(rLaboral => (
                                 <MenuItem value={rLaboral.coD_REGLABORAL}>
@@ -793,9 +784,6 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_REGPENSION}
                     >
-                        <MenuItem value="0" disabled >
-                            Sin especificar
-                        </MenuItem>
                         {rPension &&
                             rPension.map(rPension => (
                                 <MenuItem value={rPension.coD_REGPENSION}>
@@ -820,9 +808,6 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_SEGSALUD}
                     >
-                        <MenuItem value="0" disabled>
-                            Sin especificar
-                        </MenuItem>
                         {rSalud &&
                             rSalud.map(rSalud => (
                                 <MenuItem value={rSalud.coD_SEGSALUD}>
@@ -848,9 +833,6 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_OCUPLABORAL}
                     >
-                        <MenuItem value="0" disabled>
-                            Sin especificar
-                        </MenuItem>
                         {ocupacionLaboral &&
                             ocupacionLaboral.map(ocupacionLaboral => (
                                 <MenuItem value={ocupacionLaboral.coD_OCUPLABORAL}>
@@ -903,9 +885,6 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.coD_CATOCUPACION}
                     >
-                        <MenuItem value="0" disabled>
-                            Sin especificar
-                        </MenuItem>
                         {categoriaOcupacional &&
                             categoriaOcupacional.map(categoriaOcupacional => (
                                 <MenuItem value={categoriaOcupacional.coD_CATOCUPACION}>
@@ -1003,7 +982,7 @@ const RegisterSteps = ({
                         onChange={handleInputChange}
                         value={fields.inD_TIPOPAGO}
                     >
-                        <MenuItem value="0" disabled>
+                        <MenuItem value={null}>
                             Sin especificar
                         </MenuItem>
                         <MenuItem value="1">
@@ -1094,7 +1073,7 @@ const RegisterSteps = ({
                         <DesktopDatePicker
                             label="Inicio de contrato"
                             inputFormat="dd-MM-yyyy"
-                            value={moment(fields.feC_INI_CONTRATO).format()}
+                            value={fields.feC_INI_CONTRATO}
                             onChange={e =>
                                 handleInputChangeDate(e, 'feC_INI_CONTRATO')}
                             renderInput={(params) => <TextField fullWidth
@@ -1112,7 +1091,7 @@ const RegisterSteps = ({
                         <DesktopDatePicker
                             label="Fin de contrato"
                             inputFormat="dd-MM-yyyy"
-                            value={moment(fields.feC_FIN_CONTRATO).format()}
+                            value={fields.feC_FIN_CONTRATO}
                             onChange={e =>
                                 handleInputChangeDate(e, 'feC_FIN_CONTRATO')}
                             renderInput={(params) => <TextField fullWidth

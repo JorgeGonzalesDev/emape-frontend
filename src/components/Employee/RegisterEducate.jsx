@@ -4,8 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import moment from 'moment';
 import { AlertDelete } from "../Alerts";
 import MUIModal from "../../components/Modal";
-import { getCargo } from "../../service/position";
-import { getCondicion, getEntidadExt } from "../../service/common";
+import { getEntidadExt, getTipoEstudio } from "../../service/common";
 import { getLevelEducate } from "../../service/nivelEducate";
 import {
     GridActionsCellItem,
@@ -23,7 +22,6 @@ import { AlertSuccess, AlertError } from "../Alerts";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { AddOrUpdateTrabajadorExperiencia, getTrabajadorExperiencia, listTrabajadorExperiencia, deleteTrabajadorExperiencia } from "../../service/employee/laborexperience";
 
 const RegisterEducate = (
     { id }
@@ -50,6 +48,7 @@ const RegisterEducate = (
 
     const [data, setData] = useState([]);
     const [entidadExt, setEntidadExt] = useState([]);
+    const [tipoEstudios, setTipoEstudios] = useState([]);
 
     const loadData = async () => {
         const response = await listTrabajadorEducacion(id);
@@ -58,6 +57,12 @@ const RegisterEducate = (
         } else {
             setData(response.listado);
         }
+        const responseEntidadExt = await getEntidadExt();
+        setEntidadExt(responseEntidadExt.listado);
+        const responseLevelEducate = await getLevelEducate();
+        setLevelEducate(responseLevelEducate.listado);
+        const responseTipoEstudio = await getTipoEstudio();
+        setTipoEstudios(responseTipoEstudio.listado);
 
     };
 
@@ -74,7 +79,7 @@ const RegisterEducate = (
     const edit = async (event, idT) => {
         const response = await getTrabajadorEducacion(idT);
         setFields({
-            coD_TRAACC: idT,
+            coD_TRAEDU: idT,
             coD_TRABAJADOR: id,
             feC_TITULO: response.listado[0].feC_TITULO,
             nuM_COLEGIATURA: response.listado[0].nuM_COLEGIATURA,
@@ -94,10 +99,6 @@ const RegisterEducate = (
             coD_USUREG: 269
         })
         levelEducateChild.current.handleOpen();
-        const responseEntidadExt = await getEntidadExt();
-        setEntidadExt(responseEntidadExt.listado);
-        const responseLevelEducate = await getLevelEducate();
-        setLevelEducate(responseLevelEducate.listado);
     }
 
     const handleFields = async () => {
@@ -105,7 +106,9 @@ const RegisterEducate = (
         const response = await AddOrUpdateTrabajadorEducacion(fields)
 
         if (response.code === 0) {
-
+            await loadData();
+            levelEducateChild.current.handleClose();
+            await AlertSuccess(`${response.message}`)
             setFields({
                 coD_TRAEDU: 0,
                 coD_TRABAJADOR: id,
@@ -124,10 +127,6 @@ const RegisterEducate = (
                 feC_USUREG: "2022-08-30T10:16:50.231Z",
                 coD_USUREG: 269
             })
-            await loadData();
-            levelEducateChild.current.handleClose();
-            await AlertSuccess(`${response.message}`)
-
         } else {
             levelEducateChild.current.handleClose();
             return await AlertError(`${response.message}`)
@@ -225,10 +224,6 @@ const RegisterEducate = (
             coD_USUREG: 269
         })
         levelEducateChild.current.handleOpen();
-        const responseEntidadExt = await getEntidadExt();
-        setEntidadExt(responseEntidadExt.listado);
-        const responseLevelEducate = await getLevelEducate();
-        setLevelEducate(responseLevelEducate.listado);
     };
 
     const handleInputChange = event => {
@@ -283,9 +278,12 @@ const RegisterEducate = (
                             onChange={handleInputChange}
                             value={fields.coD_ESTUDIO}
                         >
-                            <MenuItem value="1">
-                                Sin especificar
-                            </MenuItem>
+                            {tipoEstudios &&
+                                tipoEstudios.map((tipoEstudios) => (
+                                    <MenuItem value={tipoEstudios.coD_ESTUDIO}>
+                                        {tipoEstudios.noM_ESTUDIO}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
                     <Grid item md={12} />
@@ -318,7 +316,7 @@ const RegisterEducate = (
                             <DesktopDatePicker
                                 label="Fecha Inico"
                                 inputFormat="dd-MM-yyyy"
-                                value={moment(fields.feC_INICIO).format()}
+                                value={fields.feC_INICIO}
                                 onChange={e =>
                                     handleInputChangeDate(e, 'feC_INICIO')}
                                 renderInput={(params) => <TextField fullWidth
@@ -335,7 +333,7 @@ const RegisterEducate = (
                             <DesktopDatePicker
                                 label="Fecha Termino"
                                 inputFormat="dd-MM-yyyy"
-                                value={moment(fields.feC_TERMINO).format()}
+                                value={fields.feC_TERMINO}
                                 onChange={e =>
                                     handleInputChangeDate(e, 'feC_TERMINO')}
                                 renderInput={(params) => <TextField fullWidth
@@ -410,7 +408,7 @@ const RegisterEducate = (
                             <DesktopDatePicker
                                 label="Fecha Termino"
                                 inputFormat="dd-MM-yyyy"
-                                value={moment(fields.feC_TITULO).format()}
+                                value={fields.feC_TITULO}
                                 onChange={e =>
                                     handleInputChangeDate(e, 'feC_TITULO')}
                                 renderInput={(params) => <TextField fullWidth

@@ -51,6 +51,14 @@ const RegisterExp = (
         } else {
             setData(response.listado);
         }
+        const responsePositions = await getCargo();
+        setPositions(responsePositions.listado);
+        const responseCondicion = await getCondicion();
+        setCondicion(responseCondicion.listado);
+        const responseUnidad = await getUnidad();
+        setUnidad(responseUnidad.listado);
+        const responseEntidadExt = await getEntidadExt();
+        setEntidadExt(responseEntidadExt.listado);
     };
 
     const handleInputChange = event => {
@@ -89,8 +97,10 @@ const RegisterExp = (
 
         fields.reF_DOCCAR = `${fields.reF_DOCCAR}`
         const response = await AddOrUpdateTrabajadorExperiencia(fields)
-
         if (response.code === 0) {
+            await loadData();
+            levelEducateChild.current.handleClose();
+            await AlertSuccess(`${response.message}`)
             setFields({
                 coD_TRAEXP: 0,
                 coD_TRABAJADOR: id,
@@ -105,10 +115,6 @@ const RegisterExp = (
                 coD_CAR: null,
                 deS_FUNCION: null,
             })
-            await loadData();
-            levelEducateChild.current.handleClose();
-            await AlertSuccess(`${response.message}`)
-
         } else {
             levelEducateChild.current.handleClose();
             return await AlertError(`${response.message}`)
@@ -137,18 +143,9 @@ const RegisterExp = (
             deS_FUNCION: null,
         })
         levelEducateChild.current.handleOpen();
-        const responsePositions = await getCargo();
-        setPositions(responsePositions.listado);
-        const responseCondicion = await getCondicion();
-        setCondicion(responseCondicion.listado);
-        const responseUnidad = await getUnidad();
-        setUnidad(responseUnidad.listado);
-        const responseEntidadExt = await getEntidadExt();
-        setEntidadExt(responseEntidadExt.listado);
     };
 
     useEffect(() => {
-
         loadData();
     }, []);
 
@@ -157,7 +154,7 @@ const RegisterExp = (
         setFields({
             coD_TRAEXP: idT,
             coD_TRABAJADOR: id,
-            feC_INICIO:  response.listado[0].feC_INICIO,
+            feC_INICIO: response.listado[0].feC_INICIO,
             feC_TERMINO: response.listado[0].feC_TERMINO,
             noM_INSTITUCION: response.listado[0].noM_INSTITUCION,
             coD_ENTIDAD: response.listado[0].coD_ENTIDAD,
@@ -168,16 +165,7 @@ const RegisterExp = (
             coD_CAR: response.listado[0].coD_CAR,
             deS_FUNCION: response.listado[0].deS_FUNCION,
         })
-
         levelEducateChild.current.handleOpen();
-        const responsePositions = await getCargo();
-        setPositions(responsePositions.listado);
-        const responseCondicion = await getCondicion();
-        setCondicion(responseCondicion.listado);
-        const responseUnidad = await getUnidad();
-        setUnidad(responseUnidad.listado);
-        const responseEntidadExt = await getEntidadExt();
-        setEntidadExt(responseEntidadExt.listado);
     }
 
     const columns = [
@@ -286,7 +274,7 @@ const RegisterExp = (
                             <DesktopDatePicker
                                 label="Fecha Inico"
                                 inputFormat="dd-MM-yyyy"
-                                value={moment(fields.feC_INICIO).format()}
+                                value={fields.feC_INICIO}
                                 onChange={e =>
                                     handleInputChangeDate(e, 'feC_INICIO')}
                                 renderInput={(params) => <TextField fullWidth
@@ -303,7 +291,7 @@ const RegisterExp = (
                             <DesktopDatePicker
                                 label="Fecha Termino"
                                 inputFormat="dd-MM-yyyy"
-                                value={moment(fields.feC_TERMINO).format()}
+                                value={fields.feC_TERMINO}
                                 onChange={e =>
                                     handleInputChangeDate(e, 'feC_TERMINO')}
                                 renderInput={(params) => <TextField fullWidth

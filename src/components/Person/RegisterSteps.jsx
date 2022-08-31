@@ -379,6 +379,7 @@ const RegisterSteps = () => {
             label="Número de doc. *"
             type="text"
             size="small"
+            inputProps={{ maxLength: 12 }}
             error={inputError.nuM_DOC}
             onChange={handleInputChange}
             value={fields.nuM_DOC}
@@ -394,6 +395,7 @@ const RegisterSteps = () => {
             label="N° RUC"
             type="text"
             size="small"
+            inputProps={{ maxLength: 11 }}
             error={inputError.nuM_RUC}
             onChange={handleInputChange}
             value={fields.nuM_RUC}
@@ -410,6 +412,7 @@ const RegisterSteps = () => {
             label="Apellido Paterno *"
             type="text"
             size="small"
+            inputProps={{ maxLength: 30 }}
             error={inputError.deS_APELLP}
             onChange={handleInputChange}
             value={fields.deS_APELLP}
@@ -422,6 +425,7 @@ const RegisterSteps = () => {
             InputLabelProps={{
               shrink: true
             }}
+            inputProps={{ maxLength: 30 }}
             label="Apellido Materno *"
             type="text"
             size="small"
@@ -437,6 +441,7 @@ const RegisterSteps = () => {
             InputLabelProps={{
               shrink: true
             }}
+            inputProps={{ maxLength: 30 }}
             label="Nombres *"
             type="text"
             size="small"
@@ -460,7 +465,6 @@ const RegisterSteps = () => {
             onChange={handleInputChange}
             value={fields.inD_SEXO}
           >
-            <MenuItem value="" disabled></MenuItem>
             <MenuItem value="M">Masculino</MenuItem>
             <MenuItem value="F">Femenino</MenuItem>
           </TextField>
@@ -498,7 +502,9 @@ const RegisterSteps = () => {
             value={fields.coD_NACDPT}
             error={inputError.coD_NACDPT}
           >
-            <MenuItem value="" disabled></MenuItem>
+            <MenuItem value={null}>
+              Sin especificar
+            </MenuItem>
             {departments &&
               departments.map((department) => (
                 <MenuItem value={department.coD_DPTO}>
@@ -521,7 +527,9 @@ const RegisterSteps = () => {
             value={fields.coD_NACPRV}
             error={inputError.coD_NACPRV}
           >
-            <MenuItem value="" disabled></MenuItem>
+            <MenuItem value={null}>
+              Sin especificar
+            </MenuItem>
             {provinces &&
               provinces.map((provinces) => (
                 <MenuItem value={provinces.coD_PROVI}>
@@ -544,7 +552,9 @@ const RegisterSteps = () => {
             value={fields.coD_NACDIS}
             error={inputError.coD_NACDIS}
           >
-            <MenuItem value="" disabled></MenuItem>
+            <MenuItem value={null}>
+              Sin especificar
+            </MenuItem>
             {districts &&
               districts.map((districts) => (
                 <MenuItem value={districts.coD_DISTRI}>
@@ -572,6 +582,7 @@ const RegisterSteps = () => {
             onChange={handleInputChange}
             value={fields.deS_DIRACT}
             error={inputError.deS_DIRACT}
+            inputProps={{ maxLength: 90 }}
           />
         </Grid>
         <Grid item md={4} sm={12} xs={12}>
@@ -586,6 +597,7 @@ const RegisterSteps = () => {
             size="small"
             onChange={handleInputChange}
             value={fields.deS_DIRALTERNA}
+            inputProps={{ maxLength: 90 }}
             error={inputError.deS_DIRALTERNA}
           />
         </Grid>
@@ -604,7 +616,9 @@ const RegisterSteps = () => {
             value={fields.coD_DIRDPT}
             error={inputError.coD_DIRDPT}
           >
-            <MenuItem value="0" disabled></MenuItem>
+            <MenuItem value={null}>
+              Sin especificar
+            </MenuItem>
             {departmentsDir &&
               departmentsDir.map((department) => (
                 <MenuItem value={department.coD_DPTO}>
@@ -627,7 +641,10 @@ const RegisterSteps = () => {
             value={fields.coD_DIRPRV}
             error={inputError.coD_DIRPRV}
           >
-            <MenuItem value="0" disabled></MenuItem>
+
+            <MenuItem value={null}>
+              Sin especificar
+            </MenuItem>
             {provincesDir &&
               provincesDir.map((provinces) => (
                 <MenuItem value={provinces.coD_PROVI}>
@@ -650,7 +667,10 @@ const RegisterSteps = () => {
             value={fields.coD_DIRDIS}
             error={inputError.coD_DIRDIS}
           >
-            <MenuItem value="0" disabled></MenuItem>
+
+            <MenuItem value={null}>
+              Sin especificar
+            </MenuItem>
             {districtsDir &&
               districtsDir.map((districts) => (
                 <MenuItem value={districts.coD_DISTRI}>
@@ -679,7 +699,6 @@ const RegisterSteps = () => {
             value={fields.coD_ESTCIVIL}
             error={inputError.coD_ESTCIVIL}
           >
-            <MenuItem value="" disabled></MenuItem>
             {stateCivil &&
               stateCivil.map((stateCivil) => (
                 <MenuItem value={stateCivil.coD_ESTCIVIL}>
@@ -702,7 +721,9 @@ const RegisterSteps = () => {
             value={fields.coD_GRDINSTRUC}
             error={inputError.coD_GRDINSTRUC}
           >
-            <MenuItem value={0} disabled></MenuItem>
+            <MenuItem value={null}>
+              Sin especificar
+            </MenuItem>
             {levelEducate &&
               levelEducate.map((levelEducate) => (
                 <MenuItem value={levelEducate.coD_GRDINSTRUC}>
@@ -725,7 +746,9 @@ const RegisterSteps = () => {
             value={fields.coD_PROFES}
             error={inputError.coD_PROFES}
           >
-            <MenuItem value={0} disabled></MenuItem>
+            <MenuItem value={null}>
+              Sin especificar
+            </MenuItem>
             {professions &&
               professions.map((profession) => (
                 <MenuItem value={profession.coD_PROFES}>
@@ -745,6 +768,7 @@ const RegisterSteps = () => {
             type="text"
             name="nuM_TLF"
             size="small"
+            inputProps={{ maxLength: 20 }}
             onChange={handleInputChange}
             value={fields.nuM_TLF}
             error={inputError.nuM_TLF}
@@ -776,6 +800,7 @@ const RegisterSteps = () => {
             type="email"
             name="txT_EMAIL"
             size="small"
+            inputProps={{ maxLength: 100 }}
             onChange={handleInputChange}
             value={fields.txT_EMAIL}
             error={inputError.txT_EMAIL}
@@ -787,6 +812,7 @@ const RegisterSteps = () => {
             label="Observaciones"
             multiline
             fullWidth
+            inputProps={{ maxLength: 190 }}
             InputLabelProps={{
               shrink: true
             }}

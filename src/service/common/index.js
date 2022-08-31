@@ -12,6 +12,46 @@ export const getStateCivil = async () => {
   }
 };
 
+export const getTipoAcciones = async () => {
+  try {
+    const response = await fetch(`${URL}/TipoAcciones/Get`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getTipoEstudio = async () => {
+  try {
+    const response = await fetch(`${URL}/TipoEstudio/Get`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getDocumento = async () => {
+  try {
+    const response = await fetch(`${URL}/Documento/Get`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getDocumentoByID = async (id) => {
+  try {
+    const response = await fetch(`${URL}/Documento/Get/${id}`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const getDepartments = async () => {
   try{
     const response = await fetch(`${URL}/Departamento/Get`)

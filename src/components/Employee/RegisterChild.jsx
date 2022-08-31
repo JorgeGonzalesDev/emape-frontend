@@ -2,12 +2,12 @@ import { Grid, TextField, MenuItem, Button, Tooltip, IconButton } from "@mui/mat
 import { useState, useEffect, useRef } from "react";
 import MUIModal from "../../components/Modal";
 import { deleteOneFamWorker, getFamWorker, getOneFamWorker } from "../../service/worker";
-import { AlertError, AlertSuccess, AlertWarning } from "../Alerts";
+import { AlertError, AlertSuccess} from "../Alerts";
 import DataGridDemo from "../Table";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
 import { AlertDelete } from "../Alerts";
-
+import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
 import {
     GridActionsCellItem,
     GridToolbarContainer,
@@ -17,7 +17,6 @@ import {
     GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import SchoolIcon from "@mui/icons-material/School";
 import { listPerson } from "../../service/person";
 import { getTipoPariente } from "../../service/common";
 import { AddOrUpdateFamWorker } from "../../service/worker";
@@ -31,7 +30,7 @@ const RegisterSteps = ({
         return (
             <GridToolbarContainer>
                 <Button size="small" variant="text" onClick={OpenRegister}>
-                    <SchoolIcon />
+                    <FamilyRestroomIcon />
                     <span>&nbsp;&nbsp;&nbsp;Agregar</span>
                 </Button>
                 <GridToolbarColumnsButton />
@@ -68,6 +67,10 @@ const RegisterSteps = ({
         } else {
             setData(response.listado);
         }
+        const response2 = await listPerson();
+        const responseTipo = await getTipoPariente();
+        setTipoPariente(responseTipo.listado)
+        setData2(response2.listado);
     }
 
     const edit = async (event, id) => {
@@ -79,10 +82,6 @@ const RegisterSteps = ({
         fields.inD_DEPENDE = response.listado[0].inD_DEPENDE
         fields.inD_JUDICIAL = response.listado[0].inD_JUDICIAL
         levelEducateChild.current.handleOpen();
-        const response2 = await listPerson();
-        const responseTipo = await getTipoPariente();
-        setTipoPariente(responseTipo.listado)
-        setData2(response2.listado);
     }
 
     const destroy = async (event, id) => {
@@ -129,10 +128,6 @@ const RegisterSteps = ({
         fields.coD_BANCO = null
         fields.nuM_CCI = null
         levelEducateChild.current.handleOpen();
-        const response = await listPerson();
-        const responseTipo = await getTipoPariente();
-        setTipoPariente(responseTipo.listado)
-        setData2(response.listado);
     };
 
     const [namePerson, setNamePerson] = useState("");

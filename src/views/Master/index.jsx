@@ -1,6 +1,5 @@
-import ResponsiveAppBar from "../../layouts/Header";
 import BasicCard from "../../components/Card";
-import { Container, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import "./style.css";
 import { Link } from "react-router-dom";
 

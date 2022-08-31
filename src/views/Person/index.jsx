@@ -1,13 +1,11 @@
-import ResponsiveAppBar from "../../layouts/Header";
 import DataGridDemo from "../../components/Table";
 import { deletePerson, listPerson } from "../../service/person";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
-import { Button, MenuItem, Stack, Tooltip, IconButton } from "@mui/material";
+import { Button, MenuItem, Stack} from "@mui/material";
 import {
-  GridActionsCellItem,
   GridToolbarContainer,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
@@ -21,6 +19,7 @@ import {
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import moment from "moment";
 import { AlertDelete } from "../../components/Alerts";
+import IconToolTip from "../../components/Icons/IconToolTip";
 var XLSX = require("xlsx");
 
 const Person = ({
@@ -59,19 +58,11 @@ const Person = ({
           to={`/maestro/persona/registrar/${cellValues.row.coD_PERS}`}
           style={{ textDecoration: "none" }}
         >
-          <Tooltip title="Editar">
-            <IconButton>
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
+          <IconToolTip text="Editar" icon={<EditIcon />} />
         </Link>,
-        <Tooltip title="Desactivar">
-          <IconButton onClick={(event) => {
-            destroy(event, cellValues.row.coD_PERS);
-          }}>
-            <PersonOffIcon />
-          </IconButton>
-        </Tooltip>,
+        <IconToolTip action={(event) => {
+          destroy(event, cellValues.row.coD_PERS);
+        }} text="Desactivar" icon={<PersonOffIcon />} />
       ],
     },
     {

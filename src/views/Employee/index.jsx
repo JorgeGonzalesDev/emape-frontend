@@ -1,6 +1,5 @@
 import DataGridDemo from "../../components/Table";
 import { useState, useEffect } from "react";
-import { GridActionsCellItem } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import { Stack, Button, Tooltip, IconButton } from "@mui/material";

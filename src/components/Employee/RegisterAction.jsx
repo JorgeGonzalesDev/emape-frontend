@@ -4,10 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import moment from 'moment';
 import { AlertDelete } from "../Alerts";
 import MUIModal from "../../components/Modal";
-import { getCargo } from "../../service/position";
-import { getCondicion, getEntidadExt } from "../../service/common";
-import { getLevelEducate } from "../../service/nivelEducate";
-import { listTrabajadorAcciones, getTrabajadorAcciones, deleteTrabajadorAcciones, AddOrUpdateTrabajadorAcciones } from "../../service/employee/laboraction";
+import {
+    listTrabajadorAcciones,
+    getTrabajadorAcciones, deleteTrabajadorAcciones,
+    AddOrUpdateTrabajadorAcciones
+} from "../../service/employee/laboraction";
 import {
     GridActionsCellItem,
     GridToolbarContainer,
@@ -19,17 +20,15 @@ import {
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { listTrabajadorEducacion, deleteTrabajadorEducacion, AddOrUpdateTrabajadorEducacion } from "../../service/employee/education";
 import { AlertSuccess, AlertError } from "../Alerts";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { AddOrUpdateTrabajadorExperiencia, getTrabajadorExperiencia, listTrabajadorExperiencia, deleteTrabajadorExperiencia } from "../../service/employee/laborexperience";
+import { getTipoAcciones } from "../../service/common";
 
 const RegisterAction = (
     { id }
 ) => {
-
     const [fields, setFields] = useState({
         coD_TRAACC: 0,
         coD_TRABAJADOR: id,
@@ -44,9 +43,12 @@ const RegisterAction = (
 
     const [data, setData] = useState([]);
     const levelEducateChild = useRef();
+    const [tipoAccion, setTipoAccion] = useState([]);
 
     const loadData = async () => {
         const response = await listTrabajadorAcciones(id);
+        const responseAcciones = await getTipoAcciones();
+        setTipoAccion(responseAcciones.listado);
         if (response.listado === null) {
             setData([])
         } else {
@@ -175,6 +177,9 @@ const RegisterAction = (
         const response = await AddOrUpdateTrabajadorAcciones(fields)
 
         if (response.code === 0) {
+            await loadData();
+            levelEducateChild.current.handleClose();
+            await AlertSuccess(`${response.message}`)
             setFields({
                 coD_TRAACC: 0,
                 coD_TRABAJADOR: id,
@@ -186,16 +191,10 @@ const RegisterAction = (
                 feC_INICIO: null,
                 feC_TERMINO: null,
             })
-            levelEducateChild.current.handleOpen();
-            await loadData();
-            levelEducateChild.current.handleClose();
-            await AlertSuccess(`${response.message}`)
-
         } else {
             levelEducateChild.current.handleClose();
             return await AlertError(`${response.message}`)
         }
-
     }
 
     const edit = async (event, idT) => {
@@ -239,9 +238,12 @@ const RegisterAction = (
                             onChange={handleInputChange}
                             value={fields.coD_ACCION}
                         >
-                            <MenuItem value="2">
-                                DEMERITO
-                            </MenuItem>
+                            {tipoAccion &&
+                                tipoAccion.map(tipoAccion => (
+                                    <MenuItem value={tipoAccion.coD_ACCION}>
+                                        {tipoAccion.noM_ACCION}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                     </Grid>
                     <Grid item md={12} />
@@ -250,7 +252,7 @@ const RegisterAction = (
                             <DesktopDatePicker
                                 label="Fecha"
                                 inputFormat="dd-MM-yyyy"
-                                value={moment(fields.feC_ACCION).format()}
+                                value={fields.feC_ACCION}
                                 onChange={e =>
                                     handleInputChangeDate(e, 'feC_ACCION')}
                                 renderInput={(params) => <TextField fullWidth
@@ -306,7 +308,7 @@ const RegisterAction = (
                         />
                     </Grid>
                     <Grid item md={12} />
-                    <Grid item md={12} sm={12} color="red">
+                    <Grid item md={12} sm={12} >
                         <span>Cargos Internos / Externos</span>
                     </Grid>
                     <Grid item md={12} />
@@ -315,7 +317,7 @@ const RegisterAction = (
                             <DesktopDatePicker
                                 label="Fecha"
                                 inputFormat="dd-MM-yyyy"
-                                value={moment(fields.feC_INICIO).format()}
+                                value={fields.feC_INICIO}
                                 onChange={e =>
                                     handleInputChangeDate(e, 'feC_INICIO')}
                                 renderInput={(params) => <TextField fullWidth
@@ -332,7 +334,7 @@ const RegisterAction = (
                             <DesktopDatePicker
                                 label="Fecha"
                                 inputFormat="dd-MM-yyyy"
-                                value={moment(fields.feC_TERMINO).format()}
+                                value={fields.feC_TERMINO}
                                 onChange={e =>
                                     handleInputChangeDate(e, 'feC_TERMINO')}
                                 renderInput={(params) => <TextField fullWidth

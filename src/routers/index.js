@@ -10,10 +10,6 @@ const Document = lazy(() => import("../views/Document"));
 const Employee = lazy(() => import("../views/Employee"));
 const General = lazy(() => import("../views/General"));
 const LevelEducate = lazy(() => import("../views/General/LevelEducate"));
-const MaquetadoCarlos = lazy(() => import("../views/MaquetadoCarlos/LaborActions"));
-const DocumentosTA = lazy(() => import("../views/MaquetadoCarlos/LaborDocument"));
-const MaquetadoMiguel = lazy(() => import("../views/MaquetadoMiguel/LaborExperience"));
-const Education = lazy(() => import("../views/MaquetadoMiguel/Education"));
 const AFP = lazy(() => import("../views/AFP"));
 const Labor = lazy(() => import("../views/Labor"));
 const LaborPosition = lazy(() =>
@@ -39,19 +35,6 @@ const RegisterE = lazy(() =>
 const RegisterWorker = lazy(() => import("../views/Employee/registerWorker"));
 const BasicTabs = lazy(() => import("../views/Employee/menuWorker"));
 
-const RegisterEXP = lazy(() =>
-  import("../views/MaquetadoMiguel/LaborExperience/Register")
-);
-const RegisterTA = lazy(() =>
-  import("../views/MaquetadoCarlos/LaborActions/Register")
-);
-const RegisterDO = lazy(() =>
-  import("../views/MaquetadoCarlos/LaborDocument/Register")
-);
-const RegisterEDU = lazy(() =>
-  import("../views/MaquetadoMiguel/Education/Register")
-);
-
 const Router = () => {
   const { logged } = useContext(UserContext);
   return (
@@ -59,18 +42,6 @@ const Router = () => {
       fallback={<BarLoader color="#2E3B55" height="10px" width="100%" />}
     >
       <Routes>
-        <Route path="/MaquetadoMiguel/LaborExperience" element={<MaquetadoMiguel />} />
-        <Route path="/MaquetadoMiguel/LaborExperience/Registrar" element={<RegisterEXP />} />
-        <Route path="/MaquetadoMiguel/LaborExperience/Registrar/:id" element={<RegisterEXP />} />
-        <Route path="/MaquetadoMiguel/Education" element={<Education />} />
-        <Route path="/MaquetadoMiguel/Education/Registrar" element={<RegisterEDU />} />
-        <Route path="/MaquetadoMiguel/Education/Registrar/:id" element={<RegisterEDU />} />
-        <Route path="/MaquetadoCarlos/LaborActions" element={<MaquetadoCarlos />} />
-        <Route path="/MaquetadoCarlos/LaborActions/Registrar" element={<RegisterTA />} />
-        <Route path="/MaquetadoCarlos/LaborActions/Registrar/:id" element={<RegisterTA />} />
-        <Route path="/MaquetadoCarlos/Documentos" element={<DocumentosTA />} />
-        <Route path="/MaquetadoCarlos/Documentos/Registrar" element={<RegisterDO />} />
-        <Route path="/MaquetadoCarlos/Documentos/Registrar/:id" element={<RegisterDO />} />
         <Route path="/" element={<Home />} />
         <Route
           path="/maestro"
