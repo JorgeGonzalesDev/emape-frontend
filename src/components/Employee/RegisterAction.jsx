@@ -29,6 +29,7 @@ import { getTipoAcciones } from "../../service/common";
 const RegisterAction = (
     { id }
 ) => {
+    
     const [fields, setFields] = useState({
         coD_TRAACC: 0,
         coD_TRABAJADOR: id,

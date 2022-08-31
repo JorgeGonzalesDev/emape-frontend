@@ -3,8 +3,8 @@ import { Suspense, lazy, useContext } from "react";
 import UserContext from "../context/User/UserContext";
 import BarLoader from "react-spinners/BarLoader";
 const Home = lazy(() => import("../views/Home"));
+const Inicio = lazy(() => import("../views/Inicio"));
 const Register = lazy(() => import("../views/Person/Register"));
-const Master = lazy(() => import("../views/Master"));
 const Person = lazy(() => import("../views/Person"));
 const Document = lazy(() => import("../views/Document"));
 const Employee = lazy(() => import("../views/Employee"));
@@ -28,10 +28,8 @@ const LaborPuesto = lazy(() =>
 );
 const Profession = lazy(() => import("../views/General/Profession"));
 const Position = lazy(() => import("../views/General/Position"));
+const Studies = lazy(() => import("../views/General/Studies"));
 const ExternalEntity = lazy(() => import("../views/General/ExternalEntity"));
-const RegisterE = lazy(() =>
-  import("../views/General/ExternalEntity/Register")
-);
 const RegisterWorker = lazy(() => import("../views/Employee/registerWorker"));
 const BasicTabs = lazy(() => import("../views/Employee/menuWorker"));
 
@@ -44,8 +42,8 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route
-          path="/maestro"
-          element={logged ? <Master /> : <Navigate to="/" />}
+          path="/inicio"
+          element={logged ? <Inicio /> : <Navigate to="/" />}
         />
         <Route
           path="/legajo"
@@ -64,20 +62,16 @@ const Router = () => {
           element={logged ? <Profession /> : <Navigate to="/" />}
         />
         <Route
+          path="/maestro/generales/Studies"
+          element={logged ? <Studies /> : <Navigate to="/" />}
+        />
+        <Route
           path="/maestro/generales/position"
           element={logged ? <Position /> : <Navigate to="/" />}
         />
         <Route
           path="/maestro/generales/entidadExterna"
           element={logged ? <ExternalEntity /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/maestro/generales/entidadExterna/Register"
-          element={logged ? <RegisterE /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/maestro/generales/entidadExterna/Register/:id"
-          element={logged ? <RegisterE /> : <Navigate to="/" />}
         />
         <Route
           path="/maestro/labor"

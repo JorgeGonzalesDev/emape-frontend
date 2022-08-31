@@ -10,6 +10,7 @@ import {
   InputAdornment,
   FormControl,
 } from "@mui/material";
+import { alpha, styled } from '@mui/material/styles';
 import { useState, useContext, useEffect } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import UserContext from "../../context/User/UserContext";
@@ -24,7 +25,7 @@ const Home = () => {
   useEffect(() => {
     setLogged(window.localStorage.getItem("token"));
     if (logged) {
-      window.location = "/maestro";
+      window.location = "/inicio";
     }
   }, [login]);
 
@@ -54,9 +55,9 @@ const Home = () => {
 
   return (
     <div className="container">
-      <Paper elevation={3} style={{ width: "300px", padding: "20px" }}>
+      <Paper style={{ width: "300px", padding: "30px", backgroundColor: 'rgba(0, 163, 156, 0.8)', color: 'white' }}>
         <Grid style={{ textAlign: "center" }}>
-          <h3>EMAPE</h3>
+          <h3>EMAPE RRHH</h3>
         </Grid>
         <Grid>
           <TextField
@@ -96,7 +97,7 @@ const Home = () => {
           </FormControl>
         </Grid>
         <Grid style={{ marginTop: "40px", textAlign: "center" }}>
-          <Button onClick={handleLogin} variant="contained">
+          <Button onClick={handleLogin} variant="contained" style={{ backgroundColor: "#1B6EC2" }}>
             Iniciar sesión
           </Button>
         </Grid>

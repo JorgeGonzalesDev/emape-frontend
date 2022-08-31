@@ -18,14 +18,21 @@ import {
   GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { AlertDelete } from "../../../components/Alerts";
+import { AlertSuccess, AlertError } from "../../../components/Alerts";
+import IconToolTip from "../../../components/Icons/IconToolTip";
+  
 
 const LaborPuesto = () => {
-  const fieldsDefault = {
+  const defaultfields = {
     coD_PUESTO: 0,
-    noM_PUESTO: "",
-  };
+    noM_PUESTO: null
+  }
+  const [fields, setFields] = useState({
+    coD_PUESTO: 0,
+    noM_PUESTO: null
+  });
 
-  const [fields, setFields] = useState({});
   const [data, setData] = useState([]);
   const levelLaborPuesto = useRef();
   const [detail, setDetail] = useState({});
@@ -40,27 +47,18 @@ const LaborPuesto = () => {
     setData(response.listado);
   };
 
-  /* const rows = [{
-        'coD_GRDINSTRUC':1,
-        'deS_GRDINSTRUC':'Hola',
-        'abreviadO_GRADO':'abreviado',
-    }
-    ] */
-
-  const destroy = async (event, cellValues) => {
-    if (
-      window.confirm(
-        `Desea eliminar el registro con el id: ${cellValues.row.coD_PUESTO}?`
-      )
-    ) {
+  /*  */
+  const destroy = async (event, id) => {
+    const resultado = await AlertDelete();
+    if (resultado) {
       const dataDelete = {
-        coD_PUESTO: cellValues.row.coD_PUESTO,
+        'coD_PUESTO': id
       };
-
       await deletePuesto(dataDelete);
       await loadData();
     }
   };
+  /*  */
 
   const edit = async (event, row) => {
     setFields(row);
@@ -73,7 +71,7 @@ const LaborPuesto = () => {
   /*  */
 
   const OpenRegister = () => {
-    setFields(fieldsDefault);
+    setFields(defaultfields);
     levelLaborPuesto.current.handleOpen();
   };
   /*  */
@@ -83,20 +81,12 @@ const LaborPuesto = () => {
       field: "Acciones",
       type: "actions",
       getActions: (cellValues) => [
-        <GridActionsCellItem
-          icon={<EditIcon />}
-          label="Edit"
-          onClick={(event) => {
-            edit(event, cellValues.row);
-          }}
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={(event) => {
-            destroy(event, cellValues);
-          }}
-        />,
+        <IconToolTip text="Edit" icon={<EditIcon />} action={(event) => {
+          edit(event, cellValues.row);
+        }} />,
+        <IconToolTip text="Delete" icon={<DeleteIcon />} action={(event) => {
+          destroy(event, cellValues.row.coD_PUESTO);
+        }} />,
       ],
     },
     {
@@ -112,10 +102,17 @@ const LaborPuesto = () => {
   ];
 
   const saveLevelLaborPuesto = async () => {
-    await AddOrUpdatePuesto(fields);
-    loadData();
-    levelLaborPuesto.current.handleClose();
-    setFields(fieldsDefault);
+    const response = await AddOrUpdatePuesto(fields)
+    if(response.code === 0){
+      levelLaborPuesto.current.handleOpen();
+      await loadData();
+      levelLaborPuesto.current.handleClose();
+      await AlertSuccess(`${response.message}`)
+      setFields(defaultfields)
+    } else {
+      levelLaborPuesto.current.handleClose();
+      return await AlertError(`${response.message}`)
+    }
   };
 
   function CustomToolbar() {

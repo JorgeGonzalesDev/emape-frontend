@@ -10,6 +10,7 @@ export const JOBCATEGORY = "/maestro/Labor/puestoLaboral";
 export const PERSON = "/maestro/persona";
 export const AFP = "/maestro/AFP";
 export const EMPLOYEE = "/trabajador";
+export const Studies = "/maestro/generales/Studies";
 export const ENTIDADEXTERNA = "/maestro/generales/entidadExterna";
 export const EXPERIENCIALABORAL = "/MaquetadoMiguel/LaborExperience";
 export const EducacionT = "/MaquetadoMiguel/Education";

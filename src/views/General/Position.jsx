@@ -8,7 +8,7 @@ import DataGridDemo from "../../components/Table";
 import { useState, useEffect, useRef } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, Grid, TextField, Tooltip, IconButton, Stack } from "@mui/material";
+import { Button, Grid, TextField, Stack } from "@mui/material";
 import {
   GridToolbarContainer,
   GridToolbarColumnsButton,
@@ -17,15 +17,22 @@ import {
   GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { AlertDelete } from "../../components/Alerts";
+import { AlertSuccess, AlertError } from "../../components/Alerts";
+import IconToolTip from "../../components/Icons/IconToolTip";
 
 const Position = () => {
-  const fieldsDefault = {
+  const defaultfields = {
     coD_CAR: 0,
-    deS_CAR: "",
-    abR_CAR: "",
-  };
+    deS_CAR: null,
+    abR_CAR: null,
+  }
+  const [fields, setFields] = useState({
+    coD_CAR: 0,
+    deS_CAR: null,
+    abR_CAR: null,
+  });
 
-  const [fields, setFields] = useState({});
   const [data, setData] = useState([]);
   const levelCargo = useRef();
   const [detail, setDetail] = useState({});
@@ -41,9 +48,10 @@ const Position = () => {
   };
 
   const destroy = async (event, id) => {
-    if (window.confirm(`Desea eliminar el registro con el id: ${id}?`)) {
+    const resultado = await AlertDelete();
+    if (resultado) {
       const dataDelete = {
-        coD_CAR: id,
+        'coD_CAR': id
       };
       await deleteCargo(dataDelete);
       await loadData();
@@ -53,11 +61,11 @@ const Position = () => {
   const edit = async (event, row) => {
     setFields(row);
     levelCargo.current.handleOpen();
+    
   };
 
   useEffect(() => {
     loadData();
-    setFields(fieldsDefault);
   }, []);
 
   const columns = [
@@ -65,20 +73,16 @@ const Position = () => {
       field: "Acciones",
       type: "actions",
       getActions: (cellValues) => [
-        <Tooltip title="Editar">
-          <IconButton onClick={(event) => {
-            edit(event, cellValues.row);
-          }}>
-            <EditIcon />
-          </IconButton>
-        </Tooltip>,
-        <Tooltip title="Desactivar">
-          <IconButton onClick={(event) => {
-            destroy(event, cellValues.row.coD_CAR);
-          }}>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>,
+        /*  */
+        <IconToolTip text="Editar" icon={<EditIcon />} action={(event) => {
+          edit(event, cellValues.row);
+        }} />,
+        /*  */
+        /*  */
+        <IconToolTip text="Desactivar" icon={<DeleteIcon />} action={(event) => {
+          destroy(event, cellValues.row.coD_CAR);
+        }} />,
+        /*  */
       ],
     },
     {
@@ -98,16 +102,25 @@ const Position = () => {
     },
   ];
 
-  const OpenRegister = () => {
-    setFields(fieldsDefault);
+  const OpenRegister = async() => {
+    setFields(defaultfields);
     levelCargo.current.handleOpen();
   };
 
   const saveCargo = async () => {
-    await AddOrUpdateCargo(fields);
-    loadData();
-    levelCargo.current.handleClose();
-    setFields(fieldsDefault);
+    const response = await AddOrUpdateCargo(fields)
+    if (response.code === 0){
+      levelCargo.current.handleOpen();
+      await loadData();
+      levelCargo.current.handleClose();
+      await AlertSuccess(`${response.message}`)
+      setFields(defaultfields)
+    } else{
+      levelCargo.current.handleClose();
+      return await AlertError(`${response.message}`)
+      
+    }
+    
   };
 
   function CustomToolbar() {

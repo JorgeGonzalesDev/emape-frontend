@@ -13,6 +13,7 @@ const UserState = ({ children }) => {
   const [logged, setLogged] = useState(window.localStorage.getItem("token"));
   const [success, setSuccess] = useState(window.localStorage.getItem("auth"));
   const URL = `${baseURLLog}/token`;
+
   const login = async (correo, password) => {
     try {
       const res = await axios.post(`${URL}`, {
@@ -22,7 +23,6 @@ const UserState = ({ children }) => {
       setLogged(
         localStorage.setItem("token", JSON.stringify(res.data.accessToken))
       );
-      navigate("/maestro");
       setSuccess(localStorage.setItem("auth", true));
     } catch {
       localStorage.removeItem("token");

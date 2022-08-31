@@ -60,9 +60,12 @@ export const AlertDelete = async (message = "Estas seguro?", text = "") => {
     }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire(
-                'Accion realizado satisfactoriamente',
-                '',
-                'success'
+                {
+                    title: 'Accion realizado satisfactoriamente',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500,
+                }
             )
             res = true;
         }

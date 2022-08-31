@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
-import { Button, MenuItem, Stack} from "@mui/material";
+import { Button, MenuItem, Stack } from "@mui/material";
 import {
   GridToolbarContainer,
   GridToolbarColumnsButton,

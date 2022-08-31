@@ -20,6 +20,7 @@ import {
   GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import IconToolTip from "../../../components/Icons/IconToolTip";
 
 const LaborPosition = () => {
   const fieldsDefault = {
@@ -93,13 +94,9 @@ const LaborPosition = () => {
       field: "Acciones",
       type: "actions",
       getActions: (cellValues) => [
-        <GridActionsCellItem
-          icon={<EditIcon />}
-          label="Edit"
-          onClick={(event) => {
-            edit(event, cellValues.row);
-          }}
-        />,
+      <IconToolTip text="Edit" icon={<EditIcon />} onClick={(event) => {
+        edit(event, cellValues.row);
+      }} />,
         <GridActionsCellItem
           icon={<DeleteIcon />}
           label="Delete"

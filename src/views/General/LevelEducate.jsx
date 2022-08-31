@@ -18,15 +18,22 @@ import {
   GridToolbarExport,
   GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
+import { AlertDelete } from "../../components/Alerts";
+import { AlertSuccess, AlertError } from "../../components/Alerts";
+import IconToolTip from "../../components/Icons/IconToolTip";
 
 const LevelEducate = () => {
-  const fieldsDefault = {
+  const defaultfields = {
     coD_GRDINSTRUC: 0,
-    deS_GRDINSTRUC: "",
-    abreviadO_GRADO: "",
-  };
+    deS_GRDINSTRUC: null,
+    abreviadO_GRADO: null,
+  }
+  const [fields, setFields] = useState({
+    coD_GRDINSTRUC: 0,
+    deS_GRDINSTRUC: null,
+    abreviadO_GRADO: null,
+  });
 
-  const [fields, setFields] = useState({});
   const [data, setData] = useState([]);
   const levelEducateChild = useRef();
   const [detail, setDetail] = useState({});
@@ -40,17 +47,18 @@ const LevelEducate = () => {
     const response = await getLevelEducate();
     setData(response.listado);
   };
-
+  /*  */
   const destroy = async (event, id) => {
-    if (window.confirm(`Desea eliminar el registro con el id: ${id}?`)) {
+    const resultado = await AlertDelete();
+    if (resultado) {
       const dataDelete = {
-        coD_GRDINSTRUC: id,
+        'coD_GRDINSTRUC': id
       };
       await deleteLevelEducate(dataDelete);
       await loadData();
     }
   };
-
+  /*  */
   const edit = async (event, row) => {
     setFields(row);
     levelEducateChild.current.handleOpen();
@@ -58,7 +66,6 @@ const LevelEducate = () => {
 
   useEffect(() => {
     loadData();
-    setFields(fieldsDefault);
   }, []);
 
   const columns = [
@@ -66,20 +73,16 @@ const LevelEducate = () => {
       field: "Acciones",
       type: "actions",
       getActions: (cellValues) => [
-        <GridActionsCellItem
-          icon={<EditIcon />}
-          label="Edit"
-          onClick={(event) => {
-            edit(event, cellValues.row);
-          }}
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={(event) => {
-            destroy(event, cellValues.row.coD_GRDINSTRUC);
-          }}
-        />,
+        /*  */
+        <IconToolTip text="Edit" icon={<EditIcon />} action={(event) => {
+          edit(event, cellValues.row);
+        }} />,
+        /*  */
+        /*  */
+        <IconToolTip text="Delete" icon={<DeleteIcon />} action={(event) => {
+          destroy(event, cellValues.row.coD_GRDINSTRUC);
+        }} />,
+        /*  */
       ],
     },
     {
@@ -100,15 +103,25 @@ const LevelEducate = () => {
   ];
 
   const OpenRegister = () => {
-    setFields(fieldsDefault);
+    setFields(defaultfields);
     levelEducateChild.current.handleOpen();
   };
 
   const saveLevelEducate = async () => {
-    await AddOrUpdateLevelEducate(fields);
-    loadData();
+    const response = await AddOrUpdateLevelEducate(fields)
+    if (response.code === 0){
+      levelEducateChild.current.handleOpen();
+      await loadData();
+      levelEducateChild.current.handleClose();
+      await AlertSuccess(`${response.message}`)
+      setFields(defaultfields)
+    } else{
+      levelEducateChild.current.handleClose();
+      return await AlertError(`${response.message}`)
+    }
+    /* loadData();
     levelEducateChild.current.handleClose();
-    setFields(fieldsDefault);
+    setFields(fieldsDefault); */
   };
 
   function CustomToolbar() {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import MenuContext from "./Menu.Context";
 import { baseURL } from "../../service/config";
 import axios from "axios";

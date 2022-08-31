@@ -17,7 +17,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { ExpandLess, ExpandMore, Home, StarBorder } from "@mui/icons-material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Button, Collapse } from "@mui/material";
 import * as ROUTES from "../../contants/routes";
 import { Link } from "react-router-dom";
@@ -30,11 +30,6 @@ import WorkIcon from "@mui/icons-material/Work";
 import PersonIcon from "@mui/icons-material/Person";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import BadgeIcon from "@mui/icons-material/Badge";
-import General, {
-  Cargo,
-  Personal,
-  Profesion,
-} from "../../components/Svg/General";
 import BrandingWatermarkOutlinedIcon from "@mui/icons-material/BrandingWatermarkOutlined";
 import MenuContext from "../../context/Menu/Menu.Context";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
@@ -161,7 +156,7 @@ export default function PersistentDrawerLeft({ children }) {
   sayings.set(3, ROUTES.POSITION);
   sayings.set(4, ROUTES.EDUCATIONLEVEL);
   sayings.set(5, ROUTES.PROFESSIONS);
-  sayings.set(6, ROUTES.ENTIDADEXTERNA);
+  sayings.set(6, ROUTES.Studies);
   sayings.set(7, ROUTES.ENTIDADEXTERNA);
   sayings.set(8, ROUTES.WORKCONDITION);
   sayings.set(9, ROUTES.PERSONALACTION);
@@ -194,7 +189,7 @@ export default function PersistentDrawerLeft({ children }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={open} style={{backgroundColor: '#00A39C'}}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -237,7 +232,7 @@ export default function PersistentDrawerLeft({ children }) {
           subheader={
             <ListSubheader component="div" id="nested-list-subheader">
               <DrawerHeader>
-              EMAPE
+                EMAPE
                 <IconButton onClick={handleDrawerClose}>
                   {theme.direction === "ltr" ? (
                     <ChevronLeftIcon />

@@ -70,7 +70,7 @@ function CustomNoRowsOverlay() {
                     </g>
                 </g>
             </svg>
-            <Box sx={{ mt: 1 }}>No hay datos disponible</Box>
+            <Box sx={{ mt: 1 }}>No hay datos disponibles</Box>
         </StyledGridOverlay>
     );
 }

@@ -9,7 +9,6 @@ import { useState, useEffect, useRef } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid, TextField, Stack } from "@mui/material";
-import { AlertAddUpdate, AlertDelete } from "../../components/Alerts";
 
 import {
   GridActionsCellItem,
@@ -21,15 +20,23 @@ import {
 } from "@mui/x-data-grid";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { FOCUSABLE_SELECTOR } from "@testing-library/user-event/dist/utils";
+import { AlertDelete } from "../../components/Alerts";
+import { AlertSuccess, AlertError } from "../../components/Alerts";
+import IconToolTip from "../../components/Icons/IconToolTip";
 
 const Profession = () => {
-  const fieldsDefault = {
+  const defaultfields = {
     coD_PROFES: 0,
-    deS_PROFES: "",
-    abR_PROFES: "",
-  };
+    deS_PROFES: null,
+    abR_PROFES: null,
+  }
 
-  const [fields, setFields] = useState({});
+  const [fields, setFields] = useState({
+    coD_PROFES: 0,
+    deS_PROFES: null,
+    abR_PROFES: null,
+  });
+
   const [data, setData] = useState([]);
   const levelProfessions = useRef();
   const [detail, setDetail] = useState({});
@@ -49,7 +56,7 @@ const Profession = () => {
 
     if (resultado) {
       const dataDelete = {
-        coD_PROFES: id,
+        'coD_PROFES': id,
       };
       await deleteProfessions(dataDelete);
       await loadData();
@@ -63,7 +70,6 @@ const Profession = () => {
 
   useEffect(() => {
     loadData();
-    setFields(fieldsDefault);
   }, []);
 
   const columns = [
@@ -71,20 +77,12 @@ const Profession = () => {
       field: "Acciones",
       type: "actions",
       getActions: (cellValues) => [
-        <GridActionsCellItem
-          icon={<EditIcon />}
-          label="Edit"
-          onClick={(event) => {
-            edit(event, cellValues.row);
-          }}
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={(event) => {
-            destroy(event, cellValues.row.coD_PROFES);
-          }}
-        />,
+        <IconToolTip text="Editar" icon={<EditIcon />} action={(event) => {
+          edit(event, cellValues.row);
+        }} />,
+        <IconToolTip text="Delete" icon={<DeleteIcon />} action={(event) => {
+          destroy(event, cellValues.row.coD_PROFES);
+        }} />,
       ],
     },
     {
@@ -106,16 +104,25 @@ const Profession = () => {
   ];
 
   const OpenRegister = () => {
-    setFields(fieldsDefault);
+    setFields(defaultfields);
     levelProfessions.current.handleOpen();
   };
 
   const saveProfessions = async () => {
-    await AddOrUpdateProfessions(fields);
-    AlertAddUpdate(fields.coD_PROFES);
-    loadData();
-    levelProfessions.current.handleClose();
-    setFields(fieldsDefault);
+    const response = await AddOrUpdateProfessions(fields)
+    if (response.code === 0){
+      levelProfessions.current.handleOpen();
+      await loadData();
+      levelProfessions.current.handleClose();
+      await AlertSuccess(`${response.message}`)
+      setFields(defaultfields)
+
+    } else {
+      levelProfessions.current.handleClose();
+      return await AlertError(`${response.message}`)
+
+    }
+
   };
 
   function CustomToolbar() {
