@@ -55,7 +55,7 @@ const Home = () => {
 
   return (
     <div className="container">
-      <Paper style={{ width: "300px", padding: "30px", backgroundColor: 'rgba(0, 163, 156, 0.8)', color: 'white' }}>
+      <Paper style={{ width: "300px", padding: "30px", backgroundColor: 'rgba(255, 255, 255,0.8)', color: 'black' }}>
         <Grid style={{ textAlign: "center" }}>
           <h3>EMAPE RRHH</h3>
         </Grid>

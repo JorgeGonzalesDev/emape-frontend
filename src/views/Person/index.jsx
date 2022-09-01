@@ -188,7 +188,7 @@ const Person = ({
             <span>&nbsp;&nbsp;&nbsp;Registrar</span>
           </Button>
         </Link>
-        <GridToolbarFilterButton />
+        <GridToolbarFilterButton/>
         <GridToolbarColumnsButton />
         <GridToolbarDensitySelector />
         <GridToolbarExport
