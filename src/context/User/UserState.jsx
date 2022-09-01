@@ -37,10 +37,14 @@ const UserState = ({ children }) => {
 
     }
   };
+
+  const pathPROD = "/RRHH"
+  // const pathPROD = ""
+  
   const logout = async () => {
     localStorage.removeItem("token");
     localStorage.removeItem("auth");
-    return window.location = "/"
+    return window.location = `${pathPROD}`;
   };
 
   const Navbar = () => {

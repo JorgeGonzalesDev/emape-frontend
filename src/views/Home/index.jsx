@@ -22,10 +22,13 @@ const Home = () => {
     password: "",
   });
 
+  const pathPROD = "/RRHH"
+  // const pathPROD = ""
+
   useEffect(() => {
     setLogged(window.localStorage.getItem("token"));
     if (logged) {
-      window.location = "/inicio";
+      window.location = `${pathPROD}/inicio`;
     }
   }, [login]);
 
