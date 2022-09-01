@@ -25,7 +25,6 @@ const Employee = () => {
   const [codeW, setCodeW] = useState(0);
   const [dataWorker, setDataWorker] = useState([]);
 
-
   const handleForm = async () => {
     setForms(true);
   }
@@ -36,7 +35,6 @@ const Employee = () => {
   };
 
   const navigate = useNavigate();
-
   const navigateBack = () => {
     navigate(-1)
   }
@@ -56,16 +54,18 @@ const Employee = () => {
     }
   };
 
+  const pathPROD = "/RRHH"
+  // const pathPROD = ""
+
   const handleCodeWorker = async (data) => {
     setDataWorker(data)
     setCodeW(data.coD_TRABAJADOR);
-    navigate(`/trabajador/menu/${data.coD_TRABAJADOR}`)
+    navigate(`${pathPROD}/trabajador/menu/${data.coD_TRABAJADOR}`)
   }
 
   const reverseForm = async () => {
     setForms(false);
   }
-
 
   const columns = [
     {
@@ -113,13 +113,6 @@ const Employee = () => {
       valueGetter: (params) =>
         `${params.row?.inD_ESTADO === "A" ? "Activo" : "Inactivo"}`,
     },
-    // {
-    //   field: "T_Reg",
-    //   headerName: "T_Reg",
-    //   width: 150,
-    //   valueGetter: (params) =>
-    //     ``,
-    // },
     {
       field: "feC_NACIM",
       headerName: "Nacimiento",
@@ -153,7 +146,7 @@ const Employee = () => {
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
-        <Link to="/trabajador/listar/personas" style={{ textDecoration: 'none' }}>
+        <Link to={pathPROD + "/trabajador/listar/personas"} style={{ textDecoration: 'none' }}>
           <Button size="small" variant="text">
             <EngineeringIcon />
             <span>&nbsp;&nbsp;&nbsp;Agregar</span>

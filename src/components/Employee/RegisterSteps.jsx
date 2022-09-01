@@ -245,6 +245,9 @@ const RegisterSteps = ({
 
     }
 
+    const pathPROD = "/RRHH"
+    // const pathPROD = ""
+
     const handleFields = async () => {
 
         const validate = validateFields();
@@ -257,7 +260,7 @@ const RegisterSteps = ({
 
             await AlertSuccess(`${response.message}`)
 
-            return navigate("/trabajador")
+            return navigate(`${pathPROD}/trabajador`)
 
         } else {
             return await AlertError(`${response.message}`)

@@ -55,7 +55,7 @@ const Person = ({
       disableExport: false,
       getActions: (cellValues) => [
         <Link
-          to={`/maestro/persona/registrar/${cellValues.row.coD_PERS}`}
+          to={`${pathPROD}/maestro/persona/registrar/${cellValues.row.coD_PERS}`}
           style={{ textDecoration: "none" }}
         >
           <IconToolTip text="Editar" icon={<EditIcon />} />
@@ -176,11 +176,14 @@ const Person = ({
     </GridToolbarExportContainer>
   );
 
+  const pathPROD = "/RRHH"
+  // const pathPROD = ""
+
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
         <Link
-          to="/maestro/persona/registrar"
+          to={pathPROD + "/maestro/persona/registrar"}
           style={{ textDecoration: "none" }}
         >
           <Button size="small" variant="text">
@@ -188,7 +191,7 @@ const Person = ({
             <span>&nbsp;&nbsp;&nbsp;Registrar</span>
           </Button>
         </Link>
-        <GridToolbarFilterButton/>
+        <GridToolbarFilterButton />
         <GridToolbarColumnsButton />
         <GridToolbarDensitySelector />
         <GridToolbarExport
@@ -216,7 +219,7 @@ const Person = ({
           spacing={1} xs={{ mb: 1, display: 'flex' }}
         >
           <div>
-            <h1>Personas {view ? "Visualizar" : ""}</h1>
+            <h1>Personas</h1>
           </div>
         </Stack>
         <DataGridDemo

@@ -69,6 +69,9 @@ const RegisterSteps = () => {
 
   const [inputError, setInputError] = useState(defaultErrors);
 
+  const pathPROD = "/RRHH"
+  // const pathPROD = ""
+
   const navigate = useNavigate();
 
   const navigateBack = () => {
@@ -174,7 +177,7 @@ const RegisterSteps = () => {
           response.listado[0]["coD_DIRPRV"]
         );
       } else {
-        return (window.location = "/maestro/persona");
+        return (window.location = `${pathPROD}/maestro/persona`);
       }
 
     }
@@ -281,8 +284,6 @@ const RegisterSteps = () => {
       })
       return getDistrictsDir(fields.coD_DIRDPT, value);
     }
-
-
   };
 
   const handleInputChangeDate = (value, name) => {
@@ -303,7 +304,7 @@ const RegisterSteps = () => {
     const response = await AddOrUpdatePerson(fields);
     if (response.code === 0) {
       await AlertSuccess(`${response.message}`)
-      return navigate("/maestro/persona");
+      return navigate(`${pathPROD}/maestro/persona`);
     } else {
       await AlertError(`${response.message}`)
     }
