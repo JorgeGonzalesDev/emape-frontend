@@ -33,6 +33,9 @@ const ExternalEntity = lazy(() => import("../views/General/ExternalEntity"));
 const RegisterWorker = lazy(() => import("../views/Employee/registerWorker"));
 const BasicTabs = lazy(() => import("../views/Employee/menuWorker"));
 
+const pathPROD = "/RRHH"
+// const pathPROD = ""
+
 const Router = () => {
   const { logged } = useContext(UserContext);
   return (
@@ -40,102 +43,102 @@ const Router = () => {
       fallback={<BarLoader color="#2E3B55" height="10px" width="100%" />}
     >
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path={pathPROD} element={<Home />} />
         <Route
-          path="/inicio"
-          element={logged ? <Inicio /> : <Navigate to="/" />}
+          path={pathPROD + "/inicio"}
+          element={logged ? <Inicio /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/legajo"
-          element={logged ? <Document /> : <Navigate to="/" />}
+          path={pathPROD + "/legajo"}
+          element={logged ? <Document /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/generales"
-          element={logged ? <General /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/generales"}
+          element={logged ? <General /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/generales/nivelEducativo"
-          element={logged ? <LevelEducate /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/generales/nivelEducativo"}
+          element={logged ? <LevelEducate /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/generales/profesiones"
-          element={logged ? <Profession /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/generales/profesiones"}
+          element={logged ? <Profession /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/generales/Studies"
-          element={logged ? <Studies /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/generales/Studies"}
+          element={logged ? <Studies /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/generales/position"
-          element={logged ? <Position /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/generales/position"}
+          element={logged ? <Position /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/generales/entidadExterna"
-          element={logged ? <ExternalEntity /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/generales/entidadExterna"}
+          element={logged ? <ExternalEntity /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/labor"
-          element={logged ? <Labor /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/labor"}
+          element={logged ? <Labor /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/Labor/cargoLaboral"
-          element={logged ? <LaborPosition /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/Labor/cargoLaboral"}
+          element={logged ? <LaborPosition /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/Labor/registrar"
-          element={logged ? <RegisterCargo /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/Labor/registrar"}
+          element={logged ? <RegisterCargo /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/Labor/registrar/:id"
-          element={logged ? <RegisterCargo /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/Labor/registrar/:id"}
+          element={logged ? <RegisterCargo /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/Labor/registrarPuesto"
-          element={logged ? <RegisterPuesto /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/Labor/registrarPuesto"}
+          element={logged ? <RegisterPuesto /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/Labor/registrarPuesto/:id"
-          element={logged ? <RegisterPuesto /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/Labor/registrarPuesto/:id"}
+          element={logged ? <RegisterPuesto /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/Labor/condicionLaboral"
-          element={logged ? <WorkingCondition /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/Labor/condicionLaboral"}
+          element={logged ? <WorkingCondition /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/Labor/accionPersonal"
-          element={logged ? <PersonalAction /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/Labor/accionPersonal"}
+          element={logged ? <PersonalAction /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/Labor/puestoLaboral"
-          element={logged ? <LaborPuesto /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/Labor/puestoLaboral"}
+          element={logged ? <LaborPuesto /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/persona"
-          element={logged ? <Person /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/persona"}
+          element={logged ? <Person /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/AFP"
-          element={logged ? <AFP /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/AFP"}
+          element={logged ? <AFP /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/persona/registrar"
-          element={logged ? <Register /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/persona/registrar"}
+          element={logged ? <Register /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/maestro/persona/registrar/:id"
-          element={logged ? <Register /> : <Navigate to="/" />}
+          path={pathPROD + "/maestro/persona/registrar/:id"}
+          element={logged ? <Register /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/trabajador/"
-          element={logged ? <Employee /> : <Navigate to="/" />}
+          path={pathPROD + "/trabajador/"}
+          element={logged ? <Employee /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/trabajador/menu/:id"
-          element={logged ? <BasicTabs /> : <Navigate to="/" />}
+          path={pathPROD + "/trabajador/menu/:id"}
+          element={logged ? <BasicTabs /> : <Navigate to={pathPROD} />}
         />
         <Route
-          path="/trabajador/listar/personas"
-          element={logged ? <RegisterWorker /> : <Navigate to="/" />}
+          path={pathPROD + "/trabajador/listar/personas"}
+          element={logged ? <RegisterWorker /> : <Navigate to={pathPROD} />}
         />
       </Routes>
     </Suspense>

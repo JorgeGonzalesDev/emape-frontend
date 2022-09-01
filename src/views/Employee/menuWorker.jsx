@@ -27,7 +27,7 @@ function TabPanel(props) {
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
             aria-labelledby={`simple-tab-${index}`}
-            {...other} 
+            {...other}
         >
             {value === index && (
                 <Box sx={{ p: "20px 0px 0px 0px" }}>
