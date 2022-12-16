@@ -14,8 +14,12 @@ import {
     GridToolbarContainer,
     GridToolbarColumnsButton,
     GridToolbarFilterButton,
-    GridToolbarExport,
+    GridToolbarExportContainer,
+    GridPrintExportMenuItem,
     GridToolbarDensitySelector,
+    gridFilteredSortedRowIdsSelector,
+    gridVisibleColumnFieldsSelector,
+    useGridApiContext,
 } from '@mui/x-data-grid';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
@@ -25,11 +29,14 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { getTipoAcciones } from "../../service/common";
+import { AlertWarning } from "../Alerts";
+
+var XLSX = require("xlsx");
 
 const RegisterAction = (
     { id }
 ) => {
-    
+
     const [fields, setFields] = useState({
         coD_TRAACC: 0,
         coD_TRABAJADOR: id,
@@ -41,10 +48,23 @@ const RegisterAction = (
         feC_INICIO: null,
         feC_TERMINO: null,
     });
+    
+    const defaultErrors = {
+        coD_TRABAJADOR: true,
+        coD_ACCION: true,
+        nuM_REFDOC: true,
+        noM_INSTITUCION: true,
+      };
 
     const [data, setData] = useState([]);
     const levelEducateChild = useRef();
     const [tipoAccion, setTipoAccion] = useState([]);
+    const [inputError, setInputError] = useState({
+        coD_TRABAJADOR: false,
+        coD_ACCION: false,
+        nuM_REFDOC: false,
+        noM_INSTITUCION: false,
+    });
 
     const loadData = async () => {
         const response = await listTrabajadorAcciones(id);
@@ -56,6 +76,40 @@ const RegisterAction = (
             setData(response.listado);
         }
     };
+
+      /*  */
+  const validateFields = () => {
+
+    const copyFields = { ...fields };
+    delete copyFields.coD_TRAACC;
+    delete copyFields.deS_REFERENCIA;
+    delete copyFields.feC_INICIO;
+    delete copyFields.feC_TERMINO;
+
+    let errors = {};
+
+    Object.keys(copyFields).forEach(key => {
+      if (copyFields[key] === '' || copyFields[key] === 0 || !copyFields[key]) {
+        console.log(
+          `El campo ${key} => ${copyFields[key]} no puede estar vacío`
+        );
+        errors[`${key}`] = true;
+      }
+    });
+
+    if (Object.keys(errors).length > 0) {
+      setInputError(errors);
+      AlertWarning("Hay campos obligatorios vacios");
+      return false;
+
+    }
+
+    setInputError(errors);
+
+    return true;
+
+  }
+  /*  */
 
     const destroy = async (event, id) => {
         const resultado = await AlertDelete();
@@ -81,6 +135,7 @@ const RegisterAction = (
             feC_INICIO: null,
             feC_TERMINO: null,
         })
+        setInputError(defaultErrors)
         levelEducateChild.current.handleOpen();
 
     };
@@ -119,14 +174,14 @@ const RegisterAction = (
                     icon={<EditIcon />}
                     label="Edit"
                     onClick={(event) => {
-                        edit(event, cellValues.row.coD_TRAACC);
+                        edit(event, cellValues.row?.coD_TRAACC);
                     }}
                 />,
                 <GridActionsCellItem
                     icon={<DeleteIcon />}
                     label="Delete"
                     onClick={(event) => {
-                        destroy(event, cellValues.row.coD_TRAACC);
+                        destroy(event, cellValues.row?.coD_TRAACC);
                     }}
                 />,
 
@@ -142,14 +197,14 @@ const RegisterAction = (
             headerName: "Fecha",
             width: 160,
             valueGetter: (params) =>
-                `${moment(params.row.feC_ACCION).format("DD/MM/YYYY")}`,
+                `${moment(params.row?.feC_ACCION).format("DD/MM/YYYY")}`,
         },
         {
             field: "Action",
             headerName: "Acción",
             width: 160,
             valueGetter: (params) =>
-                `${params.row.dTipoAcciones.noM_ACCION}`,
+                `${params.row?.dTipoAcciones?.noM_ACCION}`,
         },
         {
             field: 'nuM_REFDOC',
@@ -157,6 +212,74 @@ const RegisterAction = (
             width: 400
         }
     ];
+
+    const downloadExcel = (dataExport) => {
+        var Headers = [["INFORMACIÓN DE ACCIONES LABORALES"]];
+        let nData = [];
+        dataExport.forEach((item) => {
+            nData.push({
+                Código: item?.coD_TRAACC,
+                Fecha: item?.feC_ACCION,
+                Acción: item?.Action,
+                "N° Documento": item?.nuM_REFDOC,
+            });
+        });
+
+        const workSheet = XLSX.utils.json_to_sheet(nData, { origin: "A2" });
+        const workBook = XLSX.utils.book_new();
+
+        const merge = [
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 33 } },
+            { s: { r: 0, c: 34 }, e: { r: 0, c: 37 } },
+        ];
+
+        workSheet["!merges"] = merge;
+
+        XLSX.utils.sheet_add_aoa(workSheet, Headers);
+        XLSX.utils.book_append_sheet(workBook, workSheet, "Acciones Laborales");
+        XLSX.write(workBook, { bookType: "xlsx", type: "buffer" });
+        XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+        XLSX.writeFile(workBook, "ReporteAccionesLaborales.xlsx");
+    };
+
+    const getData = (apiRef) => {
+        const filteredSortedRowIds = gridFilteredSortedRowIdsSelector(apiRef);
+        const visibleColumnsField = gridVisibleColumnFieldsSelector(apiRef);
+        const data = filteredSortedRowIds.map((id) => {
+            const row = {};
+            visibleColumnsField.forEach((field) => {
+                row[field] = apiRef.current.getCellParams(id, field).value;
+            });
+            return row;
+        });
+
+        return data;
+    };
+
+    const ExcelExportMenuItem = (props) => {
+        const apiRef = useGridApiContext();
+
+        const { hideMenu } = props;
+
+        return (
+            <MenuItem
+                onClick={() => {
+                    const data = getData(apiRef);
+                    downloadExcel(data);
+                    hideMenu?.();
+                }}
+            >
+                Excel
+            </MenuItem>
+        );
+    };
+
+    const GridToolbarExport = ({ csvOptions, printOptions, ...other }) => (
+        <GridToolbarExportContainer {...other}>
+            <GridPrintExportMenuItem options={printOptions} />
+            <ExcelExportMenuItem />
+        </GridToolbarExportContainer>
+    );
 
     function CustomToolbar() {
         return (
@@ -168,12 +291,26 @@ const RegisterAction = (
                 <GridToolbarColumnsButton />
                 <GridToolbarFilterButton />
                 <GridToolbarDensitySelector />
-                <GridToolbarExport />
+                <GridToolbarExport
+                    printOptions={{
+                        hideFooter: true,
+                        hideToolbar: true,
+                        fields: [
+                            "coD_TRAACC",
+                            "feC_ACCION",
+                            "Action",
+                            "nuM_REFDOC",
+                        ],
+                    }}
+                />
             </GridToolbarContainer>
         );
     }
 
     const handleFields = async () => {
+
+        const validate = validateFields();
+        if (!validate) return;
 
         const response = await AddOrUpdateTrabajadorAcciones(fields)
 
@@ -211,6 +348,12 @@ const RegisterAction = (
             feC_INICIO: response.listado[0].feC_INICIO,
             feC_TERMINO: response.listado[0].feC_TERMINO,
         })
+        setInputError({
+            coD_TRABAJADOR: false,
+            coD_ACCION: false,
+            nuM_REFDOC: false,
+            noM_INSTITUCION: false,
+        });
         levelEducateChild.current.handleOpen();
     }
 
@@ -238,6 +381,8 @@ const RegisterAction = (
                             label="Tipo"
                             onChange={handleInputChange}
                             value={fields.coD_ACCION}
+                            error={inputError.coD_ACCION}
+
                         >
                             {tipoAccion &&
                                 tipoAccion.map(tipoAccion => (
@@ -253,7 +398,7 @@ const RegisterAction = (
                             <DesktopDatePicker
                                 label="Fecha"
                                 inputFormat="dd-MM-yyyy"
-                                value={fields.feC_ACCION}
+                                value={moment(fields.feC_ACCION).format()}
                                 onChange={e =>
                                     handleInputChangeDate(e, 'feC_ACCION')}
                                 renderInput={(params) => <TextField fullWidth
@@ -271,6 +416,7 @@ const RegisterAction = (
                             label="N° Referencia Doc."
                             name="nuM_REFDOC"
                             size="small"
+                            error={inputError.nuM_REFDOC}
                             InputLabelProps={{
                                 shrink: true
                             }}
@@ -286,6 +432,7 @@ const RegisterAction = (
                             label="Institución"
                             name="noM_INSTITUCION"
                             size="small"
+                            error={inputError.noM_INSTITUCION}
                             InputLabelProps={{
                                 shrink: true
                             }}

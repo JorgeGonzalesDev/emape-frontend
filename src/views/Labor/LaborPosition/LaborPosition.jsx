@@ -53,11 +53,11 @@ const LaborPosition = () => {
   const destroy = async (event, cellValues) => {
     if (
       window.confirm(
-        `Desea eliminar el registro con el id: ${cellValues.row.coD_OCUPLABORAL}?`
+        `Desea eliminar el registro con el id: ${cellValues.row?.coD_OCUPLABORAL}?`
       )
     ) {
       const dataDelete = {
-        coD_OCUPLABORAL: cellValues.row.coD_OCUPLABORAL,
+        coD_OCUPLABORAL: cellValues.row?.coD_OCUPLABORAL,
       };
 
       await deleteOcupacion(dataDelete);
@@ -125,7 +125,6 @@ const LaborPosition = () => {
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
-        <GridToolbarExport />
       </GridToolbarContainer>
     );
   }
@@ -135,7 +134,7 @@ const LaborPosition = () => {
         <div style={{ padding: "50px", display: "flex", height: "100%" }}>
           <div style={{ flexGrow: 1 }}>
             <DataGridDemo
-              id={(row) => row.coD_OCUPLABORAL}
+              id={(row) => row?.coD_OCUPLABORAL}
               rows={data}
               columns={columns}
               toolbar={CustomToolbar}

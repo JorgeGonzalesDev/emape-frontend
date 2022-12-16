@@ -5,7 +5,7 @@ const URL = `${baseURL}/PuestoLaboral`;
 
 /* export const ListPuesto = async () => {
     try {
-      const response = await fetch(`${URL}/Get`);
+      const response = await fetch(`${URL}/Get`, METHOD.GET());
       const data = await response.json();
       return data;
     } catch (err) {
@@ -15,7 +15,7 @@ const URL = `${baseURL}/PuestoLaboral`;
 
 export const getPuestoLaboral = async () => {
     try {
-        const response = await fetch(`${URL}/Get`, METHOD.GET );
+        const response = await fetch(`${URL}/Get`, METHOD.GET());
         const data = await response.json();
         return data;
     } catch (err) {

@@ -17,7 +17,7 @@ const URL = `${baseURL}/OcupacionLaboral`;
   
 export const getOcupacionLaboral = async () => {
     try {
-        const response = await fetch(`${URL}/Get`, METHOD.GET );
+        const response = await fetch(`${URL}/Get`, METHOD.GET());
         const data = await response.json();
         return data;
     } catch (err) {

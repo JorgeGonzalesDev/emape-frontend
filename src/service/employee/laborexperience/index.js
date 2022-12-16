@@ -7,7 +7,7 @@ const URL = `${baseURL}/TrabajadorExperiencia`;
 
 export const listTrabajadorExperiencia = async (id) => {
   try {
-    const response = await fetch(`${URL}/Get/Trabajador/${id}`);
+    const response = await fetch(`${URL}/Get/Trabajador/${id}`, METHOD.GET());
     const data = await response.json();
     return data;
   } catch (err) {
@@ -17,7 +17,7 @@ export const listTrabajadorExperiencia = async (id) => {
 
 export const getTrabajadorExperiencia = async (id) => {
   try {
-    const response = await fetch(`${URL}/Get/${id}`);
+    const response = await fetch(`${URL}/Get/${id}`, METHOD.GET());
     const data = await response.json();
     return data;
   } catch (err) {

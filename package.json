@@ -1,5 +1,5 @@
 {
-  "homepage": "http://172.16.10.47/RRHH/",
+  "homepage": "http://172.16.10.47/RRHHDEV/",
   "name": "frontend-emape-web",
   "version": "0.1.0",
   "private": true,
@@ -17,7 +17,11 @@
     "axios": "^0.27.2",
     "date-fns": "^2.29.1",
     "dayjs": "^1.11.4",
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.0.2",
+    "file-saver": "^2.0.5",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.25",
     "jwt-decode": "^3.1.2",
     "luxon": "^2.5.0",
     "moment": "^2.29.4",
@@ -26,6 +30,7 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-spinners": "^0.13.4",
+    "styled-components": "^5.3.6",
     "sweetalert2": "^11.4.27",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"

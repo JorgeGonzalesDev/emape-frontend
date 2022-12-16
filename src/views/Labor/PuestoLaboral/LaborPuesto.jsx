@@ -8,20 +8,25 @@ import DataGridDemo from "../../../components/Table";
 import { useState, useEffect, useRef } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, Grid, TextField, Stack } from "@mui/material";
+import { Button, Grid, TextField, Stack, MenuItem } from "@mui/material";
 import {
-  GridActionsCellItem,
   GridToolbarContainer,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
-  GridToolbarExport,
+  GridToolbarExportContainer,
+  GridPrintExportMenuItem,
   GridToolbarDensitySelector,
+  gridFilteredSortedRowIdsSelector,
+  gridVisibleColumnFieldsSelector,
+  useGridApiContext,
+
 } from "@mui/x-data-grid";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { AlertDelete } from "../../../components/Alerts";
+import { AlertDelete, AlertWarning } from "../../../components/Alerts";
 import { AlertSuccess, AlertError } from "../../../components/Alerts";
 import IconToolTip from "../../../components/Icons/IconToolTip";
-  
+
+var XLSX = require("xlsx");
 
 const LaborPuesto = () => {
   const defaultfields = {
@@ -35,7 +40,14 @@ const LaborPuesto = () => {
 
   const [data, setData] = useState([]);
   const levelLaborPuesto = useRef();
-  const [detail, setDetail] = useState({});
+
+  const [inputErrors, setInputErrors] = useState({
+    noM_PUESTO: true,
+  })
+
+  const defaultErrors = {
+    noM_PUESTO: false,
+  }
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -62,6 +74,7 @@ const LaborPuesto = () => {
 
   const edit = async (event, row) => {
     setFields(row);
+    setInputErrors(defaultErrors);
     levelLaborPuesto.current.handleOpen();
   };
 
@@ -74,7 +87,41 @@ const LaborPuesto = () => {
     setFields(defaultfields);
     levelLaborPuesto.current.handleOpen();
   };
+
+
+
   /*  */
+
+  const validateFields = () => {
+
+    const copyFields = { ...fields };
+
+    delete copyFields.coD_PUESTO;
+
+    let errors = {};
+
+    Object.keys(copyFields).forEach(key => {
+      if (copyFields[key] === null || copyFields[key] === '' || copyFields[key] === 0 || !copyFields[key]) {
+
+        console.log(
+          `El campo ${key} => ${copyFields[key]} no puede estar vacío`
+        );
+
+        errors[`${key}`] = true;
+      }
+    });
+
+    if (Object.keys(errors).length > 0) {
+
+      setInputErrors(errors);
+      AlertWarning("Hay campos obligatorios vacios");
+      return false;
+    }
+
+    setInputErrors(errors);
+    return true;
+
+  }
 
   const columns = [
     {
@@ -85,7 +132,7 @@ const LaborPuesto = () => {
           edit(event, cellValues.row);
         }} />,
         <IconToolTip text="Delete" icon={<DeleteIcon />} action={(event) => {
-          destroy(event, cellValues.row.coD_PUESTO);
+          destroy(event, cellValues.row?.coD_PUESTO);
         }} />,
       ],
     },
@@ -102,18 +149,88 @@ const LaborPuesto = () => {
   ];
 
   const saveLevelLaborPuesto = async () => {
-    const response = await AddOrUpdatePuesto(fields)
-    if(response.code === 0){
-      levelLaborPuesto.current.handleOpen();
-      await loadData();
-      levelLaborPuesto.current.handleClose();
-      await AlertSuccess(`${response.message}`)
-      setFields(defaultfields)
+    if (validateFields()) {
+      const response = await AddOrUpdatePuesto(fields)
+      if (response.code === 0) {
+        levelLaborPuesto.current.handleOpen();
+        await loadData();
+        levelLaborPuesto.current.handleClose();
+        await AlertSuccess(`${response.message}`)
+        setFields(defaultfields)
+      } else {
+        levelLaborPuesto.current.handleClose();
+        return await AlertError(`${response.message}`)
+      }
     } else {
-      levelLaborPuesto.current.handleClose();
-      return await AlertError(`${response.message}`)
+      return
     }
+
   };
+
+  const downloadExcel = (dataExport) => {
+    var Headers = [["INFORMACIÓN DE PUESTO LABORAL"]];
+    let nData = [];
+    dataExport.forEach((item) => {
+      nData.push({
+        Código: item?.coD_PUESTO,
+        Nombre: item?.noM_PUESTO,
+      });
+    });
+
+    const workSheet = XLSX.utils.json_to_sheet(nData, { origin: "A2" });
+    const workBook = XLSX.utils.book_new();
+
+    const merge = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 33 } },
+      { s: { r: 0, c: 34 }, e: { r: 0, c: 37 } },
+    ];
+
+    workSheet["!merges"] = merge;
+
+    XLSX.utils.sheet_add_aoa(workSheet, Headers);
+    XLSX.utils.book_append_sheet(workBook, workSheet, "Puesto Laboral");
+    XLSX.write(workBook, { bookType: "xlsx", type: "buffer" });
+    XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+    XLSX.writeFile(workBook, "ReportePuestoLaboral.xlsx");
+  };
+
+  const getData = (apiRef) => {
+    const filteredSortedRowIds = gridFilteredSortedRowIdsSelector(apiRef);
+    const visibleColumnsField = gridVisibleColumnFieldsSelector(apiRef);
+    const data = filteredSortedRowIds.map((id) => {
+      const row = {};
+      visibleColumnsField.forEach((field) => {
+        row[field] = apiRef.current.getCellParams(id, field).value;
+      });
+      return row;
+    });
+
+    return data;
+  };
+
+  const ExcelExportMenuItem = (props) => {
+    const apiRef = useGridApiContext();
+
+    const { hideMenu } = props;
+
+    return (
+      <MenuItem
+        onClick={() => {
+          const data = getData(apiRef);
+          downloadExcel(data);
+          hideMenu?.();
+        }}
+      >
+        Excel
+      </MenuItem>
+    );
+  };
+
+  const GridToolbarExport = ({ csvOptions, printOptions, ...other }) => (
+    <GridToolbarExportContainer {...other}>
+      <ExcelExportMenuItem />
+    </GridToolbarExportContainer>
+  );
 
   function CustomToolbar() {
     return (
@@ -125,7 +242,16 @@ const LaborPuesto = () => {
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
-        <GridToolbarExport />
+        <GridToolbarExport
+          printOptions={{
+            hideFooter: true,
+            hideToolbar: true,
+            fields: [
+              "coD_PUESTO",
+              "noM_PUESTO",
+            ],
+          }}
+        />
       </GridToolbarContainer>
     );
   }
@@ -141,7 +267,7 @@ const LaborPuesto = () => {
           </div>
         </Stack>
         <DataGridDemo
-          id={(row) => row.coD_PUESTO}
+          id={(row) => row?.coD_PUESTO}
           rows={data}
           columns={columns}
           toolbar={CustomToolbar}
@@ -158,6 +284,7 @@ const LaborPuesto = () => {
               onChange={handleInputChange}
               value={fields.noM_PUESTO}
               fullWidth
+              error={inputErrors.noM_PUESTO}
               label="Nombre"
             />
           </Grid>

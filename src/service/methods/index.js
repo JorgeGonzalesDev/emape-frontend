@@ -1,10 +1,16 @@
+const token = localStorage.getItem("token").replace(/['"]+/g, '');
+// const token  = "d"
+
 const GET = () => {
+
     return {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token
         },
     };
+
 };
 
 const POST = body => {
@@ -13,6 +19,7 @@ const POST = body => {
         headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
+            Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify(body),
     };
@@ -22,8 +29,8 @@ const POST_FORM_DATA = body => {
     return {
         method: 'POST',
         headers: {
-            Accept: 'application/json',
-        },
+            Authorization: 'Bearer ' + token
+                },
         body: body,
     };
 };
@@ -55,6 +62,7 @@ const DELETE = (body) => {
         headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
+            Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify(body),
     };

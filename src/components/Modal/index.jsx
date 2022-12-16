@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { forwardRef, useState, useImperativeHandle } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, Stack, Tooltip, IconButton  } from '@mui/material';
+import { Button, Stack, Tooltip, IconButton } from '@mui/material';
 
 const MUIModal = forwardRef(({ children, show = false }, ref) => {
 
@@ -46,9 +46,9 @@ const MUIModal = forwardRef(({ children, show = false }, ref) => {
             <Box sx={style}>
                 <Stack direction="row"
                     justifyContent='right'
-                    spacing={1} xs={{ mb: 1, display: 'flex' }}>
+                >
                     <Tooltip title="Cerrar">
-                        <IconButton onClick={() => {handleClose();}}>
+                        <IconButton onClick={() => { handleClose(); }}>
                             <CloseIcon />
                         </IconButton>
                     </Tooltip>

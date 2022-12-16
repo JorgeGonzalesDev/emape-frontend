@@ -43,7 +43,7 @@ const PersonalAction = () => {
           </div>
         </Stack>
             <DataGridDemo
-              id={(row) => row.code}
+              id={(row) => row?.code}
               rows={rows}
               columns={columns}
             />

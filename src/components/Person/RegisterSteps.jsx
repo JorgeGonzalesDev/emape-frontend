@@ -15,6 +15,7 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { AlertError, AlertSuccess, AlertWarning } from "../Alerts";
+import { PATH } from "../../service/config";
 
 const RegisterSteps = () => {
 
@@ -55,7 +56,9 @@ const RegisterSteps = () => {
     nuM_CELULAR: null,
     txT_EMAIL: null,
     txT_OBSERV: null,
+    coD_VER_NUM_DOC: null
   });
+
 
   const defaultErrors = {
     nuM_DOC: true,
@@ -68,9 +71,6 @@ const RegisterSteps = () => {
   };
 
   const [inputError, setInputError] = useState(defaultErrors);
-
-  const pathPROD = "/RRHH"
-  // const pathPROD = ""
 
   const navigate = useNavigate();
 
@@ -98,6 +98,7 @@ const RegisterSteps = () => {
     delete copyFields.txT_EMAIL;
     delete copyFields.txT_OBSERV;
     delete copyFields.nuM_RUC;
+    delete copyFields.coD_VER_NUM_DOC;
 
     let errors = {};
 
@@ -122,6 +123,10 @@ const RegisterSteps = () => {
     return true;
 
   }
+
+  const pathPROD = PATH
+  // const pathPROD = ""
+
 
   const loadData = async () => {
     if (id) {
@@ -165,6 +170,7 @@ const RegisterSteps = () => {
           nuM_CELULAR: response.listado[0]["nuM_CELULAR"],
           txT_EMAIL: response.listado[0]["txT_EMAIL"],
           txT_OBSERV: response.listado[0]["txT_OBSERV"],
+          coD_VER_NUM_DOC: response.listado[0]["coD_VER_NUM_DOC"]
         });
         getProvinces(response.listado[0]["coD_NACDPT"]);
         getDistricts(
@@ -177,7 +183,7 @@ const RegisterSteps = () => {
           response.listado[0]["coD_DIRPRV"]
         );
       } else {
-        return (window.location = `${pathPROD}/maestro/persona`);
+        return (window.location = pathPROD + "/maestro/persona");
       }
 
     }
@@ -284,6 +290,8 @@ const RegisterSteps = () => {
       })
       return getDistrictsDir(fields.coD_DIRDPT, value);
     }
+
+
   };
 
   const handleInputChangeDate = (value, name) => {
@@ -304,7 +312,7 @@ const RegisterSteps = () => {
     const response = await AddOrUpdatePerson(fields);
     if (response.code === 0) {
       await AlertSuccess(`${response.message}`)
-      return navigate(`${pathPROD}/maestro/persona`);
+      return navigate(pathPROD + "/maestro/persona");
     } else {
       await AlertError(`${response.message}`)
     }
@@ -318,13 +326,14 @@ const RegisterSteps = () => {
   const generalRender = () => {
     return (
       <>
-        <Grid item md={12} sm={12}>
+        <Grid item md={12} sm={12}  style={{textAlign:'center'}}>
           <span style={{ fontSize: 25, fontWeight: 'bolder' }} >{id ? "Actualizar Persona" : "Registrar Persona"}</span>
           <p style={{ color: 'red', fontSize: 15 }}>(Los campos con * son obligatorios)</p>
         </Grid>
-        <Grid item md={12} sm={12}>
+        <Grid item md={8} sm={12}>
           <h3>Datos Generales</h3>
         </Grid>
+        <Grid item md={12} />
         <Grid item md={2} sm={12} xs={12}>
           <TextField
             name="inD_ESTADO"
@@ -347,6 +356,40 @@ const RegisterSteps = () => {
             </MenuItem>
           </TextField>
         </Grid>
+        <Grid item md={2} xs={12}>
+          <TextField
+            name="inD_SEXO"
+            fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
+            select
+            label="Sexo *"
+            size="small"
+            error={inputError.inD_SEXO}
+            onChange={handleInputChange}
+            value={fields.inD_SEXO}
+          >
+            <MenuItem value="M">Masculino</MenuItem>
+            <MenuItem value="F">Femenino</MenuItem>
+          </TextField>
+        </Grid>
+        <Grid item md={2} sm={12} xs={12}>
+          <TextField
+            name="coD_VER_NUM_DOC"
+            fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
+            label="Verificación DNI"
+            type="text"
+            size="small"
+            inputProps={{ maxLength: 2 }}
+            onChange={handleInputChange}
+            value={fields.coD_VER_NUM_DOC}
+          />
+        </Grid>
+        <Grid item md={2}/>
         <Grid item md={12} />
         <Grid item md={2} sm={12} xs={12}>
           <TextField
@@ -451,30 +494,12 @@ const RegisterSteps = () => {
             value={fields.noM_PERS}
           />
         </Grid>
-        <Grid item md={12} />
-        <Grid item md={2} xs={12}>
-          <TextField
-            name="inD_SEXO"
-            fullWidth
-            InputLabelProps={{
-              shrink: true
-            }}
-            select
-            label="Sexo *"
-            size="small"
-            error={inputError.inD_SEXO}
-            onChange={handleInputChange}
-            value={fields.inD_SEXO}
-          >
-            <MenuItem value="M">Masculino</MenuItem>
-            <MenuItem value="F">Femenino</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item md={12} />
-        <Grid item md={12} sm={12}>
+        <Grid item md={12}/>
+        <Grid item md={8} sm={12}>
           <h3>Datos de Nacimiento</h3>
         </Grid>
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item md={12} />
+        <Grid item md={2} sm={12} xs={12}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
               label="Fecha de nacimiento *"
@@ -488,7 +513,6 @@ const RegisterSteps = () => {
             />
           </LocalizationProvider>
         </Grid>
-        <Grid item md={12} />
         <Grid item md={2} xs={12}>
           <TextField
             name="coD_NACDPT"
@@ -564,12 +588,14 @@ const RegisterSteps = () => {
               ))}
           </TextField>
         </Grid>
+
         <Grid item md={12} />
         {/* espacio */}
 
-        <Grid item md={12} sm={12}>
+        <Grid item md={8} sm={12}>
           <h3>Datos de Dirección</h3>
         </Grid>
+        <Grid item md={12} />
         <Grid item md={4} sm={12} xs={12}>
           <TextField
             fullWidth
@@ -603,7 +629,7 @@ const RegisterSteps = () => {
           />
         </Grid>
         <Grid item md={12} xs={12} />
-        <Grid item md={2} xs={12}>
+        <Grid item md={2.5} xs={12}>
           <TextField
             name="coD_DIRDPT"
             fullWidth
@@ -628,7 +654,7 @@ const RegisterSteps = () => {
               ))}
           </TextField>
         </Grid>
-        <Grid item md={2} xs={12}>
+        <Grid item md={2.5} xs={12}>
           <TextField
             fullWidth
             InputLabelProps={{
@@ -654,7 +680,7 @@ const RegisterSteps = () => {
               ))}
           </TextField>
         </Grid>
-        <Grid item md={2} xs={12}>
+        <Grid item md={3} xs={12}>
           <TextField
             fullWidth
             InputLabelProps={{
@@ -683,9 +709,10 @@ const RegisterSteps = () => {
 
         {/* espacio */}
 
-        <Grid item md={12} sm={12} xs={12}>
+        <Grid item md={8} sm={12} xs={12}>
           <h3>Datos Extras</h3>
         </Grid>
+        <Grid item md={12} />
         <Grid item md={2} xs={12}>
           <TextField
             name="coD_ESTCIVIL"
@@ -708,7 +735,7 @@ const RegisterSteps = () => {
               ))}
           </TextField>
         </Grid>
-        <Grid item md={4} xs={12}>
+        <Grid item md={3} xs={12}>
           <TextField
             fullWidth
             InputLabelProps={{
@@ -733,7 +760,7 @@ const RegisterSteps = () => {
               ))}
           </TextField>
         </Grid>
-        <Grid item md={4} xs={12}>
+        <Grid item md={3} xs={12}>
           <TextField
             fullWidth
             InputLabelProps={{
@@ -759,7 +786,7 @@ const RegisterSteps = () => {
           </TextField>
         </Grid>
         <Grid item md={12} xs={12} />
-        <Grid item md={2} sm={12} xs={12}>
+        <Grid item md={2.5} sm={12} xs={12}>
           <TextField
             fullWidth
             InputLabelProps={{
@@ -775,7 +802,7 @@ const RegisterSteps = () => {
             error={inputError.nuM_TLF}
           />
         </Grid>
-        <Grid item md={2} sm={12} xs={12}>
+        <Grid item md={2.5} sm={12} xs={12}>
           <TextField
             fullWidth
             InputLabelProps={{
@@ -808,7 +835,7 @@ const RegisterSteps = () => {
           />
         </Grid>
         <Grid item md={12} xs={12} />
-        <Grid item md={7} xs={12}>
+        <Grid item md={8} xs={12}>
           <TextField
             label="Observaciones"
             multiline
@@ -817,7 +844,7 @@ const RegisterSteps = () => {
             InputLabelProps={{
               shrink: true
             }}
-            rows={4}
+            rows={2}
             name="txT_OBSERV"
             size="small"
             onChange={handleInputChange}
@@ -827,7 +854,7 @@ const RegisterSteps = () => {
         </Grid>
         {/* f */}
         <Grid item md={12} xs={12} />
-        <Grid item md={12} xs={12} sx={{ marginTop: 2 }}>
+        <Grid item md={8} xs={12} sx={{ marginTop: 2 }}>
           <Button onClick={() => {
             navigateBack();
           }} variant="contained">
@@ -835,7 +862,7 @@ const RegisterSteps = () => {
             Regresar
           </Button>
           <Button style={{ marginLeft: 10 }} onClick={savePerson} variant="contained" >
-            Registrar
+            Guardar
           </Button>
         </Grid>
       </>
@@ -844,7 +871,7 @@ const RegisterSteps = () => {
   return (
 
     <>
-      <Grid container spacing={1}>
+      <Grid container spacing={1} justifyContent='center' justifyItems='center'>
         {generalRender()}
       </Grid>
     </>

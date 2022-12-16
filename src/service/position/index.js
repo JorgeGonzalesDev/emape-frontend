@@ -4,7 +4,7 @@ const URL = `${baseURL}/Cargo`;
 
 export const getCargo = async () => {
   try {
-    const response = await fetch(`${URL}/Get`);
+    const response = await fetch(`${URL}/Get`, METHOD.GET());
     const data = await response.json();
     return data;
   } catch (err) {

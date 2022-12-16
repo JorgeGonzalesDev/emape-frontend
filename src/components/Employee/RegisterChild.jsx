@@ -13,16 +13,22 @@ import {
     GridToolbarContainer,
     GridToolbarColumnsButton,
     GridToolbarFilterButton,
-    GridToolbarExport,
+    GridToolbarExportContainer,
+    GridPrintExportMenuItem,
     GridToolbarDensitySelector,
+    gridFilteredSortedRowIdsSelector,
+    gridVisibleColumnFieldsSelector,
+    useGridApiContext,
 } from "@mui/x-data-grid";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { listPerson } from "../../service/person";
 import { getTipoPariente } from "../../service/common";
 import { AddOrUpdateFamWorker } from "../../service/worker";
+import { AlertWarning } from "../../components/Alerts";
+
+var XLSX = require("xlsx");
 
 const RegisterSteps = ({
-    back,
     id,
 }) => {
 
@@ -36,7 +42,17 @@ const RegisterSteps = ({
                 <GridToolbarColumnsButton />
                 <GridToolbarFilterButton />
                 <GridToolbarDensitySelector />
-                <GridToolbarExport />
+                <GridToolbarExport
+                printOptions={{
+                    hideFooter: true,
+                    hideToolbar: true,
+                    fields: [
+                    "coD_TRAFAM",
+                    "full_name",
+                    "Parentesco",
+                    ],
+                }}
+                />
             </GridToolbarContainer>
         );
     }
@@ -53,12 +69,27 @@ const RegisterSteps = ({
         "prC_JUDICIAL": null,
         "coD_CTABCO": null,
         "coD_BANCO": null,
-        "nuM_CCI": null
+        "nuM_CCI": null,
+        "inD_DISCAPACIDAD": null,
+        "inD_ESTUDIO": null,
+        "txT_OBSERV": null
     });
+
+    const defaultErrors = {
+        /* colocar campos que son obligatorios true*/
+        coD_TRABAJADOR: true,
+        coD_PERS: true,
+        coD_TIPPARIENTE: true,
+      };
 
     const levelEducateChild = useRef();
     const [data, setData] = useState([]);
     const [data2, setData2] = useState([]);
+    const [inputError, setInputError] = useState({
+        coD_TRABAJADOR: false,
+        coD_PERS: false,
+        coD_TIPPARIENTE: false,
+      });
     const [tipoPariente, setTipoPariente] = useState([]);
     const loadData = async () => {
         const response = await getFamWorker(id);
@@ -73,14 +104,62 @@ const RegisterSteps = ({
         setData2(response2.listado);
     }
 
+    const validateFields = () => {
+
+        const copyFields = { ...fields };
+        delete copyFields.coD_TRAFAM;
+        delete copyFields.inD_DEPENDE;
+        delete copyFields.inD_JUDICIAL;
+        delete copyFields.inD_CALCULO;
+        delete copyFields.moN_FIJO;
+        delete copyFields.prC_JUDICIAL;
+        delete copyFields.coD_CTABCO;
+        delete copyFields.coD_BANCO;
+        delete copyFields.nuM_CCI;
+        delete copyFields.inD_DISCAPACIDAD;
+        delete copyFields.inD_ESTUDIO;
+        delete copyFields.txT_OBSERV;
+    
+        let errors = {};
+    
+        Object.keys(copyFields).forEach(key => {
+          if (copyFields[key] === '' || copyFields[key] === 0 || !copyFields[key]) {
+            console.log(
+              `El campo ${key} => ${copyFields[key]} no puede estar vacío`
+            );
+            errors[`${key}`] = true;
+          }
+        });
+    
+        if (Object.keys(errors).length > 0) {
+          setInputError(errors);
+          AlertWarning("Hay campos obligatorios vacios");
+          return false;
+    
+        }
+    
+        setInputError(errors);
+    
+        return true;
+    
+      }
+
     const edit = async (event, id) => {
         const response = await getOneFamWorker(id);
+        setInputError({
+            coD_TRABAJADOR: false,
+            coD_PERS: false,
+            coD_TIPPARIENTE: false,
+        })
         setNamePerson(`${response.listado[0].dPersona.deS_APELLP} ${response.listado[0].dPersona.deS_APELLM} ${response.listado[0].dPersona.noM_PERS}`)
         fields.coD_TRAFAM = response.listado[0].coD_TRAFAM
         fields.coD_PERS = response.listado[0].coD_PERS
         fields.coD_TIPPARIENTE = response.listado[0].coD_TIPPARIENTE
         fields.inD_DEPENDE = response.listado[0].inD_DEPENDE
         fields.inD_JUDICIAL = response.listado[0].inD_JUDICIAL
+        fields.inD_DISCAPACIDAD = response.listado[0].inD_DISCAPACIDAD
+        fields.inD_ESTUDIO = response.listado[0].inD_ESTUDIO
+        fields.txT_OBSERV = response.listado[0].txT_OBSERV
         levelEducateChild.current.handleOpen();
     }
 
@@ -127,13 +206,19 @@ const RegisterSteps = ({
         fields.coD_CTABCO = null
         fields.coD_BANCO = null
         fields.nuM_CCI = null
+        fields.inD_DISCAPACIDAD = null
+        fields.inD_ESTUDIO = null
+        fields.txT_OBSERV = null
+        setInputError(defaultErrors)
         levelEducateChild.current.handleOpen();
     };
 
     const [namePerson, setNamePerson] = useState("");
 
     const handleFields = async () => {
-
+        const validate = validateFields();
+        if (!validate) return;
+        
         const response = await AddOrUpdateFamWorker(fields)
 
         if (response.code === 0) {
@@ -152,6 +237,9 @@ const RegisterSteps = ({
             fields.coD_CTABCO = null
             fields.coD_BANCO = null
             fields.nuM_CCI = null
+            fields.inD_DISCAPACIDAD = null
+            fields.inD_ESTUDIO = null
+            fields.txT_OBSERV = null
 
         } else {
             levelEducateChild.current.handleClose();
@@ -168,7 +256,7 @@ const RegisterSteps = ({
             getActions: (cellValues) => [
                 <GridActionsCellItem
                     onClick={async () => {
-                        setNamePerson(`${cellValues.row.deS_APELLP} ${cellValues.row.deS_APELLM} ${cellValues.row.noM_PERS}`)
+                        setNamePerson(`${cellValues.row?.deS_APELLP} ${cellValues.row?.deS_APELLM} ${cellValues.row?.noM_PERS}`)
                         fields.coD_PERS = cellValues.row.coD_PERS
                     }}
                     icon={<AddCircleOutlineIcon />} label="Edit" />
@@ -184,12 +272,12 @@ const RegisterSteps = ({
             headerName: "Apellidos y Nombres",
             width: 400,
             valueGetter: (params) =>
-                `${params.row.deS_APELLP || ""} ${params.row.deS_APELLM || ""} ${params.row.noM_PERS || ""
+                `${params.row?.deS_APELLP || ""} ${params.row?.deS_APELLM || ""} ${params.row?.noM_PERS || ""
                 }`,
         },
         {
             field: "nuM_DOC",
-            headerName: "Documento",
+            headerName: "DNI",
             width: 160,
         }
     ];
@@ -204,7 +292,7 @@ const RegisterSteps = ({
                 <Tooltip title="Editar">
                     <IconButton
                         onClick={(event) => {
-                            edit(event, cellValues.row.coD_TRAFAM);
+                            edit(event, cellValues.row?.coD_TRAFAM);
                         }}>
                         <EditIcon />
                     </IconButton>
@@ -212,7 +300,7 @@ const RegisterSteps = ({
                 ,
                 <Tooltip title="Desactivar">
                     <IconButton onClick={(event) => {
-                        destroy(event, cellValues.row.coD_TRAFAM);
+                        destroy(event, cellValues.row?.coD_TRAFAM);
                     }}>
                         <PersonOffIcon />
                     </IconButton>
@@ -233,12 +321,80 @@ const RegisterSteps = ({
         },
         {
             field: "Parentesco",
-            headerName: "Documento",
+            headerName: "Parentesco",
             width: 160,
             valueGetter: (params) =>
                 `${params.row?.dTipoPariente?.noM_TIPPARIENTE}`
         },
     ];
+
+    
+  const downloadExcel = (dataExport) => {
+    var Headers = [["INFORMACIÓN DE CARGA FAMILIAR"]];
+    let nData = [];
+    dataExport.forEach((item) => {
+      nData.push({
+        Código: item?.coD_TRAFAM,
+        "Apellidos y nombres": item?.full_name,
+        Parentesco: item?.Parentesco,
+      });
+    });
+
+    const workSheet = XLSX.utils.json_to_sheet(nData, { origin: "A2" });
+    const workBook = XLSX.utils.book_new();
+
+    const merge = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 33 } },
+      { s: { r: 0, c: 34 }, e: { r: 0, c: 37 } },
+    ];
+
+    workSheet["!merges"] = merge;
+
+    XLSX.utils.sheet_add_aoa(workSheet, Headers);
+    XLSX.utils.book_append_sheet(workBook, workSheet, "Carga Familiar");
+    XLSX.write(workBook, { bookType: "xlsx", type: "buffer" });
+    XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+    XLSX.writeFile(workBook, "ReporteCargaFamiliar.xlsx");
+  };
+
+  const getData = (apiRef) => {
+    const filteredSortedRowIds = gridFilteredSortedRowIdsSelector(apiRef);
+    const visibleColumnsField = gridVisibleColumnFieldsSelector(apiRef);
+    const data = filteredSortedRowIds.map((id) => {
+      const row = {};
+      visibleColumnsField.forEach((field) => {
+        row[field] = apiRef.current.getCellParams(id, field).value;
+      });
+      return row;
+    });
+
+    return data;
+  };
+
+  const ExcelExportMenuItem = (props) => {
+    const apiRef = useGridApiContext();
+
+    const { hideMenu } = props;
+
+    return (
+      <MenuItem
+        onClick={() => {
+          const data = getData(apiRef);
+          downloadExcel(data);
+          hideMenu?.();
+        }}
+      >
+        Excel
+      </MenuItem>
+    );
+  };
+
+  const GridToolbarExport = ({ csvOptions, printOptions, ...other }) => (
+    <GridToolbarExportContainer {...other}>
+      <GridPrintExportMenuItem options={printOptions} />
+      <ExcelExportMenuItem />
+    </GridToolbarExportContainer>
+  );
 
     return (
         <>
@@ -264,6 +420,7 @@ const RegisterSteps = ({
                             InputLabelProps={{
                                 readOnly: true
                             }}
+                            error={inputError.coD_PERS}
                             label="Nombres y apellidos"
                             type="text"
                             size="small"
@@ -277,6 +434,7 @@ const RegisterSteps = ({
                             InputLabelProps={{
                                 shrink: true
                             }}
+                            error={inputError.coD_TIPPARIENTE}
                             size="small"
                             select
                             label="Parentesco"
@@ -342,6 +500,70 @@ const RegisterSteps = ({
                             </MenuItem>
                         </TextField>
                     </Grid>
+                    <Grid
+                        item md={2} sm={12} xs={12}>
+                        <TextField
+                            name="inD_DISCAPACIDAD"
+                            fullWidth
+                            InputLabelProps={{
+                                shrink: true
+                            }}
+                            size="small"
+                            select
+                            label="Discapacidad"
+                            type="text"
+                            onChange={handleInputChange}
+                            value={fields.inD_DISCAPACIDAD}
+                        >
+                            <MenuItem value="1">
+                                Si
+                            </MenuItem>
+                            <MenuItem value="0">
+                                No
+                            </MenuItem>
+                        </TextField>
+                    </Grid>
+                    <Grid
+                        item md={2} sm={12} xs={12}>
+                        <TextField
+                            name="inD_ESTUDIO"
+                            fullWidth
+                            InputLabelProps={{
+                                shrink: true
+                            }}
+                            size="small"
+                            select
+                            label="Estudia"
+                            type="text"
+                            onChange={handleInputChange}
+                            value={fields.inD_ESTUDIO}
+                        >
+
+                            <MenuItem value="1">
+                                Si
+                            </MenuItem>
+                            <MenuItem value="0">
+                                No
+                            </MenuItem>
+                        </TextField>
+                    </Grid>
+                    <Grid item md={12} />
+                    <Grid item md={12} sm={12} xs={12}>
+                        <TextField
+                            name="txT_OBSERV"
+                            multiline
+                            fullWidth
+                            InputLabelProps={{
+                                readOnly: true
+                            }}
+                            inputProps={{ maxLength: 100 }}
+                            label="Observaciones"
+                            type="text"
+                            onChange={handleInputChange}
+                            size="small"
+                            value={fields.txT_OBSERV}
+                        />
+                    </Grid>
                     <Grid item md={12} />
                     <Grid item md={12}>
                         <Button onClick={handleFields} variant="contained" >
@@ -351,7 +573,7 @@ const RegisterSteps = ({
                     <Grid item md={12} />
                     <Grid item md={12}>
                         <DataGridDemo
-                            height='60vh'
+                            height='45vh'
                             id={(row) => row.coD_PERS}
                             rows={data2}
                             columns={columns2}

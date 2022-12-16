@@ -2,10 +2,9 @@ import { baseURL } from '../config';
 import * as METHOD from '../methods';
 const URL = `${baseURL}/Persona`;
 
-
 export const listPerson = async () => {
   try {
-    const response = await fetch(`${URL}/Get`);
+    const response = await fetch(`${URL}/Get`, METHOD.GET());
     const data = await response.json();
     return data;
   } catch (err) {
@@ -15,7 +14,7 @@ export const listPerson = async () => {
 
 export const listPersonNoWorker = async () => {
   try {
-    const response = await fetch(`${URL}/GetNoTrabajador`);
+    const response = await fetch(`${URL}/GetNoTrabajador`, METHOD.GET());
     const data = await response.json();
     return data;
   } catch (err) {
@@ -25,7 +24,7 @@ export const listPersonNoWorker = async () => {
 
 export const getPerson = async (id) => {
   try {
-    const response = await fetch(`${URL}/Get/${id}`);
+    const response = await fetch(`${URL}/Get/${id}`, METHOD.GET());
     const data = await response.json();
     return data;
   } catch (err) {

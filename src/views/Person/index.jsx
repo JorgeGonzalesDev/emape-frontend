@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
+import { PATH } from "../../service/config";
 import { Button, MenuItem, Stack } from "@mui/material";
 import {
   GridToolbarContainer,
@@ -55,13 +56,13 @@ const Person = ({
       disableExport: false,
       getActions: (cellValues) => [
         <Link
-          to={`${pathPROD}/maestro/persona/registrar/${cellValues.row.coD_PERS}`}
+          to={ pathPROD + `/maestro/persona/registrar/${cellValues.row?.coD_PERS}`}
           style={{ textDecoration: "none" }}
         >
           <IconToolTip text="Editar" icon={<EditIcon />} />
         </Link>,
         <IconToolTip action={(event) => {
-          destroy(event, cellValues.row.coD_PERS);
+          destroy(event, cellValues.row?.coD_PERS);
         }} text="Desactivar" icon={<PersonOffIcon />} />
       ],
     },
@@ -75,7 +76,7 @@ const Person = ({
       headerName: "Apellidos y Nombres",
       width: 400,
       valueGetter: (params) =>
-        `${params.row.deS_APELLP || ""} ${params.row.deS_APELLM || ""} ${params.row.noM_PERS || ""
+        `${params.row?.deS_APELLP || ""} ${params.row?.deS_APELLM || ""} ${params.row?.noM_PERS || ""
         }`,
     },
     {
@@ -88,21 +89,26 @@ const Person = ({
       headerName: "Nacimiento",
       width: 160,
       valueGetter: (params) =>
-        `${moment(params.row.feC_NACIM).format("DD/MM/YYYY")}`,
+        `${moment(params.row?.feC_NACIM).format("DD/MM/YYYY")}`,
     },
     {
       field: "inD_SEXO",
       headerName: "Sexo",
       width: 130,
       valueGetter: (params) =>
-        `${params.row.inD_SEXO === "M" ? "Masculino" : "Femenino"}`,
+        `${params.row?.inD_SEXO === "M" ? "Masculino" : "Femenino"}`,
     },
     {
       field: "inD_ESTADO",
       headerName: "Estado",
       width: 130,
       valueGetter: (params) =>
-        `${params.row.inD_ESTADO === "A" ? "Activo" : "Inactivo"}`,
+        `${params.row?.inD_ESTADO === "A" ? "Activo" : "Inactivo"}`,
+    },
+    {
+      field: "coD_VER_NUM_DOC",
+      headerName: "Verificación DNI",
+      width:130,
     },
   ];
 
@@ -176,14 +182,14 @@ const Person = ({
     </GridToolbarExportContainer>
   );
 
-  const pathPROD = "/RRHH"
-  // const pathPROD = ""
+  const pathPROD = PATH
+  
 
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
         <Link
-          to={pathPROD + "/maestro/persona/registrar"}
+          to={ pathPROD + "/maestro/persona/registrar"}
           style={{ textDecoration: "none" }}
         >
           <Button size="small" variant="text">
@@ -219,11 +225,11 @@ const Person = ({
           spacing={1} xs={{ mb: 1, display: 'flex' }}
         >
           <div>
-            <h1>Personas</h1>
+            <h1>Personas {view ? "Visualizar" : ""}</h1>
           </div>
         </Stack>
         <DataGridDemo
-          id={(row) => row.coD_PERS}
+          id={(row) => row?.coD_PERS}
           rows={data}
           columns={columns}
           toolbar={CustomToolbar}

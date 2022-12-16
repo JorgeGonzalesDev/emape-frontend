@@ -44,7 +44,6 @@ TabPanel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-
 export default function BasicTabs() {
 
     const [value, setValue] = useState(0);
@@ -91,7 +90,7 @@ export default function BasicTabs() {
             coD_CUSPP: response.listado[0]['coD_CUSPP'],
             inD_REGLABORAL: response.listado[0]['inD_REGLABORAL'],
             inD_REGPENSION: response.listado[0]['inD_REGPENSION'],
-            //COD_TURNO: response.listado[0]['COD_TURNO'],
+            coD_TURNO: response.listado[0]['coD_TURNO'],
             coD_ESSALUD: response.listado[0]['coD_ESSALUD'],
             feC_CUSPP: response.listado[0]['feC_CUSPP'],
             coD_SEGSALUD: response.listado[0]['coD_SEGSALUD'],
@@ -135,7 +134,7 @@ export default function BasicTabs() {
                 spacing={1}
                 style={{ marginBottom: 30 }}
             >
-                <span style={{ fontSize: 20, fontWeight: "bolder" }}>Trabajador: {dataPerson.deS_APELLP} {dataPerson.deS_APELLM} {dataPerson.noM_PERS}</span>
+                <span style={{ fontSize: 20, fontWeight: "bolder" }}>Trabajador:</span> <span style={{ fontSize: 20 }}>{dataPerson.deS_APELLP} {dataPerson.deS_APELLM} {dataPerson.noM_PERS}</span>
             </Stack>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">

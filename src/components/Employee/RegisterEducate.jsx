@@ -11,8 +11,12 @@ import {
     GridToolbarContainer,
     GridToolbarColumnsButton,
     GridToolbarFilterButton,
-    GridToolbarExport,
+    GridToolbarExportContainer,
+    GridPrintExportMenuItem,
     GridToolbarDensitySelector,
+    gridFilteredSortedRowIdsSelector,
+    gridVisibleColumnFieldsSelector,
+    useGridApiContext,
 } from '@mui/x-data-grid';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
@@ -22,6 +26,9 @@ import { AlertSuccess, AlertError } from "../Alerts";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AlertWarning } from "../../components/Alerts";
+
+var XLSX = require("xlsx");
 
 const RegisterEducate = (
     { id }
@@ -46,11 +53,71 @@ const RegisterEducate = (
         coD_USUREG: 269
     });
 
+    const defaultErrors = {
+        coD_TRABAJADOR: true,
+        coD_ESTUDIO: true,
+        noM_ESPECIALIDAD: true,
+    };
+
     const [data, setData] = useState([]);
     const [entidadExt, setEntidadExt] = useState([]);
     const [tipoEstudios, setTipoEstudios] = useState([]);
+    const [inputError, setInputError] = useState({
+        coD_TRABAJADOR: false,
+        coD_ESTUDIO: false,
+        noM_ESPECIALIDAD: false,
+    });
+
+    const validateFields = () => {
+
+        const copyFields = { ...fields };
+        delete copyFields.nuM_REFDOC;
+        delete copyFields.deS_REFERENCIA;
+        delete copyFields.coD_TRAEDU;
+        delete copyFields.deS_CONTENIDO;
+        delete copyFields.feC_INICIO;
+        delete copyFields.feC_TERMINO;
+        delete copyFields.noM_INSTITUCION;
+        delete copyFields.coD_GRDINSTRUC;
+        delete copyFields.coD_ENTIDAD;
+        delete copyFields.nuM_COLEGIATURA;
+        delete copyFields.feC_TITULO;
+        delete copyFields.feC_USUMOD;
+        delete copyFields.coD_USUMOD;
+        delete copyFields.feC_USUREG;
+        delete copyFields.coD_USUREG;
+
+        let errors = {};
+
+        Object.keys(copyFields).forEach(key => {
+            if (copyFields[key] === '' || copyFields[key] === 0 || !copyFields[key]) {
+                console.log(
+                    `El campo ${key} => ${copyFields[key]} no puede estar vacío`
+                );
+                errors[`${key}`] = true;
+            }
+        });
+
+        if (Object.keys(errors).length > 0) {
+            setInputError(errors);
+            AlertWarning("Hay campos obligatorios vacios");
+            return false;
+
+        }
+
+        setInputError(errors);
+
+        return true;
+
+    }
 
     const loadData = async () => {
+        setInputError({
+            coD_TRABAJADOR: false,
+            coD_ESTUDIO: false,
+            noM_ESPECIALIDAD: false,
+        });
+
         const response = await listTrabajadorEducacion(id);
         if (response.listado === null) {
             setData([])
@@ -98,10 +165,17 @@ const RegisterEducate = (
             feC_USUREG: "2022-08-30T10:16:50.231Z",
             coD_USUREG: 269
         })
+        setInputError({
+            coD_TRABAJADOR: false,
+            coD_ESTUDIO: false,
+            noM_ESPECIALIDAD: false,
+        })
         levelEducateChild.current.handleOpen();
     }
 
     const handleFields = async () => {
+        const validate = validateFields();
+        if (!validate) return;
 
         const response = await AddOrUpdateTrabajadorEducacion(fields)
 
@@ -151,59 +225,6 @@ const RegisterEducate = (
         loadData();
     }, []);
 
-    const columns = [
-        {
-            field: 'Acciones',
-            type: 'actions',
-            getActions: (cellValues) => [
-                <GridActionsCellItem
-                    icon={<EditIcon />}
-                    label="Edit"
-                    onClick={(event) => {
-                        edit(event, cellValues.row.coD_TRAEDU);
-                    }}
-                />,
-                <GridActionsCellItem
-                    icon={<DeleteIcon />}
-                    label="Delete"
-                    onClick={(event) => {
-                        destroy(event, cellValues.row.coD_TRAEDU);
-                    }}
-                />,
-
-            ],
-        },
-        {
-            field: 'coD_TRAEDU',
-            headerName: 'Código',
-            width: 100
-        },
-        {
-            field: 'noM_ESPECIALIDAD',
-            headerName: 'Estudio',
-            width: 400
-        },
-        {
-            field: 'noM_INSTITUCION',
-            headerName: 'Nom. Institución',
-            width: 300
-        },
-        {
-            field: "feC_INICIO",
-            headerName: "Fecha Inicio",
-            width: 160,
-            valueGetter: (params) =>
-                `${moment(params.row.feC_INICIO).format("DD/MM/YYYY")}`,
-        },
-        {
-            field: "feC_TERMINO",
-            headerName: "Fecha Termino",
-            width: 160,
-            valueGetter: (params) =>
-                `${moment(params.row.feC_TERMINO).format("DD/MM/YYYY")}`,
-        },
-    ];
-
     const OpenRegister = async () => {
         setFields({
             coD_TRAEDU: 0,
@@ -223,6 +244,7 @@ const RegisterEducate = (
             feC_USUREG: "2022-08-30T10:16:50.231Z",
             coD_USUREG: 269
         })
+        setInputError(defaultErrors);
         levelEducateChild.current.handleOpen();
     };
 
@@ -239,6 +261,130 @@ const RegisterEducate = (
 
     }
 
+    const columns = [
+        {
+            field: 'Acciones',
+            type: 'actions',
+            getActions: (cellValues) => [
+                <GridActionsCellItem
+                    icon={<EditIcon />}
+                    label="Edit"
+                    onClick={(event) => {
+                        edit(event, cellValues.row?.coD_TRAEDU);
+                    }}
+                />,
+                <GridActionsCellItem
+                    icon={<DeleteIcon />}
+                    label="Delete"
+                    onClick={(event) => {
+                        destroy(event, cellValues.row?.coD_TRAEDU);
+                    }}
+                />,
+
+            ],
+        },
+        {
+            field: 'coD_TRAEDU',
+            headerName: 'Código',
+            width: 100
+        },
+        {
+            field: 'noM_ESPECIALIDAD',
+            headerName: 'Estudio',
+            width: 400
+        },
+        {
+            field: 'noM_INSTITUCION',
+            headerName: 'Nom. Institución',
+            width: 300,
+            valueGetter:(params)=>
+            `${params.row?.dEntidadExterna?.noM_ENTIDAD ? params.row?.dEntidadExterna?.noM_ENTIDAD : '' }`
+        },
+        {
+            field: "feC_INICIO",
+            headerName: "Fecha Inicio",
+            width: 160,
+            valueGetter: (params) =>
+                `${moment(params.row?.feC_INICIO).format("DD/MM/YYYY")}`,
+        },
+        {
+            field: "feC_TERMINO",
+            headerName: "Fecha Termino",
+            width: 160,
+            valueGetter: (params) =>
+                `${moment(params.row?.feC_TERMINO).format("DD/MM/YYYY")}`,
+        },
+    ];
+
+    const downloadExcel = (dataExport) => {
+        var Headers = [["INFORMACIÓN DE EDUCACION"]];
+        let nData = [];
+        dataExport.forEach((item) => {
+            nData.push({
+                Código: item?.coD_TRAEDU,
+                Estudio: item?.noM_ESPECIALIDAD,
+                "Nom. Institución": item?.noM_INSTITUCION,
+                "Fecha Inicio": item?.feC_INICIO,
+                "Fecha Termino": item?.feC_TERMINO,
+            });
+        });
+
+        const workSheet = XLSX.utils.json_to_sheet(nData, { origin: "A2" });
+        const workBook = XLSX.utils.book_new();
+
+        const merge = [
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 33 } },
+            { s: { r: 0, c: 34 }, e: { r: 0, c: 37 } },
+        ];
+
+        workSheet["!merges"] = merge;
+
+        XLSX.utils.sheet_add_aoa(workSheet, Headers);
+        XLSX.utils.book_append_sheet(workBook, workSheet, "Educación");
+        XLSX.write(workBook, { bookType: "xlsx", type: "buffer" });
+        XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+        XLSX.writeFile(workBook, "ReporteEducacion.xlsx");
+    };
+
+    const getData = (apiRef) => {
+        const filteredSortedRowIds = gridFilteredSortedRowIdsSelector(apiRef);
+        const visibleColumnsField = gridVisibleColumnFieldsSelector(apiRef);
+        const data = filteredSortedRowIds.map((id) => {
+            const row = {};
+            visibleColumnsField.forEach((field) => {
+                row[field] = apiRef.current.getCellParams(id, field).value;
+            });
+            return row;
+        });
+
+        return data;
+    };
+
+    const ExcelExportMenuItem = (props) => {
+        const apiRef = useGridApiContext();
+
+        const { hideMenu } = props;
+
+        return (
+            <MenuItem
+                onClick={() => {
+                    const data = getData(apiRef);
+                    downloadExcel(data);
+                    hideMenu?.();
+                }}
+            >
+                Excel
+            </MenuItem>
+        );
+    };
+
+    const GridToolbarExport = ({ csvOptions, printOptions, ...other }) => (
+        <GridToolbarExportContainer {...other}>
+            <GridPrintExportMenuItem options={printOptions} />
+            <ExcelExportMenuItem />
+        </GridToolbarExportContainer>
+    );
+
     function CustomToolbar() {
         return (
             <GridToolbarContainer>
@@ -249,7 +395,19 @@ const RegisterEducate = (
                 <GridToolbarColumnsButton />
                 <GridToolbarFilterButton />
                 <GridToolbarDensitySelector />
-                <GridToolbarExport />
+                <GridToolbarExport
+                    printOptions={{
+                        hideFooter: true,
+                        hideToolbar: true,
+                        fields: [
+                            "coD_TRAEDU",
+                            "noM_ESPECIALIDAD",
+                            "noM_INSTITUCION",
+                            "feC_INICIO",
+                            "feC_TERMINO",
+                        ],
+                    }}
+                />
             </GridToolbarContainer>
         );
     }
@@ -258,7 +416,7 @@ const RegisterEducate = (
             <Grid container spacing={1}>
                 <Grid item md={12} xs={12} sm={12}>
                     <Grid item md={12}>
-                        <DataGridDemo id={(row) => row.coD_TRAEDU}
+                        <DataGridDemo id={(row) => row?.coD_TRAEDU}
                             rows={data} columns={columns} toolbar={CustomToolbar} />
                     </Grid>
                 </Grid>
@@ -274,7 +432,8 @@ const RegisterEducate = (
                             }}
                             select
                             size="small"
-                            label="Tipo"
+                            label="Tipo de Estudio"
+                            error={inputError.coD_ESTUDIO}
                             onChange={handleInputChange}
                             value={fields.coD_ESTUDIO}
                         >
@@ -290,14 +449,15 @@ const RegisterEducate = (
                     <Grid item md={5} sm={12} xs={12}>
                         <TextField
                             fullWidth
-                            label="Especialidad"
+                            label="¿Que estudio?"
                             name="noM_ESPECIALIDAD"
                             size="small"
+                            error={inputError.noM_ESPECIALIDAD}
                             onChange={handleInputChange}
                             value={fields.noM_ESPECIALIDAD}
                         />
                     </Grid>
-                    <Grid item md={5} sm={12} xs={12}>
+                    {/* <Grid item md={5} sm={12} xs={12}>
                         <TextField
                             fullWidth
                             InputLabelProps={{
@@ -309,7 +469,7 @@ const RegisterEducate = (
                             onChange={handleInputChange}
                             value={fields.noM_INSTITUCION}
                         />
-                    </Grid>
+                    </Grid> */}
                     <Grid item md={12} />
                     <Grid item md={3} sm={12} xs={12}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -374,7 +534,7 @@ const RegisterEducate = (
                             InputLabelProps={{
                                 shrink: true
                             }}
-                            label="Cod. Entidad"
+                            label="Institución"
                             name="coD_ENTIDAD"
                             size="small"
                             select
@@ -406,7 +566,7 @@ const RegisterEducate = (
                     <Grid item md={3} sm={12} xs={12}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DesktopDatePicker
-                                label="Fecha Termino"
+                                label="Fecha de Titulación"
                                 inputFormat="dd-MM-yyyy"
                                 value={fields.feC_TITULO}
                                 onChange={e =>
@@ -424,7 +584,7 @@ const RegisterEducate = (
                     <Grid
                         item md={12} sm={12} xs={12}>
                         <TextField
-                            label="Contenido"
+                            label="Observación"
                             multiline
                             fullWidth
                             InputLabelProps={{

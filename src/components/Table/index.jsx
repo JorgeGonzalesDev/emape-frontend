@@ -2,6 +2,13 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
+import {
+    GridToolbarContainer,
+    GridToolbarColumnsButton,
+    GridToolbarFilterButton,
+    GridToolbarExport,
+    GridToolbarDensitySelector,
+  } from "@mui/x-data-grid";
 
 const StyledGridOverlay = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -75,14 +82,25 @@ function CustomNoRowsOverlay() {
     );
 }
 
+function CustomToolbar() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />
+      </GridToolbarContainer>
+    );
+  }
+
+
 export default function DataGridDemo(
     {
-        toolbar = GridToolbar,
+        toolbar = CustomToolbar,
         rows,
         columns,
         id,
         numberSize = 25,
-        height = '68vh'
+        height = '70vh'
     }
 ) {
 
@@ -251,7 +269,7 @@ export default function DataGridDemo(
                     Toolbar: toolbar
                 }}
                 disableColumnMenu
-                rows={rows}
+                rows={rows ? rows : []}
                 columns={columns}
                 disableSelectionOnClick
                 getRowId={id}

@@ -10,10 +10,10 @@ import {
   InputAdornment,
   FormControl,
 } from "@mui/material";
-import { alpha, styled } from '@mui/material/styles';
 import { useState, useContext, useEffect } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import UserContext from "../../context/User/UserContext";
+import { PATH } from "../../service/config";
 
 const Home = () => {
   const { logged, login, setLogged } = useContext(UserContext);
@@ -22,8 +22,7 @@ const Home = () => {
     password: "",
   });
 
-  const pathPROD = "/RRHH"
-  // const pathPROD = ""
+  const pathPROD = PATH
 
   useEffect(() => {
     setLogged(window.localStorage.getItem("token"));

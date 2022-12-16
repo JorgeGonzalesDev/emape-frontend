@@ -21,7 +21,6 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Button, Collapse } from "@mui/material";
 import * as ROUTES from "../../contants/routes";
 import { Link } from "react-router-dom";
-import HomeIcon from "@mui/icons-material/Home";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import UserContext from "../../context/User/UserContext";
 import jwt_decode from "jwt-decode";
@@ -42,7 +41,7 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import ArticleIcon from "@mui/icons-material/Article";
 import FeedIcon from "@mui/icons-material/Feed";
 import ArchiveIcon from "@mui/icons-material/Archive";
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 //const of array of objects
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -99,6 +98,18 @@ export default function PersistentDrawerLeft({ children }) {
   const [openasistencia, setOpenAsistencia] = useState(false);
   const [openasistenciamaestro, setOpenAsistenciaMaestro] = useState(false);
   const [openconfiguracion, setOpenConfiguracion] = useState(false);
+  const [openproceso, setOpenProceso] = useState(false);
+  const [openInterface, setOpenInterface] = useState(false);
+  const [opencalcularplanilla, setOpenCalcularPlanilla] = useState(false);
+  const [openplanilla, setOpenPlanilla] = useState(false);
+  const [openprocesospadre, setOpenProcesosPadre] = useState(false);
+  const [openadministrativo, setOpenAdministrativo] = useState(false);
+  const [openconfigplanilla, setOpenConfigPlanilla] = useState(false);
+  const [openreportespadre, setOpenReportesPadre] = useState(false);
+  const [openatrabajador, setOpenTrabajador] = useState(false);
+  const [openregistro, setOpenRegistro] = useState(false);
+  const [openregistros, setOpenRegistros] = useState(false);
+
   const { logout } = useContext(UserContext);
   const { loadMenu, menu } = useContext(MenuContext);
   const [userName, setUserName] = useState("");
@@ -124,8 +135,41 @@ export default function PersistentDrawerLeft({ children }) {
   const handleClickConfiguracion = () => {
     setOpenConfiguracion(!openconfiguracion);
   };
+  const handleClickProcesos = () => {
+    setOpenProceso(!openproceso);
+  };
+  const handleClickCalculaPlanilla = () => {
+    setOpenCalcularPlanilla(!opencalcularplanilla);
+  };
   const handleClickAsistencia = () => {
     setOpenAsistencia(!openasistencia);
+  };
+  const handleClickPlanilla = () => {
+    setOpenPlanilla(!openplanilla);
+  };
+  const handleClickConfigPlanilla = () => {
+    setOpenConfigPlanilla(!openconfigplanilla);
+  };
+  const handleClickInterface = () => {
+    setOpenInterface(!openInterface);
+  };
+  const handleClickProcesosPadre = () => {
+    setOpenProcesosPadre(!openprocesospadre);
+  };
+  const handleClickAdministrativo = () => {
+    setOpenAdministrativo(!openadministrativo);
+  };
+  const handleClickReportesPadre = () => {
+    setOpenReportesPadre(!openreportespadre);
+  };
+  const handleClickTrabajador = () => {
+    setOpenTrabajador(!openatrabajador);
+  };
+  const handleClickRegistro = () => {
+    setOpenRegistro(!openregistro);
+  };
+  const handleClickRegistros = () => {
+    setOpenRegistros(!openregistros);
   };
   const logoutBtn = () => {
     logout();
@@ -149,9 +193,48 @@ export default function PersistentDrawerLeft({ children }) {
     (item) => item.dMenu.coD_MENU === 14 || item.dMenu.coD_MENU === 15
   );
   let menuFiltradoAsistencia = menu.filter(
-    (item) => item.dMenu.coD_MENU >= 18 && item.dMenu.coD_MENU <= 20
+    (item) => item.dMenu.coD_MENU >= 18 && item.dMenu.coD_MENU <= 25
   );
-  let menuFiltradoReloj = menu.filter((item) => item.dMenu.coD_MENU === 22);
+  let menuFiltradoAsistenciaMaestro = menu.filter(
+    (item) => item.dMenu.coD_MENU >= 18 && item.dMenu.coD_MENU <= 21
+  );
+  let menuFiltradoControl = menu.filter(
+    (item) => item.dMenu.coD_MENU >= 23 && item.dMenu.coD_MENU <= 26 || (item.dMenu.coD_MENU === 49)
+  );
+  let menuFiltradoControlAsistencia = menu.filter(
+    (item) => item.dMenu.coD_MENU >= 18 && item.dMenu.coD_MENU <= 21
+  );
+  let menuFiltradoPlantilla = menu.filter(
+     (item) => (item.dMenu.coD_MENU >= 27 && item.dMenu.coD_MENU <= 36)
+      // || (item.dMenu.coD_MENU >= 50 && item.dMenu.coD_MENU <= 52)
+  );  
+  let menuFiltradoConfiguracion = menu.filter(
+    (item) => item.dMenu.coD_MENU >= 29 && item.dMenu.coD_MENU <= 32
+  );
+  let menuFiltradoConfiguracionAdd = menu.filter(
+    (item) => item.dMenu.coD_MENU > 36 && item.dMenu.coD_MENU < 40 || (item.dMenu.coD_MENU === 53) || (item.dMenu.coD_MENU === 54)  
+  );
+  //add menuFiltradoConfiguracionAdd to menuFiltradoConfiguracion
+  menuFiltradoConfiguracion.push(...menuFiltradoConfiguracionAdd);
+  let munuFiltadoInterface = menu.filter((item) => item.dMenu.coD_MENU === 41);
+  let menuFiltradoProcesos = menu.filter(
+    (item) =>( item.dMenu.coD_MENU >= 34 && item.dMenu.coD_MENU <= 36)
+    ||
+    ( item.dMenu.coD_MENU >= 51 && item.dMenu.coD_MENU <= 52) || (item.dMenu.coD_MENU === 45)
+  );
+  console.log("menu");
+  console.log(menuFiltradoProcesos);
+
+  let menuFiltradoProcesosAdd = menu.filter(
+    (item) => item.dMenu.coD_MENU === 42
+  );
+  let munuFiltradoRegistros = menu.filter((item) => item.dMenu.coD_MENU === 48);
+  //add menuFiltradoProcesosAdd to menuFiltradoProcesos
+  menuFiltradoProcesos.push(...menuFiltradoProcesosAdd);
+  let menuFiltradoInterface = menu.filter((item) => item.dMenu.coD_MENU === 41);
+  let menuFiltroAdministrativo = menu.filter(
+    (item) => item.dMenu.coD_MENU === 45
+  );
   let sayings = new Map();
   sayings.set(3, ROUTES.POSITION);
   sayings.set(4, ROUTES.EDUCATIONLEVEL);
@@ -164,32 +247,81 @@ export default function PersistentDrawerLeft({ children }) {
   sayings.set(11, ROUTES.AFP);
   sayings.set(12, ROUTES.PERSON);
   sayings.set(14, ROUTES.EMPLOYEE);
-  sayings.set(15, ROUTES.EDUCATIONLEVEL);
-  sayings.set(18, ROUTES.EDUCATIONLEVEL);
-  sayings.set(19, ROUTES.EDUCATIONLEVEL);
-  sayings.set(20, ROUTES.EDUCATIONLEVEL);
+  sayings.set(15, ROUTES.PlanillaReporte4);
+  sayings.set(18, ROUTES.Ballots);
+  sayings.set(19, ROUTES.WorkReason);
+  sayings.set(20, ROUTES.WorkShift);
+  sayings.set(21, ROUTES.WorkHours);
   sayings.set(22, ROUTES.EDUCATIONLEVEL);
+  sayings.set(23, ROUTES.BallotsLabor);
+  sayings.set(24, ROUTES.VACATION);
+  sayings.set(25, ROUTES.Assistance);
+  sayings.set(26, ROUTES.AssistancePRO);
+  sayings.set(29, ROUTES.PeriodSpreadsheet);
+  sayings.set(30, ROUTES.ConceptSpreadsheet);
+  sayings.set(31, ROUTES.PayrollAndWorkers);
+  sayings.set(32, ROUTES.WorkerAndConcept);
+  sayings.set(34, ROUTES.CalculateSpreadsheet);
+  sayings.set(51, ROUTES.PlanillaReporte);
+  sayings.set(52, ROUTES.CalculateSpreadsheet);
+  sayings.set(35, ROUTES.CalculateSpreadsheet);
+  sayings.set(36, ROUTES.CalculateSpreadsheet);
+  sayings.set(37, ROUTES.ConceptsFormula);
+  sayings.set(38, ROUTES.RenumConcept);
+  sayings.set(39, ROUTES.TypeSpreadsheet);
+  sayings.set(41, ROUTES.Bank);
+  sayings.set(42, ROUTES.CalculateSpreadsheet);
+  sayings.set(45, ROUTES.Lend);
+  sayings.set(48, ROUTES.FileGeneration);
+  sayings.set(49, ROUTES.PlanillaReporte3);
+  sayings.set(52, ROUTES.BoletaTrabajador);
+  sayings.set(53, ROUTES.PayrollAccumulatorAndConcepts);
+  sayings.set(54, ROUTES.PlanillaReporte2);
+  
+
   let iconsToMenu = new Map();
-  iconsToMenu.set(3, <BadgeIcon />);
-  iconsToMenu.set(4, <WorkspacePremiumIcon />);
-  iconsToMenu.set(5, <WorkIcon />);
-  iconsToMenu.set(6, <SchoolIcon />);
-  iconsToMenu.set(7, <BrandingWatermarkOutlinedIcon />);
-  iconsToMenu.set(8, <SensorOccupiedIcon />);
-  iconsToMenu.set(9, <BrandingWatermarkOutlinedIcon />);
-  iconsToMenu.set(10, <BadgeIcon />);
-  iconsToMenu.set(11, <SavingsIcon />);
-  iconsToMenu.set(12, <PersonIcon />);
-  iconsToMenu.set(14, <HailIcon />);
-  iconsToMenu.set(15, <AssignmentIcon />);
-  iconsToMenu.set(18, <ReceiptIcon />);
-  iconsToMenu.set(19, <ArticleIcon />);
-  iconsToMenu.set(20, <FeedIcon />);
-  iconsToMenu.set(22, <AccessTimeFilledIcon />);
+  iconsToMenu.set(3, <BadgeIcon color="white" />);
+  iconsToMenu.set(4, <WorkspacePremiumIcon color="white" />);
+  iconsToMenu.set(5, <WorkIcon color="white" />);
+  iconsToMenu.set(6, <SchoolIcon color="white" />);
+  iconsToMenu.set(7, <BrandingWatermarkOutlinedIcon color="white" />);
+  iconsToMenu.set(8, <SensorOccupiedIcon color="white" />);
+  iconsToMenu.set(9, <BrandingWatermarkOutlinedIcon color="white" />);
+  iconsToMenu.set(10, <BadgeIcon color="white" />);
+  iconsToMenu.set(11, <SavingsIcon color="white" />);
+  iconsToMenu.set(12, <PersonIcon color="white" />);
+  iconsToMenu.set(14, <HailIcon color="white" />);
+  iconsToMenu.set(15, <AssignmentIcon color="white" />);
+  iconsToMenu.set(18, <ReceiptIcon color="white" />);
+  iconsToMenu.set(19, <ArticleIcon color="white" />);
+  iconsToMenu.set(20, <FeedIcon color="white" />);
+  iconsToMenu.set(21, <FeedIcon color="white" />);
+  iconsToMenu.set(22, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(23, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(24, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(25, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(26, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(29, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(30, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(31, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(32, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(34, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(45, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(48, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(49, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(51, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(52, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(54, <AccessTimeFilledIcon color="white" />);
+
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} style={{backgroundColor: '#00A39C'}}>
+      <AppBar
+        position="fixed"
+        open={open}
+        style={{ backgroundColor: "#00A39C" }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -220,13 +352,19 @@ export default function PersistentDrawerLeft({ children }) {
             boxSizing: "border-box",
           },
         }}
+        PaperProps={{
+          sx: {
+            backgroundColor: "#00A39C",
+            color: "#fff",
+          },
+        }}
         variant="persistent"
         anchor="left"
         open={open}
       >
         <Divider />
         <List
-          sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+          sx={{ width: "100%", maxWidth: 360, bgcolor: "#00A39C" }}
           component="nav"
           aria-labelledby="nested-list-subheader"
           subheader={
@@ -279,6 +417,220 @@ export default function PersistentDrawerLeft({ children }) {
                               }}
                             >
                               <ListItemText primary={item.dMenu.deS_MENU} />
+                            </Link>
+                          </ListItem>
+                        </ListItemButton>
+                      </Collapse>
+                    </List>
+                  </Collapse>
+                </Fragment>
+              ))}
+            </>
+          )}
+
+          {menu.length === 1 && (
+            <>
+              {menuFiltradoConfiguracion.map((item, index) => (
+                <Fragment key={index}>
+                  <ListItemButton onClick={handleClickPlanilla}>
+                    <ListItemIcon></ListItemIcon>
+                    <ListItemText primary="PLANILLA" />
+                    {openplanilla ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openplanilla} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      <ListItemButton
+                        onClick={handleClickConfigPlanilla}
+                        sx={{ pl: 3 }}
+                      >
+                        <ListItemIcon>
+                          <EngineeringIcon color="white" />
+                        </ListItemIcon>
+                        <ListItemText primary="CONFIGURACIÓN" />
+                        {openconfigplanilla ? <ExpandLess /> : <ExpandMore />}
+                      </ListItemButton>
+                      <Collapse
+                        in={openconfigplanilla}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemIcon>
+                            {iconsToMenu.get(item.dMenu.coD_MENU)}
+                          </ListItemIcon>
+                          <ListItem>
+                            <Link
+                              to={sayings.get(item.dMenu.coD_MENU)}
+                              style={{
+                                textDecoration: "none",
+                                color: "#202020",
+                              }}
+                            >
+                              <ListItemText
+                                primary={
+                                  <Typography style={{ color: "#fff" }}>
+                                    {item.dMenu.deS_MENU}
+                                  </Typography>
+                                }
+                              />
+                            </Link>
+                          </ListItem>
+                        </ListItemButton>
+                      </Collapse>
+                    </List>
+                  </Collapse>
+                </Fragment>
+              ))}
+            </>
+          )}
+
+          {menu.length === 1 && (
+            <>
+              {menuFiltradoProcesos.map((item, index) => (
+                <Fragment key={index}>
+                  <ListItemButton onClick={handleClickPlanilla}>
+                    <ListItemIcon></ListItemIcon>
+                    <ListItemText primary="PLANILLA" />
+                    {openplanilla ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openplanilla} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      <ListItemButton
+                        onClick={handleClickProcesos}
+                        sx={{ pl: 3 }}
+                      >
+                        <ListItemIcon>
+                          <EngineeringIcon color="white" />
+                        </ListItemIcon>
+                        <ListItemText primary="PROCESOS" />
+                        {openconfigplanilla ? <ExpandLess /> : <ExpandMore />}
+                      </ListItemButton>
+                      <Collapse in={openproceso} timeout="auto" unmountOnExit>
+                        <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemIcon>
+                            {iconsToMenu.get(item.dMenu.coD_MENU)}
+                          </ListItemIcon>
+                          <ListItem>
+                            <Link
+                              to={sayings.get(item.dMenu.coD_MENU)}
+                              style={{
+                                textDecoration: "none",
+                                color: "#202020",
+                              }}
+                            >
+                              <ListItemText
+                                primary={
+                                  <Typography style={{ color: "#fff" }}>
+                                    {item.dMenu.deS_MENU}
+                                  </Typography>
+                                }
+                              />
+                            </Link>
+                          </ListItem>
+                        </ListItemButton>
+                      </Collapse>
+                    </List>
+                  </Collapse>
+                </Fragment>
+              ))}
+            </>
+          )}
+          {menu.length === 1 && (
+            <>
+              {munuFiltadoInterface.map((item, index) => (
+                <Fragment key={index}>
+                  <ListItemButton onClick={handleClickPlanilla}>
+                    <ListItemIcon></ListItemIcon>
+                    <ListItemText primary="PLANILLA" />
+                    {openplanilla ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openplanilla} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      <ListItemButton
+                        onClick={handleClickProcesos}
+                        sx={{ pl: 3 }}
+                      >
+                        <ListItemIcon>
+                          <EngineeringIcon color="white" />
+                        </ListItemIcon>
+                        <ListItemText primary="INTERFACE" />
+                        {openconfigplanilla ? <ExpandLess /> : <ExpandMore />}
+                      </ListItemButton>
+                      <Collapse in={openproceso} timeout="auto" unmountOnExit>
+                        <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemIcon>
+                            {iconsToMenu.get(item.dMenu.coD_MENU)}
+                          </ListItemIcon>
+                          <ListItem>
+                            <Link
+                              to={sayings.get(item.dMenu.coD_MENU)}
+                              style={{
+                                textDecoration: "none",
+                                color: "#202020",
+                              }}
+                            >
+                              <ListItemText
+                                primary={
+                                  <Typography style={{ color: "#fff" }}>
+                                    {item.dMenu.deS_MENU}
+                                  </Typography>
+                                }
+                              />
+                            </Link>
+                          </ListItem>
+                        </ListItemButton>
+                      </Collapse>
+                    </List>
+                  </Collapse>
+                </Fragment>
+              ))}
+            </>
+          )}
+          {menu.length === 1 && (
+            <>
+              {menuFiltroAdministrativo.map((item, index) => (
+                <Fragment key={index}>
+                  <ListItemButton onClick={handleClickProcesosPadre}>
+                    <ListItemIcon></ListItemIcon>
+                    <ListItemText primary="PROCESOS" />
+                    {openprocesospadre ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={openprocesospadre} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      <ListItemButton
+                        onClick={handleClickAdministrativo}
+                        sx={{ pl: 3 }}
+                      >
+                        <ListItemIcon>
+                          <EngineeringIcon color="white" />
+                        </ListItemIcon>
+                        <ListItemText primary="ADMINISTRATIVOS" />
+                        {openadministrativo ? <ExpandLess /> : <ExpandMore />}
+                      </ListItemButton>
+                      <Collapse
+                        in={openadministrativo}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemIcon>
+                            {iconsToMenu.get(item.dMenu.coD_MENU)}
+                          </ListItemIcon>
+                          <ListItem>
+                            <Link
+                              to={sayings.get(item.dMenu.coD_MENU)}
+                              style={{
+                                textDecoration: "none",
+                                color: "#202020",
+                              }}
+                            >
+                              <ListItemText
+                                primary={
+                                  <Typography style={{ color: "#fff" }}>
+                                    {item.dMenu.deS_MENU}
+                                  </Typography>
+                                }
+                              />
                             </Link>
                           </ListItem>
                         </ListItemButton>
@@ -343,8 +695,8 @@ export default function PersistentDrawerLeft({ children }) {
           )}
           {menu.length === 1 && (
             <>
-              {menuFiltradoAsistencia.map((item, index) => (
-                <Fragment key={index}>
+              {menuFiltradoControlAsistencia.map((item, index) => (
+                <Fragment>
                   <ListItemButton onClick={handleClickAsistencia}>
                     <ListItemIcon></ListItemIcon>
                     <ListItemText primary="CONTROL DE ASISTENCIA" />
@@ -352,92 +704,127 @@ export default function PersistentDrawerLeft({ children }) {
                   </ListItemButton>
                   <Collapse in={openasistencia} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                      <ListItemButton
-                        onClick={handleClickAsistenciaMaestro}
-                        sx={{ pl: 3 }}
-                      >
-                        <ListItemIcon>
-                          <EngineeringIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="MAESTROS" />
-                        {openasistenciamaestro ? (
-                          <ExpandLess />
-                        ) : (
-                          <ExpandMore />
-                        )}
-                      </ListItemButton>
-                      {/* add */}
-                      <Collapse
-                        in={openasistenciamaestro}
-                        timeout="auto"
-                        unmountOnExit
-                      >
-                        <Link
-                          to={sayings.get(item.dMenu.coD_MENU)}
-                          style={{ textDecoration: "none", color: "#202020" }}
-                        >
-                          <ListItemButton sx={{ pl: 3 }}>
+                      {menuFiltradoAsistenciaMaestro.length > 0 ? (
+                        <>
+                          <ListItemButton
+                            onClick={handleClickAsistenciaMaestro}
+                            sx={{ pl: 3 }}
+                          >
                             <ListItemIcon>
-                              {iconsToMenu.get(item.dMenu.coD_MENU)}
+                              <EngineeringIcon color="white" />
                             </ListItemIcon>
-                            <ListItem>
-                              <ListItemText primary={item.dMenu.deS_MENU} />
-                            </ListItem>
+                            <ListItemText primary="MAESTROS" />
+                            {openasistenciamaestro ? (
+                              <ExpandLess />
+                            ) : (
+                              <ExpandMore />
+                            )}
                           </ListItemButton>
-                        </Link>
-                      </Collapse>
+                          {menuFiltradoAsistenciaMaestro.map((item, index) => (
+                            <Fragment key={index}>
+                              <Collapse
+                                in={openasistenciamaestro}
+                                timeout="auto"
+                                unmountOnExit
+                              >
+                                <Link
+                                  to={sayings.get(item.dMenu.coD_MENU)}
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "#202020",
+                                  }}
+                                >
+                                  <ListItemButton sx={{ pl: 4 }}>
+                                    <ListItemIcon>
+                                      {iconsToMenu.get(item.dMenu.coD_MENU)}
+                                    </ListItemIcon>
+                                    <ListItem>
+                                      <ListItemText
+                                        primary={
+                                          <Typography style={{ color: "#fff" }}>
+                                            {item.dMenu.deS_MENU}
+                                          </Typography>
+                                        }
+                                      />
+                                    </ListItem>
+                                  </ListItemButton>
+                                </Link>
+                              </Collapse>
+                            </Fragment>
+                          ))}
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {menuFiltradoControl.length > 0 ? (
+                        <>
+                          <List component="div" disablePadding>
+                            <ListItemButton
+                              onClick={handleClickConfiguracion}
+                              sx={{ pl: 3 }}
+                            >
+                              <ListItemIcon>
+                                <SettingsIcon color="white" />
+                              </ListItemIcon>
+                              <ListItemText primary="CONTROL" />
+                              {openconfiguracion ? (
+                                <ExpandLess />
+                              ) : (
+                                <ExpandMore />
+                              )}
+                            </ListItemButton>
+                            <Collapse
+                              in={openasistencia}
+                              timeout="auto"
+                              unmountOnExit
+                            >
+                              {menuFiltradoControl.map((item, index) => (
+                                <Fragment key={index}>
+                                  <Collapse
+                                    in={openconfiguracion}
+                                    timeout="auto"
+                                    unmountOnExit
+                                  >
+                                    <Link
+                                      to={sayings.get(item.dMenu.coD_MENU)}
+                                      style={{
+                                        textDecoration: "none",
+                                        color: "#202020",
+                                      }}
+                                    >
+                                      <ListItemButton sx={{ pl: 3 }}>
+                                        <ListItemIcon>
+                                          {iconsToMenu.get(item.dMenu.coD_MENU)}
+                                        </ListItemIcon>
+                                        <ListItem>
+                                          <ListItemText
+                                            primary={
+                                              <Typography
+                                                style={{ color: "#fff" }}
+                                              >
+                                                {item.dMenu.deS_MENU}
+                                              </Typography>
+                                            }
+                                          />
+                                        </ListItem>
+                                      </ListItemButton>
+                                    </Link>
+                                  </Collapse>
+                                </Fragment>
+                              ))}
+                            </Collapse>
+                          </List>
+                        </>
+                      ) : (
+                        <></>
+                      )}
                     </List>
                   </Collapse>
                 </Fragment>
               ))}
             </>
           )}
-          {menu.length === 1 && (
-            <>
-              {menuFiltradoReloj.map((item, index) => (
-                <Fragment key={index}>
-                  <ListItemButton onClick={handleClickAsistencia}>
-                    <ListItemIcon></ListItemIcon>
-                    <ListItemText primary="CONTROL DE ASISTENCIA" />
-                    {openasistencia ? <ExpandLess /> : <ExpandMore />}
-                  </ListItemButton>
-                  <Collapse in={openasistencia} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                      <ListItemButton
-                        onClick={handleClickConfiguracion}
-                        sx={{ pl: 3 }}
-                      >
-                        <ListItemIcon>
-                          <SettingsIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="CONFIGURACIÓN" />
-                        {openconfiguracion ? <ExpandLess /> : <ExpandMore />}
-                      </ListItemButton>
-                      <Collapse
-                        in={openconfiguracion}
-                        timeout="auto"
-                        unmountOnExit
-                      >
-                        <Link
-                          to={sayings.get(item.dMenu.coD_MENU)}
-                          style={{ textDecoration: "none", color: "#202020" }}
-                        >
-                          <ListItemButton sx={{ pl: 3 }}>
-                            <ListItemIcon>
-                              {iconsToMenu.get(item.dMenu.coD_MENU)}
-                            </ListItemIcon>
-                            <ListItem>
-                              <ListItemText primary={item.dMenu.deS_MENU} />
-                            </ListItem>
-                          </ListItemButton>
-                        </Link>
-                      </Collapse>
-                    </List>
-                  </Collapse>
-                </Fragment>
-              ))}
-            </>
-          )}
+
           {menu.length >= 2 && menuFiltradoMaestros.length > 0 && (
             <>
               <Fragment>
@@ -453,7 +840,7 @@ export default function PersistentDrawerLeft({ children }) {
                       sx={{ pl: 3 }}
                     >
                       <ListItemIcon>
-                        <EngineeringIcon />
+                        <EngineeringIcon color="white" />
                       </ListItemIcon>
                       <ListItemText primary="MAESTROS" />
                       {opengenerales ? <ExpandLess /> : <ExpandMore />}
@@ -465,22 +852,28 @@ export default function PersistentDrawerLeft({ children }) {
                           timeout="auto"
                           unmountOnExit
                         >
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              {iconsToMenu.get(item.dMenu.coD_MENU)}
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={sayings.get(item.dMenu.coD_MENU)}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary={item.dMenu.deS_MENU} />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
+                          <Link
+                            to={sayings.get(item.dMenu.coD_MENU)}
+                            style={{
+                              textDecoration: "none",
+                              color: "#202020",
+                            }}
+                          >
+                            <ListItemButton sx={{ pl: 4 }}>
+                              <ListItemIcon>
+                                {iconsToMenu.get(item.dMenu.coD_MENU)}
+                              </ListItemIcon>
+                              <ListItem>
+                                <ListItemText
+                                  primary={
+                                    <Typography style={{ color: "#fff" }}>
+                                      {item.dMenu.deS_MENU}
+                                    </Typography>
+                                  }
+                                />
+                              </ListItem>
+                            </ListItemButton>
+                          </Link>
                         </Collapse>
                       </Fragment>
                     ))}
@@ -489,6 +882,7 @@ export default function PersistentDrawerLeft({ children }) {
               </Fragment>
             </>
           )}
+
           {menu.length >= 2 && menuFiltradoLegado.length > 0 && (
             <>
               <Fragment>
@@ -507,7 +901,7 @@ export default function PersistentDrawerLeft({ children }) {
                   <List component="div" disablePadding>
                     <ListItemButton onClick={handleClickLegajo} sx={{ pl: 3 }}>
                       <ListItemIcon>
-                        <ArchiveIcon />
+                        <ArchiveIcon color="white" />
                       </ListItemIcon>
                       <ListItemText primary="LEGAJO" />
                       {openlegajo ? <ExpandLess /> : <ExpandMore />}
@@ -515,22 +909,28 @@ export default function PersistentDrawerLeft({ children }) {
                     {menuFiltradoLegado.map((item, index) => (
                       <Fragment key={index}>
                         <Collapse in={openlegajo} timeout="auto" unmountOnExit>
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              {iconsToMenu.get(item.dMenu.coD_MENU)}
-                            </ListItemIcon>
-                            <ListItem>
-                              <Link
-                                to={sayings.get(item.dMenu.coD_MENU)}
-                                style={{
-                                  textDecoration: "none",
-                                  color: "#202020",
-                                }}
-                              >
-                                <ListItemText primary={item.dMenu.deS_MENU} />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
+                          <Link
+                            to={sayings.get(item.dMenu.coD_MENU)}
+                            style={{
+                              textDecoration: "none",
+                              color: "#202020",
+                            }}
+                          >
+                            <ListItemButton sx={{ pl: 4 }}>
+                              <ListItemIcon>
+                                {iconsToMenu.get(item.dMenu.coD_MENU)}
+                              </ListItemIcon>
+                              <ListItem>
+                                <ListItemText
+                                  primary={
+                                    <Typography style={{ color: "#fff" }}>
+                                      {item.dMenu.deS_MENU}
+                                    </Typography>
+                                  }
+                                />
+                              </ListItem>
+                            </ListItemButton>
+                          </Link>
                         </Collapse>
                       </Fragment>
                     ))}
@@ -549,28 +949,29 @@ export default function PersistentDrawerLeft({ children }) {
                 </ListItemButton>
                 <Collapse in={openasistencia} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItemButton
-                      onClick={handleClickAsistenciaMaestro}
-                      sx={{ pl: 3 }}
-                    >
-                      <ListItemIcon>
-                        <EngineeringIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="MAESTROS" />
-                      {openasistenciamaestro ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    {menuFiltradoAsistencia.map((item, index) => (
-                      <Fragment key={index}>
-                        <Collapse
-                          in={openasistenciamaestro}
-                          timeout="auto"
-                          unmountOnExit
+                    {menuFiltradoAsistenciaMaestro.length > 0 ? (
+                      <>
+                        <ListItemButton
+                          onClick={handleClickAsistenciaMaestro}
+                          sx={{ pl: 3 }}
                         >
-                          <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                              {iconsToMenu.get(item.dMenu.coD_MENU)}
-                            </ListItemIcon>
-                            <ListItem>
+                          <ListItemIcon>
+                            <EngineeringIcon color="white" />
+                          </ListItemIcon>
+                          <ListItemText primary="MAESTROS" />
+                          {openasistenciamaestro ? (
+                            <ExpandLess />
+                          ) : (
+                            <ExpandMore />
+                          )}
+                        </ListItemButton>
+                        {menuFiltradoAsistenciaMaestro.map((item, index) => (
+                          <Fragment key={index}>
+                            <Collapse
+                              in={openasistenciamaestro}
+                              timeout="auto"
+                              unmountOnExit
+                            >
                               <Link
                                 to={sayings.get(item.dMenu.coD_MENU)}
                                 style={{
@@ -578,37 +979,52 @@ export default function PersistentDrawerLeft({ children }) {
                                   color: "#202020",
                                 }}
                               >
-                                <ListItemText primary={item.dMenu.deS_MENU} />
-                              </Link>
-                            </ListItem>
-                          </ListItemButton>
-                        </Collapse>
-                      </Fragment>
-                    ))}
-                    {menuFiltradoReloj.length > 0 ? (
-                      <>
-                        {menuFiltradoReloj.map((item, index) => (
-                          <Fragment key={index}>
-                            <Collapse
-                              in={openasistencia}
-                              timeout="auto"
-                              unmountOnExit
-                            >
-                              <List component="div" disablePadding>
-                                <ListItemButton
-                                  onClick={handleClickConfiguracion}
-                                  sx={{ pl: 3 }}
-                                >
+                                <ListItemButton sx={{ pl: 4 }}>
                                   <ListItemIcon>
-                                    <SettingsIcon />
+                                    {iconsToMenu.get(item.dMenu.coD_MENU)}
                                   </ListItemIcon>
-                                  <ListItemText primary="CONFIGURACIÓN" />
-                                  {openconfiguracion ? (
-                                    <ExpandLess />
-                                  ) : (
-                                    <ExpandMore />
-                                  )}
+                                  <ListItem>
+                                    <ListItemText
+                                      primary={
+                                        <Typography style={{ color: "#fff" }}>
+                                          {item.dMenu.deS_MENU}
+                                        </Typography>
+                                      }
+                                    />
+                                  </ListItem>
                                 </ListItemButton>
+                              </Link>
+                            </Collapse>
+                          </Fragment>
+                        ))}
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {menuFiltradoControl.length > 0 ? (
+                      <>
+                        <List component="div" disablePadding>
+                          <ListItemButton
+                            onClick={handleClickConfiguracion}
+                            sx={{ pl: 3 }}
+                          >
+                            <ListItemIcon>
+                              <SettingsIcon color="white" />
+                            </ListItemIcon>
+                            <ListItemText primary="CONTROL" />
+                            {openconfiguracion ? (
+                              <ExpandLess />
+                            ) : (
+                              <ExpandMore />
+                            )}
+                          </ListItemButton>
+                          <Collapse
+                            in={openasistencia}
+                            timeout="auto"
+                            unmountOnExit
+                          >
+                            {menuFiltradoControl.map((item, index) => (
+                              <Fragment key={index}>
                                 <Collapse
                                   in={openconfiguracion}
                                   timeout="auto"
@@ -627,13 +1043,84 @@ export default function PersistentDrawerLeft({ children }) {
                                       </ListItemIcon>
                                       <ListItem>
                                         <ListItemText
-                                          primary={item.dMenu.deS_MENU}
+                                          primary={
+                                            <Typography
+                                              style={{ color: "#fff" }}
+                                            >
+                                              {item.dMenu.deS_MENU}
+                                            </Typography>
+                                          }
                                         />
                                       </ListItem>
                                     </ListItemButton>
                                   </Link>
                                 </Collapse>
-                              </List>
+                              </Fragment>
+                            ))}
+                          </Collapse>
+                        </List>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </List>
+                </Collapse>
+              </Fragment>
+            </>
+          )}
+
+
+          {menu.length >= 2 && menuFiltradoPlantilla.length > 0 && (            
+            <>
+              <Fragment>
+                <ListItemButton onClick={handleClickPlanilla}>
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="PLANILLA" />
+                  {openplanilla ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={openplanilla} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    {menuFiltradoConfiguracion.length > 0 ? (
+                      <>
+                        <ListItemButton
+                          onClick={handleClickConfigPlanilla}
+                          sx={{ pl: 3 }}
+                        >
+                          <ListItemIcon>
+                            <EngineeringIcon color="white" />
+                          </ListItemIcon>
+                          <ListItemText primary="CONFIGURACIÓN" />
+                          {openconfigplanilla ? <ExpandLess /> : <ExpandMore />}
+                        </ListItemButton>
+                        {menuFiltradoConfiguracion.map((item, index) => (
+                          <Fragment key={index}>
+                            <Collapse
+                              in={openconfigplanilla}
+                              timeout="auto"
+                              unmountOnExit
+                            >
+                              <Link
+                                to={sayings.get(item.dMenu.coD_MENU)}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemButton sx={{ pl: 4 }}>
+                                  <ListItemIcon>
+                                    {iconsToMenu.get(item.dMenu.coD_MENU)}
+                                  </ListItemIcon>
+                                  <ListItem>
+                                    <ListItemText
+                                      primary={
+                                        <Typography style={{ color: "#fff" }}>
+                                          {item.dMenu.deS_MENU}
+                                        </Typography>
+                                      }
+                                    />
+                                  </ListItem>
+                                </ListItemButton>
+                              </Link>
                             </Collapse>
                           </Fragment>
                         ))}
@@ -641,6 +1128,190 @@ export default function PersistentDrawerLeft({ children }) {
                     ) : (
                       <></>
                     )}
+                    {menuFiltradoProcesos.length > 0 ? (
+                      <>
+                        <List component="div" disablePadding>
+                          <ListItemButton
+                            onClick={handleClickProcesos}
+                            sx={{ pl: 3 }}
+                          >
+                            <ListItemIcon>
+                              <SettingsIcon color="white" />
+                            </ListItemIcon>
+                            <ListItemText primary="PROCESOS" />
+                            {openproceso ? <ExpandLess /> : <ExpandMore />}
+                          </ListItemButton>
+                          <Collapse
+                            in={openproceso}
+                            timeout="auto"
+                            unmountOnExit
+                          >
+                            {menuFiltradoProcesos.map((item, index) => (
+                              <Fragment key={index}>
+                                <Collapse
+                                  in={openproceso}
+                                  timeout="auto"
+                                  unmountOnExit
+                                >
+                                  <Link
+                                    to={sayings.get(item.dMenu.coD_MENU)}
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "#202020",
+                                    }}
+                                  >
+                                    <ListItemButton sx={{ pl: 3 }}>
+                                      <ListItemIcon>
+                                        {iconsToMenu.get(item.dMenu.coD_MENU)}
+                                      </ListItemIcon>
+                                      <ListItem>
+                                        <ListItemText
+                                          primary={
+                                            <Typography
+                                              style={{ color: "#fff" }}
+                                            >
+                                              {item.dMenu.deS_MENU}
+                                            </Typography>
+                                          }
+                                        />
+                                      </ListItem>
+                                    </ListItemButton>
+                                  </Link>
+                                </Collapse>
+                              </Fragment>
+                            ))}
+                          </Collapse>
+                        </List>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {munuFiltadoInterface.length > 0 ? (
+                      <>
+                        <List component="div" disablePadding>
+                          <ListItemButton
+                            onClick={handleClickInterface}
+                            sx={{ pl: 3 }}
+                          >
+                            <ListItemIcon>
+                              <SettingsIcon color="white" />
+                            </ListItemIcon>
+                            <ListItemText primary="INTERFACE" />
+                            {openInterface ? <ExpandLess /> : <ExpandMore />}
+                          </ListItemButton>
+                          <Collapse
+                            in={openInterface}
+                            timeout="auto"
+                            unmountOnExit
+                          >
+                            {menuFiltradoInterface.map((item, index) => (
+                              <Fragment key={index}>
+                                <Collapse
+                                  in={openInterface}
+                                  timeout="auto"
+                                  unmountOnExit
+                                >
+                                  <Link
+                                    to={sayings.get(item.dMenu.coD_MENU)}
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "#202020",
+                                    }}
+                                  >
+                                    <ListItemButton sx={{ pl: 3 }}>
+                                      <ListItemIcon>
+                                        {iconsToMenu.get(item.dMenu.coD_MENU)}
+                                      </ListItemIcon>
+                                      <ListItem>
+                                        <ListItemText
+                                          primary={
+                                            <Typography
+                                              style={{ color: "#fff" }}
+                                            >
+                                              {item.dMenu.deS_MENU}
+                                            </Typography>
+                                          }
+                                        />
+                                      </ListItem>
+                                    </ListItemButton>
+                                  </Link>
+                                </Collapse>
+                              </Fragment>
+                            ))}
+                          </Collapse>
+                        </List>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {/*  */}
+                    {menu.length >= 2 && menuFiltradoAsistencia.length > 0 && (
+            <>
+              <Fragment>
+                <ListItemButton onClick={handleClickRegistro}>
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="SUNAT" />
+                  {openregistro ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={openregistro} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    {munuFiltradoRegistros.length > 0 ? (
+                      <>
+                        <ListItemButton
+                          onClick={handleClickRegistros}
+                          sx={{ pl: 3 }}
+                        >
+                          <ListItemIcon>
+                            <EngineeringIcon color="white" />
+                          </ListItemIcon>
+                          <ListItemText primary="T-REGISTROS" />
+                          {openregistros ? (
+                            <ExpandLess />
+                          ) : (
+                            <ExpandMore />
+                          )}
+                        </ListItemButton>
+                        {munuFiltradoRegistros.map((item, index) => (
+                          <Fragment key={index}>
+                            <Collapse
+                              in={openregistros}
+                              timeout="auto"
+                              unmountOnExit
+                            >
+                              <Link
+                                to={sayings.get(item.dMenu.coD_MENU)}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#202020",
+                                }}
+                              >
+                                <ListItemButton sx={{ pl: 4 }}>
+                                  <ListItemIcon>
+                                    {iconsToMenu.get(item.dMenu.coD_MENU)}
+                                  </ListItemIcon>
+                                  <ListItem>
+                                    <ListItemText
+                                      primary={
+                                        <Typography style={{ color: "#fff" }}>
+                                          {item.dMenu.deS_MENU}
+                                        </Typography>
+                                      }
+                                    />
+                                  </ListItem>
+                                </ListItemButton>
+                              </Link>
+                            </Collapse>
+                          </Fragment>
+                        ))}
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </List>
+                </Collapse>
+              </Fragment>
+            </>
+          )}
                   </List>
                 </Collapse>
               </Fragment>

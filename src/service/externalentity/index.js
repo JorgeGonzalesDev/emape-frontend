@@ -5,7 +5,17 @@ const URL = `${baseURL}/EntidadExterna`;
 
 export const listExternalEntity = async () => {
   try {
-    const response = await fetch(`${URL}/Get`);
+    const response = await fetch(`${URL}/Get`, METHOD.GET());
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getExternalEntityByRuc = async (id) => {
+  try {
+    const response = await fetch(`${URL}/GetByRuc/${id}`, METHOD.GET());
     const data = await response.json();
     return data;
   } catch (err) {
@@ -15,7 +25,7 @@ export const listExternalEntity = async () => {
 
 export const getExternalEntity = async (id) => {
   try {
-    const response = await fetch(`${URL}/Get/${id}`);
+    const response = await fetch(`${URL}/Get/${id}`, METHOD.GET());
     const data = await response.json();
     return data;
   } catch (err) {

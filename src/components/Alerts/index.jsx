@@ -28,12 +28,12 @@ export const AlertError = async (message = "Ha ocurrido un error") => {
     });
 }
 
-export const AlertSuccess = async (message = `Acción realizada <br>satisfactoriamente`) => {
+export const AlertSuccess = async (message = `Acción realizada <br>satisfactoriamente`, timer=1500) => {
     return Swal.fire({
         icon: "success",
         title: `${message}`,
         showConfirmButton: false,
-        timer: 1500,
+        timer: timer,
     });
 }
 
@@ -42,7 +42,7 @@ export const AlertWarning = async (message = `Ha ocurrido algo`) => {
         icon: "warning",
         title: `${message}`,
         showConfirmButton: false,
-        timer: 1500,
+        timer: 3500,
     });
 }
 

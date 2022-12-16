@@ -2,6 +2,7 @@ import { Grid, TextField, MenuItem, Button } from "@mui/material";
 import { useState, useEffect } from "react";
 import { getCargo } from "../../service/position";
 import { listAFPS } from "../../service/afp";
+import { listTurnoLaboral } from "../../service/ballots/workshift/";
 import {
     getBanks, getTypeWorker, getRSalud, getRPension,
     getPuestoLaboral, getUnidad, getCondicion,
@@ -15,6 +16,7 @@ import moment from "moment";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useNavigate } from "react-router-dom";
 import { AlertError, AlertSuccess, AlertWarning } from "../Alerts";
+import { PATH } from "../../service/config";
 
 const RegisterSteps = ({
     codePerson = 0,
@@ -43,7 +45,7 @@ const RegisterSteps = ({
         coD_BCOCTS: null,
         nuM_CTACTS: null,
         coD_CUSPP: null,
-        //coD_TURNO: 0,
+        coD_TURNO: null,
         inD_REGLABORAL: null,
         inD_REGPENSION: null,
         coD_ESSALUD: null,
@@ -92,9 +94,8 @@ const RegisterSteps = ({
     const [rLaboral, setRLaboral] = useState([]);
     const [ocupacionLaboral, setOcupacionLaboral] = useState([]);
     const [categoriaOcupacional, setCategoriaOcupacional] = useState([]);
+    const [turno, setTurno] = useState([]);
     const navigate = useNavigate();
-    // const [turno, setTurno] = useState([]);
-    // const [tipoPago, setTipoPago] = useState([]);
 
     const loadData = async () => {
 
@@ -107,12 +108,14 @@ const RegisterSteps = ({
                 inD_REGPENSION: false,
                 coD_CONDICION: false,
                 coD_REGLABORAL: false,
+                coD_TURNO: false,
                 coD_OCUPLABORAL: false,
                 coD_CATOCUPACION: false,
                 coD_TIPOTRABAJ: false,
                 coD_REGPENSION: false,
                 coD_SEGSALUD: false,
             });
+            console.log(dataWorker);
             setFields(dataWorker);
         }
 
@@ -140,8 +143,8 @@ const RegisterSteps = ({
         setOcupacionLaboral(responseOcupacionL.listado);
         const responseCategoriaO = await getCategoriaO();
         setCategoriaOcupacional(responseCategoriaO.listado);
-        // const responseTurno = await getTurno();
-        // setTurno(responseTurno.listado);
+        const responseTurno = await listTurnoLaboral();
+        setTurno(responseTurno.listado);
         // const responseTipoPago = await getTipoPago();
         // setTipoPago(responseTipoPago.listado);
 
@@ -154,6 +157,8 @@ const RegisterSteps = ({
     const isValidNumber = (value) => {
         return /^[0-9]+$/.test(value);
     }
+
+    const pathPROD = PATH
 
     const handleInputChange = event => {
 
@@ -245,9 +250,6 @@ const RegisterSteps = ({
 
     }
 
-    const pathPROD = "/RRHH"
-    // const pathPROD = ""
-
     const handleFields = async () => {
 
         const validate = validateFields();
@@ -260,7 +262,7 @@ const RegisterSteps = ({
 
             await AlertSuccess(`${response.message}`)
 
-            return navigate(`${pathPROD}/trabajador`)
+            return navigate(pathPROD + "/trabajador")
 
         } else {
             return await AlertError(`${response.message}`)
@@ -270,15 +272,16 @@ const RegisterSteps = ({
 
     return (
         <>
-            <Grid container spacing={1}>
-                <Grid item md={12} sm={12}>
+            <Grid container spacing={1} justifyContent='center' alignItems='center'>
+                <Grid item md={12} sm={12} style={{ textAlign: 'center' }}>
                     <span style={{ fontSize: 25, fontWeight: 'bolder' }} >{fields.coD_TRABAJADOR ? "Actualizar Trabajador" : "Registrar Trabajador"}</span>
                     <p>{fullName}</p>
                     <p style={{ color: 'red', fontSize: 15 }}>(Los campos con * son obligatorios)</p>
                 </Grid>
-                <Grid item md={12} sm={12}>
+                <Grid item md={9} sm={12}>
                     <h3>Datos Generales</h3>
                 </Grid>
+                <Grid item md={12} />
                 <Grid item md={2} sm={12} xs={12}>
                     <TextField
                         name="inD_ESTADO"
@@ -326,9 +329,7 @@ const RegisterSteps = ({
                             ))}
                     </TextField>
                 </Grid>
-
-                <Grid item md={12} />
-                <Grid item md={3} sm={12} xs={12}>
+                <Grid item md={2} sm={12} xs={12}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                             label="Fecha de ingreso *"
@@ -345,7 +346,7 @@ const RegisterSteps = ({
                         />
                     </LocalizationProvider>
                 </Grid>
-                <Grid item md={3} sm={12} xs={12}>
+                <Grid item md={2} sm={12} xs={12}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                             label="Fecha de cese"
@@ -363,7 +364,7 @@ const RegisterSteps = ({
                     </LocalizationProvider>
                 </Grid>
                 <Grid item md={12} />
-                <Grid item md={4} sm={12} xs={12}>
+                <Grid item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_CAR"
                         fullWidth
@@ -390,7 +391,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_PUESTO"
                         fullWidth
@@ -416,9 +417,8 @@ const RegisterSteps = ({
                             ))}
                     </TextField>
                 </Grid>
-                <Grid item md={12} />
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_CONDICION"
                         fullWidth
@@ -441,8 +441,9 @@ const RegisterSteps = ({
                             ))}
                     </TextField>
                 </Grid>
+                <Grid item md={12} />
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={2.5} sm={12} xs={12}>
                     <TextField
                         name="coD_TIPOTRABAJ"
                         fullWidth
@@ -492,9 +493,8 @@ const RegisterSteps = ({
                                 ))}
                         </TextField>
                     </Grid> */}
-                <Grid item md={12} />
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={2.5} sm={12} xs={12}>
                     <TextField
                         name="coD_AFP"
                         fullWidth
@@ -517,7 +517,7 @@ const RegisterSteps = ({
                             ))}
                     </TextField>
                 </Grid>
-                <Grid item md={3} sm={12} xs={12}>
+                <Grid item md={2} sm={12} xs={12}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                             label="Afiliado AFP"
@@ -534,7 +534,7 @@ const RegisterSteps = ({
                         />
                     </LocalizationProvider>
                 </Grid>
-                <Grid item md={3} sm={12} xs={12}>
+                <Grid item md={2} sm={12} xs={12}>
                     <TextField
                         name="nuM_PLAZA"
                         fullWidth
@@ -552,7 +552,7 @@ const RegisterSteps = ({
                 </Grid>
                 <Grid item md={12} />
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_BCOSUELDO"
                         fullWidth
@@ -579,7 +579,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="nuM_CTASUELDO"
                         fullWidth
@@ -596,7 +596,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="nuM_CCI"
                         fullWidth
@@ -614,7 +614,7 @@ const RegisterSteps = ({
                 </Grid>
                 <Grid item md={12} />
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_BCOCTS"
                         fullWidth
@@ -641,7 +641,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="nuM_CTACTS"
                         fullWidth
@@ -658,7 +658,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_CUSPP"
                         fullWidth
@@ -676,7 +676,7 @@ const RegisterSteps = ({
                 </Grid>
                 <Grid item md={12} />
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="inD_REGLABORAL"
                         fullWidth
@@ -703,7 +703,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="inD_REGPENSION"
                         fullWidth
@@ -730,7 +730,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_ESSALUD"
                         fullWidth
@@ -748,7 +748,7 @@ const RegisterSteps = ({
                 </Grid>
                 <Grid item md={12} />
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_REGLABORAL"
                         fullWidth
@@ -772,7 +772,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_REGPENSION"
                         fullWidth
@@ -796,7 +796,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_SEGSALUD"
                         fullWidth
@@ -821,7 +821,7 @@ const RegisterSteps = ({
                 </Grid>
                 <Grid item md={12} />
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_OCUPLABORAL"
                         fullWidth
@@ -846,7 +846,7 @@ const RegisterSteps = ({
 
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="inD_SITESPECIAL"
                         fullWidth
@@ -873,7 +873,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="coD_CATOCUPACION"
                         fullWidth
@@ -898,7 +898,7 @@ const RegisterSteps = ({
                 </Grid>
                 <Grid item md={12} />
                 <Grid
-                    item md={2} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="inD_DISCAPACIDAD"
                         fullWidth
@@ -922,7 +922,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={2} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="inD_SINDICALIZADO"
                         fullWidth
@@ -946,7 +946,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="inD_DOBLETRIBUTO"
                         fullWidth
@@ -969,8 +969,9 @@ const RegisterSteps = ({
                         </MenuItem>
                     </TextField>
                 </Grid>
+                <Grid item md={12} />
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="inD_TIPOPAGO"
                         fullWidth
@@ -999,9 +1000,8 @@ const RegisterSteps = ({
                         </MenuItem>
                     </TextField>
                 </Grid>
-                <Grid item md={12} />
                 <Grid
-                    item md={2} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="inD_PLAME"
                         fullWidth
@@ -1025,7 +1025,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid
-                    item md={2} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="inD_NOSEGUROAFP"
                         fullWidth
@@ -1050,7 +1050,33 @@ const RegisterSteps = ({
                 </Grid>
                 <Grid item md={12} />
                 <Grid
-                    item md={12} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
+                    <TextField
+                        name="coD_TURNO"
+                        fullWidth
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        size="small"
+                        error={inputError.coD_TURNO}
+                        select
+                        label="Turno"
+                        onChange={handleInputChange}
+                        value={fields.coD_TURNO}
+                    >
+                            {turno &&
+                                turno.map(turno => (
+                                    <MenuItem value={turno.coD_TURNO}>
+                                        {turno.noM_TURNO}
+                                    </MenuItem>
+                                ))}
+                    </TextField>
+                </Grid>
+                <Grid item md={3} sm={12} xs={12} />
+                <Grid item md={3} sm={12} xs={12} />
+                <Grid item md={9} />
+                <Grid
+                    item md={9} sm={12} xs={12}>
                     <TextField
                         label="Observaciones"
                         multiline
@@ -1060,18 +1086,19 @@ const RegisterSteps = ({
                         }}
                         size="small"
                         error={inputError.obS_TRABAJADOR}
-                        rows={4}
+                        rows={2}
                         name="obS_TRABAJADOR"
                         onChange={handleInputChange}
                         value={fields.obS_TRABAJADOR}
                     />
                 </Grid>
                 <Grid item md={12} />
-                <Grid item md={12}>
+                <Grid item md={9}>
                     <h3>Contrato</h3>
                 </Grid>
+                <Grid item md={12} />
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                             label="Inicio de contrato"
@@ -1089,7 +1116,7 @@ const RegisterSteps = ({
                     </LocalizationProvider>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                             label="Fin de contrato"
@@ -1107,7 +1134,7 @@ const RegisterSteps = ({
                     </LocalizationProvider>
                 </Grid>
                 <Grid
-                    item md={4} sm={12} xs={12}>
+                    item md={3} sm={12} xs={12}>
                     <TextField
                         name="nrO_CONTRATO"
                         fullWidth
@@ -1124,7 +1151,7 @@ const RegisterSteps = ({
                     </TextField>
                 </Grid>
                 <Grid item md={12} xs={12} />
-                <Grid item md={12} xs={12} sx={{ marginTop: 2 }}>
+                <Grid item md={9} xs={12} sx={{ marginTop: 2 }}>
                     <Button onClick={() => {
                         back()
                     }} variant="contained">
@@ -1132,13 +1159,11 @@ const RegisterSteps = ({
                         Regresar
                     </Button>
                     <Button style={{ marginLeft: 10 }} onClick={handleFields} variant="contained" >
-                        Registrar
+                        Guardar
                     </Button>
                 </Grid>
             </Grid>
         </>
     )
-
-
 }
 export default RegisterSteps;

@@ -10,6 +10,10 @@ const theme = createTheme({
       main: "#ff9800",
       contrastText: "#fff",
     },
+    white: {
+      main: "#fff",
+      contrastText: "#000",
+    },
   },
   typography: {
     fontFamily: "Roboto, sans-serif",

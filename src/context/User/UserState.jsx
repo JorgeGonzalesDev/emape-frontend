@@ -2,17 +2,18 @@ import { React, useState } from "react";
 import { ThemeProvider } from "@emotion/react";
 import UserContext from "../../context/User/UserContext";
 import { baseURLLog } from "../../service/config";
-import { useNavigate } from "react-router-dom";
 import ResponsiveAppBar from "../../layouts/Header";
 import theme from "../../theme"
 import Swal from "sweetalert2";
+import { PATH } from "../../service/config";
 
 import axios from "axios";
 const UserState = ({ children }) => {
-  const navigate = useNavigate();
   const [logged, setLogged] = useState(window.localStorage.getItem("token"));
   const [success, setSuccess] = useState(window.localStorage.getItem("auth"));
   const URL = `${baseURLLog}/token`;
+
+  const pathPROD = PATH
 
   const login = async (correo, password) => {
     try {
@@ -37,14 +38,10 @@ const UserState = ({ children }) => {
 
     }
   };
-
-  const pathPROD = "/RRHH"
-  // const pathPROD = ""
-  
   const logout = async () => {
     localStorage.removeItem("token");
     localStorage.removeItem("auth");
-    return window.location = `${pathPROD}`;
+    return window.location = `${pathPROD}`
   };
 
   const Navbar = () => {
