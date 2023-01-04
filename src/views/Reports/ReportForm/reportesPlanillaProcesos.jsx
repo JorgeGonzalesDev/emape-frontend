@@ -465,13 +465,6 @@ const Report = () => {
       </Stack>
       <br />
       <Stack direction="row" spacing={1} xs={{ display: "flex" }}>
-      <Button
-        size="large"
-        variant="outlined"
-        onClick={HistoricalBallot}/*  preview pdf */
-      >
-        <span>Reporte Boleta de Pago</span>
-      </Button>
       <Grid item md={3} xs={12} sm={12}>
         <Button
           size="large"

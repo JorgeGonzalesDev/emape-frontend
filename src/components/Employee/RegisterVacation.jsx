@@ -45,7 +45,7 @@ const RegisterVacacion = () => {
     }
 
     const defaultErrors = {
-        coD_TRABAJADOR:true,
+        coD_TRABAJADOR: true,
         coD_ESTVAC: true,
         feC_INICIO: true,
         feC_TERMINO: true,
@@ -93,7 +93,11 @@ const RegisterVacacion = () => {
     const validateFields = () => {
 
         const copyFields = { ...fields };
-        delete copyFields.coD_TRAASI;
+        delete copyFields.coD_TRAVAC;
+        delete copyFields.nuM_DOC;
+        delete copyFields.feC_DOC;
+        delete copyFields.noM_AUTORIZA;
+        delete copyFields.deS_OBSERVACION;
     
         let errors = {};
     
@@ -497,6 +501,7 @@ const RegisterVacacion = () => {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        inputProps={{maxLength: 25 }}
                         size="small"
                         label="N° Documento"
                         name="nuM_DOC"
@@ -528,6 +533,7 @@ const RegisterVacacion = () => {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        inputProps={{maxLength: 50 }}
                         size="small"
                         label="Autorizado por"
                         name="noM_AUTORIZA"
@@ -545,6 +551,7 @@ const RegisterVacacion = () => {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        inputProps={{maxLength: 200 }}
                         size="small"
                         rows={2}
                         name="deS_OBSERVACION"

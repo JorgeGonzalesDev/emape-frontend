@@ -14,12 +14,10 @@ import {
   GridToolbarContainer,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
-  GridToolbarExport,
   gridFilteredSortedRowIdsSelector,
   gridVisibleColumnFieldsSelector,
   useGridApiContext,
   GridToolbarExportContainer,
-  GridPrintExportMenuItem,
   GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
 import { AlertDelete, AlertWarning } from "../../components/Alerts";
@@ -289,6 +287,7 @@ const LevelEducate = () => {
           <Grid item md={12} xs={6}>
             <TextField
               name="deS_GRDINSTRUC"
+              inputProps={{maxLength: 100}}
               onChange={handleInputChange}
               value={fields.deS_GRDINSTRUC}
               fullWidth
@@ -300,6 +299,7 @@ const LevelEducate = () => {
           <Grid item md={12} xs={6}>
             <TextField
               name="abreviadO_GRADO"
+              inputProps={{maxLength: 40}}
               onChange={handleInputChange}
               error={inputErrors.abreviadO_GRADO}
               value={fields.abreviadO_GRADO}

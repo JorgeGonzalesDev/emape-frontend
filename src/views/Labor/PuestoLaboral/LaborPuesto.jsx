@@ -14,7 +14,6 @@ import {
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarExportContainer,
-  GridPrintExportMenuItem,
   GridToolbarDensitySelector,
   gridFilteredSortedRowIdsSelector,
   gridVisibleColumnFieldsSelector,
@@ -59,7 +58,6 @@ const LaborPuesto = () => {
     setData(response.listado);
   };
 
-  /*  */
   const destroy = async (event, id) => {
     const resultado = await AlertDelete();
     if (resultado) {
@@ -70,7 +68,6 @@ const LaborPuesto = () => {
       await loadData();
     }
   };
-  /*  */
 
   const edit = async (event, row) => {
     setFields(row);
@@ -81,16 +78,12 @@ const LaborPuesto = () => {
   useEffect(() => {
     loadData();
   }, []);
-  /*  */
 
   const OpenRegister = () => {
     setFields(defaultfields);
     levelLaborPuesto.current.handleOpen();
   };
 
-
-
-  /*  */
 
   const validateFields = () => {
 
@@ -281,6 +274,7 @@ const LaborPuesto = () => {
           <Grid item md={12} xs={6}>
             <TextField
               name="noM_PUESTO"
+              inputProps={{maxLength: 100}}
               onChange={handleInputChange}
               value={fields.noM_PUESTO}
               fullWidth

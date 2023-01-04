@@ -52,9 +52,9 @@ const Report = () => {
     }
   }
   
-  const JudicialRetentions = async () => {
+  const WorkersList = async () => {
     if (estado == false){
-      var path = `/RRHHDEV/reportes/JudicialRetentions/${fields.nuM_PERPLAN}/${fields.nuM_PERIODO}`;
+      var path = `/RRHHDEV/reportes/WorkersList`;
       window.location = path;
       await AlertSuccess("Enviado con Exito");
     }
@@ -78,7 +78,7 @@ const Report = () => {
           </Stack>
         </div>
         <br />
-        <Stack
+        {/* <Stack
           direction="row"
           xs={{ mb: 1, display: "flex" }}
           marginBottom={3}
@@ -132,7 +132,7 @@ const Report = () => {
 
             <Grid item md={2} sm={12} xs={12} />
           </Grid>
-        </Stack>
+        </Stack> */}
       </Grid>
       <br />
 
@@ -148,8 +148,7 @@ const Report = () => {
         <Button
           size="large"
           variant="outlined"
-          disabled
-          onClick={JudicialRetentions}/*  preview pdf */
+          onClick={WorkersList}/*  preview pdf */
         >
           <span>REPORTE PADRON DE TRABAJADORES</span>
         </Button>

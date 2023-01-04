@@ -33,6 +33,7 @@ export const PayrollAndWorkers = `${pathPROD}/planilla/PlanillaYTrabajadores`;
 export const ConceptsFormula = `${pathPROD}/planilla/ConceptsFormula`;
 export const CalculateSpreadsheet = `${pathPROD}/calcular/planilla/CalcularPlanilla`;
 export const WorkerAndConcept = `${pathPROD}/planilla/TrabajadorConcepto`;
+export const FifthCategory = `${pathPROD}/planilla/QuintaCategoria`;
 export const BoletaTrabajador = `${pathPROD}/reportes/BoletaTrabajador`;
 export const RenumConcept = `${pathPROD}/planilla/concepto/registrar`;
 export const TypeSpreadsheet = `${pathPROD}/planilla/registrar`;

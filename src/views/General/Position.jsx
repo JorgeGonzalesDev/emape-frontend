@@ -291,6 +291,7 @@ const Position = () => {
             <TextField
               name="deS_CAR"
               error={inputErrors.deS_CAR}
+              inputProps={{maxLength: 200}}
               onChange={handleInputChange}
               value={fields.deS_CAR}
               fullWidth
@@ -302,6 +303,7 @@ const Position = () => {
             <TextField
               name="abR_CAR"
               error={inputErrors.abR_CAR}
+              inputProps={{maxLength: 200}}
               onChange={handleInputChange}
               value={fields.abR_CAR}
               fullWidth

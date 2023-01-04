@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import styled from "styled-components";
 import moment from "moment/moment";
 import { GetReporteDeTrabajadoresFechaNacimientoySexo } from "../../../service/common";
+var XLSX = require("xlsx");
 
 const WorkersDatebirthSexForm = () => {
   const generatePDF = () => {
@@ -18,9 +19,36 @@ const WorkersDatebirthSexForm = () => {
     })
   };
 
-  // const {} = useParams();
-  // const fields = {
-  // };
+  const downloadExcel = (dataExport) => {
+    //var Headers = [["Reporte Trabajadores Activos FechaSexo"]];
+    let dataH = [];
+    dataExport.forEach((item) => {
+      dataH.push({
+        "DNI": item?.nuM_DOC,
+        "N°": item?.noM_TIPOTRABAJ,
+        "TRABAJADOR": item?.noM_ABR,
+        "SEXO": item?.inD_SEXO,
+        "F. NACIMIENTO": item?.feC_NACIM,
+
+      });
+    });
+
+    const workSheet = XLSX.utils.json_to_sheet(dataH, { origin: "A2" });
+    const workBook = XLSX.utils.book_new();
+
+    const merge = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 33 } },
+      { s: { r: 0, c: 34 }, e: { r: 0, c: 37 } },
+    ];
+
+    workSheet["!merges"] = merge;
+
+    //XLSX.utils.sheet_add_aoa(workSheet, Headers);
+    XLSX.utils.book_append_sheet(workBook, workSheet, "ReporteTrabajadores");
+    XLSX.write(workBook, { bookType: "xlsx", type: "buffer" });
+    XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+    XLSX.writeFile(workBook, "Reporte-TrabajadoresActivos-FechaSexo.xlsx");
+  };
 
   const [dataH, setDataH] = useState([]);
   const loadData = async () => {
@@ -46,6 +74,7 @@ const WorkersDatebirthSexForm = () => {
       </Grid>
       <Stack direction="row" spacing={1} xs={{ display: "flex" }}>
         <Button variant="outlined" onClick={generatePDF}>Generate PDF</Button>
+        <Button variant="outlined" onClick={() => {downloadExcel(dataH);}}>Generate Excel</Button>
         <Grid item md={3} xs={12} sm={12}>
           <Link
             to="/RRHHDEV/reportes/LegajoReportes"
@@ -57,6 +86,7 @@ const WorkersDatebirthSexForm = () => {
           </Link>
         </Grid>
       </Stack>
+      <br />
 
       <HojaA4>
         <div className="page" id="boleta-pago">

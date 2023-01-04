@@ -224,7 +224,7 @@ const Ticket = () => {
           />
         </Grid>
         <Grid item md={12} sm={12} xs={12}>
-          <h1 style={{ color: "red" }}>Trabajadores</h1>
+          <h1 style={{ color: "black" }}>Trabajadores</h1>
          </Grid>
         <Grid item md={12} sm={12} xs={12}>
           <DataGridDemo

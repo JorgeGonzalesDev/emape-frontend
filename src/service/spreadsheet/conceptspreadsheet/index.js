@@ -30,9 +30,9 @@ export const getPlanillaTrabajadorByTipoPlan = async (idP) => {
     console.log(err);
   }
 };
-export const getPlanillaTrabajadorByFormulaTipoPlan = async (idP, indFormula) => {
+export const getPlanillaTrabajadorByFormulaTipoPlan = async (idP, inDCalculo) => {
   try {
-    const response = await fetch(`${URL}/Get/ByFormulaTipoPlan/${indFormula}/${idP}`, METHOD.GET());
+    const response = await fetch(`${URL}/Get/ByCalculoTipoPlan/${inDCalculo}/${idP}`, METHOD.GET());
     const data = await response.json();
     return data;
   } catch (err) {

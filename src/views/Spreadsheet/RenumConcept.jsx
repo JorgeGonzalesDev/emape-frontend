@@ -250,6 +250,7 @@ const RenumConcept = () => {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            inputProps={{maxLength: 100}}
                             size="small"
                             error={inputError.noM_CONCEPTO}
                             label="Nombre concepto"
@@ -264,6 +265,7 @@ const RenumConcept = () => {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            inputProps={{maxLength: 20}}
                             size="small"
                             label="Nombre abreviado"
                             onChange={handleInputChange}
@@ -328,7 +330,7 @@ const RenumConcept = () => {
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            inputProps={{ maxLength: 5 }}
+                            inputProps={{ maxLength: 4 }}
                             size="small"
                             label="Cod. Sunat"
                             onChange={handleInputChange}

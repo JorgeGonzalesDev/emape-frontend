@@ -1,21 +1,16 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Grid, TextField, Stack } from "@mui/material";
+import { Button, Grid, Stack, ButtonGroup } from "@mui/material";
 import { Link } from "react-router-dom";
 import jsPDF from "jspdf";
+import "jspdf-autotable";
 import styled from "styled-components";
 import { GetReportePermisos } from "../../../service/common";
 
+var XLSX = require("xlsx");
+
 const PermissionsReport = () => {
-  const generatePDF = () => {
-    const doc = new jsPDF('l', 'pt', 'a4');
-    doc.html(document.querySelector(HojaA4), {
-      callback: function (doc) {
-        doc.save("Reporte-Permisos.pdf");
-      }
-    })
-  };
 
   const { inicio, termino } = useParams();
   const fields = {
@@ -34,6 +29,116 @@ const PermissionsReport = () => {
     loadData();
   }, []);
 
+  // const columnsPDF = [
+  //   {
+  //     field: "n_PAPELETA",
+  //     header: "N° PAPELETA",
+  //     width: 400,
+  //   },
+  //   {
+  //     field: "fecha",
+  //     header: "FECHA",
+  //     width: 400,
+  //   },
+  //   {
+  //     field: "nombre",
+  //     header: "NOMBRE",
+  //     width: 200,
+  //   },
+  //   {
+  //     field: "motivo",
+  //     header: "MOTIVO",
+  //     width: 200,
+  //   },
+  //   {
+  //     field: "inicio",
+  //     header: "INICIO",
+  //     width: 200,
+  //   },
+  //   {
+  //     field: "termino",
+  //     header: "TERMINO",
+  //     width: 200,
+  //   },
+  //   {
+  //     field: "dias",
+  //     header: "DIA",
+  //     width: 200,
+  //   },
+  //   {
+  //     field: "hH_MM",
+  //     header: "HH:MM",
+  //     width: 200,
+  //   },
+  //   {
+  //     field: "tipO_PAPELETA",
+  //     header: "TIPO PAPELETA",
+  //     width: 200,
+  //   },
+  //   {
+  //     field: "observacion",
+  //     header: "OBSERVACION",
+  //     width: 200,
+  //   }
+  // ];
+
+  const generatePDF = () => {
+    const doc = new jsPDF('p', 'pt', 'a4');
+    const margin = 10;
+    const scale = (doc.internal.pageSize.width - margin * 2) / document.body.scrollWidth;
+    // doc.autoTable({
+    //   theme: "plain",
+    //   styles: { fontSize: 6 },
+    //   columns: columnsPDF.map((col) => ({ ...col, dataKey: col.field })),
+    //   body: dataH
+    // });
+    doc.html(document.querySelector(HojaA4), {
+      x: margin,
+      y: margin,
+      html2canvas: { scale: scale },
+      callback: function (doc) {
+        // doc.output('dataurlnewwindow', {filename: 'Reporte-Permisos.pdf'})
+        doc.save("Reporte-Permisos.pdf");
+      }
+    })
+    // doc.save("Reporte-Permisos.pdf");
+  };
+
+  const downloadExcel = (dataExport) => {
+    var Headers = [["REPORTE PERMISOS"]];
+    let nData = [];
+    dataExport.forEach((item) => {
+      nData.push({
+        "N° PAPELETA": item?.n_PAPELETA,
+        "FECHA": item?.fecha,
+        "NOMBRE": item?.nombre,
+        "TIPO PAPELETA": item?.tipO_PAPELETA,
+        "MOTIVO": item?.motivo,
+        "INICIO": item?.inicio,
+        "TERMINO": item?.termino,
+        "DIA": item?.dias,
+        "HH:MM": item?.hH_MM,
+        "OBSERVACION": item?.observacion
+      });
+    });
+
+    const workSheet = XLSX.utils.json_to_sheet(nData, { origin: "A2" });
+    const workBook = XLSX.utils.book_new();
+
+    const merge = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 33 } },
+      { s: { r: 0, c: 34 }, e: { r: 0, c: 37 } },
+    ];
+
+    workSheet["!merges"] = merge;
+
+    XLSX.utils.sheet_add_aoa(workSheet, Headers);
+    XLSX.utils.book_append_sheet(workBook, workSheet, "RELACION PAPELETA");
+    XLSX.write(workBook, { bookType: "xlsx", type: "buffer" });
+    XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+    XLSX.writeFile(workBook, "ReportePermisos.xlsx");
+  };
+  
   return (
     <>
       <Grid item md={3} xs={12} sm={12}>
@@ -46,7 +151,12 @@ const PermissionsReport = () => {
         </div>
       </Grid>
       <Stack direction="row" spacing={1} xs={{ display: "flex" }}>
-        <Button variant="outlined" onClick={generatePDF}>Generate PDF</Button>
+        <Grid item md={3} xs={12} sm={12}>
+          <ButtonGroup variant="outlined" size="large">
+            <Button onClick={generatePDF}>Generar PDF</Button>
+            <Button onClick={() => { downloadExcel(dataH) }}>Generar Excel</Button>
+          </ButtonGroup>
+        </Grid>
         <Grid item md={3} xs={12} sm={12}>
           <Link
             to="/RRHHDEV/reportes/controlReportes"
@@ -75,14 +185,14 @@ const PermissionsReport = () => {
                       Hora
                     </td>
                     <td>
-                      : {new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear()}<br />
+                      : {new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear()}<br />
                       : {new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds()}
                     </td>
                   </tr>
                   <tr>
                     <td colSpan="4" className="td-title">
                       RELACION DE PAPELETAS <br />
-                      DEL 17/10/2022 AL 30/1/2022
+                      DEL {new Date(inicio).toLocaleDateString('es-pe')} AL {new Date(termino).toLocaleDateString('es-pe')}
                     </td>
                   </tr>
                 </tbody>
@@ -96,6 +206,7 @@ const PermissionsReport = () => {
                   <th className="th-table" colSpan="1">N° PAPELETA</th>
                   <th className="th-table" colSpan="1">FECHA</th>
                   <th className="th-table" colSpan="3">NOMBRE</th>
+                  <th className="th-table" colSpan="2">TIPO PAPELETA</th>
                   <th className="th-table" colSpan="2">MOTIVO</th>
                   <th className="th-table" colSpan="1">INICIO</th>
                   <th className="th-table" colSpan="1">TERMINO</th>
@@ -105,9 +216,6 @@ const PermissionsReport = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="td-table" colSpan="14">TIPO: JUSTIFICACION POR COMISION</td>
-                </tr>
                 {dataH &&
                   dataH.map((data, index) => {
                     return (
@@ -115,6 +223,7 @@ const PermissionsReport = () => {
                         <td className="td-table text-center" colSpan="1">{data['n_PAPELETA']}</td>
                         <td className="td-table text-center" colSpan="1">{data['fecha']}</td>
                         <td className="td-table" colSpan="3">{data['nombre']}</td>
+                        <td className="td-table" colSpan="2">{data['tipO_PAPELETA']}</td>
                         <td className="td-table" colSpan="2">{data['motivo']}</td>
                         <td className="td-table text-center" colSpan="1">{data['inicio']}</td>
                         <td className="td-table text-center" colSpan="1">{data['termino']}</td>
@@ -133,6 +242,7 @@ const PermissionsReport = () => {
     </>
   );
 };
+
 const HojaA4 = styled.div`
 
   .title h4{

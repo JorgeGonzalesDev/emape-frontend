@@ -293,6 +293,7 @@ const Profession = () => {
           <Grid item md={12} xs={6}>
             <TextField
               name="deS_PROFES"
+              inputProps={{maxLength: 100}}
               onChange={handleInputChange}
               value={fields.deS_PROFES}
               fullWidth
@@ -304,6 +305,7 @@ const Profession = () => {
           <Grid item md={12} xs={6}>
             <TextField
               name="abR_PROFES"
+              inputProps={{maxLength: 30}}
               onChange={handleInputChange}
               value={fields.abR_PROFES}
               fullWidth

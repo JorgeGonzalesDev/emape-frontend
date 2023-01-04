@@ -1,29 +1,22 @@
 import { useParams } from "react-router-dom";
 import { getReportTable } from "../../service/common";
 import DataGridDemo from "../../components/Table";
-import { deletePerson, listPerson } from "../../service/person";
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import EditIcon from "@mui/icons-material/Edit";
-import PersonOffIcon from "@mui/icons-material/PersonOff";
-import { PATH } from "../../service/config";
-import { Button, MenuItem, Stack } from "@mui/material";
+import { useState, useEffect, useRef} from "react";
+import { MenuItem, Stack, Grid } from "@mui/material";
 import {
   GridToolbarContainer,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarExportContainer,
-  GridPrintExportMenuItem,
   GridToolbarDensitySelector,
   gridFilteredSortedRowIdsSelector,
   gridVisibleColumnFieldsSelector,
   useGridApiContext,
 } from "@mui/x-data-grid";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import moment from "moment";
-import { AlertDelete } from "../../components/Alerts";
-import IconToolTip from "../../components/Icons/IconToolTip";
 import jsPDF from "jspdf";
+import MUIPreload from "../../components/Modal/preload";
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import "jspdf-autotable";
 
 var XLSX = require("xlsx");
@@ -32,10 +25,15 @@ const ReportTable = () => {
   const { id } = useParams();
 
   const [data, setData] = useState([]);
-
+  const levelEducateChild = useRef();
   const loadData = async () => {
+    levelEducateChild.current.handleOpen();
     const response = await getReportTable(id);
-    setData(response.listado);
+    if(response.code === 0){
+      setData(response.listado);
+    }
+    levelEducateChild.current.handleClose();
+
   };
 
   useEffect(() => {
@@ -47,30 +45,44 @@ const ReportTable = () => {
     let nData = [];
     dataExport.forEach((item) => {
       nData.push({
-        UNIDAD: item?.unidad,
+        "UNIDAD": item?.unidad,
         "APELLIDOS Y NOMBRES": item?.apellidosNombres,
         "Dias Lab.": item?.diasLaborables,
-        "000010 SUELDO BASICO 2.1.1.1.1.4": item?.sueldoBasico,
-        "000020 INC AFP 10.23% 2.1.1.1.2.99": item?.afP_020,
-        "000030 INC AFP 3% 2.1.1.1.2.99": item?.afP_030,
-        "000082 RACIONAMIENTO 2.1.1.1.2.99": item?.racionamiento,
-        "000399 ASIG-FAMILIAR 2.1.1.1.2.99": item?.asignacionFamiliar,
-        VACACIONES: item?.vacaciones,
-        "LICENCIA CON GOCE HABER": item?.licenciaConGoceHaber,
-        "100038 MOVILIDAD 2.1.1.1.2.99": item?.movilidad,
+        "SUELDO BASICO": item?.sueldoBasico,
+        "INC AFP 10.23%": item?.afP_020,
+        "INC AFP 3%": item?.afP_030,
+        "RACIONAMIENTO": item?.racionamiento,
+        "ASIG-FAMILIAR": item?.asignacionFamiliar,
+        "VACACIONES.": item?.bonif_Vacacional,
+        "ESCOLARIDAD": item?.escolaridad,
+        "MOVILIDAD": item?.movilidad,
         "Bonif. Vacacional": item?.bonificacionFamiliar,
         "Reint Con CeRift": item?.reintConCertif,
-        "Reint sin CeRlif.": item?.reintSinCertif,
+        "Reint sin CeRlif": item?.reintSinCertif,
         "INGRESOS INAFECTOS": item?.ingresosInafectos,
-        "Remun Bruta": item?.remuneracionBruta,
-        "Remun Calculable": item?.reumneracionCalculable,
+        "Resumen. Bruta": item?.remuneracionBruta,
+        "Renum Calculable": item?.reumneracionCalculable,
         "Min Tard": item?.minutosTardanza,
         "Dias Falta": item?.diasFalta,
-        Licencias: item?.licencias,
+        "Licencias": item?.licencias,
         "SIST. PENSIONES": item?.sistemaPensiones,
         "Aporte Obligatorio": item?.aporteObligatorio,
         "Prima de Seguro": item?.primaSeguro,
+        "TOTAL APORTACION": item?.totalAportacion,
         "Comis. Variable": item?.comisionVariable,
+        "FALTAS S/": item?.faltas,
+        "TARDANZAS S/": item?.tardanzas,
+        "5° CAT": item?.quintaCategoria,
+        "CUOTA SINDICAL": item?.cuotaSindical,
+        "ESS VIDA": item?.essVida,
+        "DESC JUDICIAL 1": item?.desJud1,
+        "DESC JUDICIAL 2.": item?.desJud2,
+        "cajMet": item?.cajMet,
+        "TOTAL DESCUENTOS": item?.totalDescuentos,
+        "NETO A PAGAR": item?.netoPagar,
+        "EPS": item?.eps,
+        "ESSALUD": item?.essalud,
+        "TOTAL APORTES": item?.totalAportes,
       });
     });
 
@@ -173,42 +185,42 @@ const ReportTable = () => {
     },
     {
       field: "sueldoBasico",
-      headerName: "000010 SUELDO BASICO 2.1.1.1.1.4",
+      headerName: "SUELDO BASICO",
       width: 200,
     },
     {
       field: "afP_020",
-      headerName: "000020 INC AFP 10.23% 2.1.1.1.2.99",
+      headerName: "INC AFP 10.23%",
       width: 200,
     },
     {
       field: "afP_030",
-      headerName: "000030 INC AFP 3% 2.1.1.1.2.99",
+      headerName: "INC AFP 3%",
       width: 200,
     },
     {
       field: "racionamiento",
-      headerName: "000082 RACIONAMIENTO 2.1.1.1.2.99",
+      headerName: "RACIONAMIENTO",
       width: 200,
     },
     {
       field: "asignacionFamiliar",
-      headerName: "000399 ASIG-FAMILIAR 2.1.1.1.2.99",
+      headerName: "ASIG-FAMILIAR",
       width: 200,
     },
     {
-      field: "vacaciones",
+      field: "bonif_Vacacional",
       headerName: "VACACIONES",
       width: 200,
     },
     {
-      field: "licenciaConGoceHaber",
-      headerName: "LICENCIA CON GOCE HABER",
+      field: "escolaridad",
+      headerName: "ESCOLARIDAD",
       width: 200,
     },
     {
       field: "movilidad",
-      headerName: "100038 MOVILIDAD 2.1.1.1.2.99",
+      headerName: "MOVILIDAD",
       width: 200,
     },
     {
@@ -275,309 +287,279 @@ const ReportTable = () => {
       field: "comisionVariable",
       headerName: "Comis. Variable",
       width: 200,
+    },
+    {
+      field: "totalAportacion",
+      headerName: "TOTAL APORTACION",
+      width: 200,
+    },
+    {
+      field: "faltas",
+      headerName: "FALTAS S/",
+      width: 200,
+    },
+    {
+      field: "tardanzas",
+      headerName: "TARDANZAS S/",
+      width: 200,
+    },
+    {
+      field: "quintaCategoria",
+      headerName: "5° CAT",
+      width: 200,
+    },
+    {
+      field: "cuotaSindical",
+      headerName: "CUOTA SINDICAL",
+      width: 200,
+    },
+    {
+      field: "essVida",
+      headerName: "ESS VIDA",
+      width: 200,
+    },
+    {
+      field: "desJud1",
+      headerName: "DESC JUDICIAL 1",
+      width: 200,
+    },
+    {
+      field: "desJud2",
+      headerName: "DESC JUDICIAL 2",
+      width: 200,
+    },
+    {
+      field: "otrosDescuentos",
+      headerName: "OTROS DESCUENTOS",
+      width: 200,
+    },
+    {
+      field: "cajMet",
+      headerName: "cajMet",
+      width: 200,
+    },
+    {
+      field: "totalDescuentos",
+      headerName: "TOTAL DESCUENTOS",
+      width: 200,
+    },
+    {
+      field: "netoPagar",
+      headerName: "NETO A PAGAR",
+      width: 200,
+    },
+    {
+      field: "eps",
+      headerName: "EPS",
+      width: 200,
+    },
+    {
+      field: "essalud",
+      headerName: "ESSALUD",
+      width: 200,
+    },
+    {
+      field: "totalAportes",
+      headerName: "TOTAL APORTES",
+      width: 200,
     }
+
   ];
-  // const columns = [
-  //   {
-  //     field: "unidad",
-  //     headerName: "Unidad",
-  //     width: 400,
-  //   },
-  //   {
-  //     field: "apellidosNombres",
-  //     headerName: "Apellidos y Nombres",
-  //     width: 400,
-  //   },
-  //   {
-  //     field: "diasLaborables",
-  //     headerName: "Dias Lab.",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "sueldoBasico",
-  //     headerName: "000010 SUELDO BASICO 2.1.1.1.1.4",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "afP_020",
-  //     headerName: "000020 INC AFP 10.23% 2.1.1.1.2.99",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "afP_030",
-  //     headerName: "000030 INC AFP 3% 2.1.1.1.2.99",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "racionamiento",
-  //     headerName: "000082 RACIONAMIENTO 2.1.1.1.2.99",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "asignacionFamiliar",
-  //     headerName: "000399 ASIG-FAMILIAR 2.1.1.1.2.99",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "vacaciones",
-  //     headerName: "VACACIONES",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "licenciaConGoceHaber",
-  //     headerName: "LICENCIA CON GOCE HABER",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "movilidad",
-  //     headerName: "100038 MOVILIDAD 2.1.1.1.2.99",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "bonificacionFamiliar",
-  //     headerName: "Bonif. Vacacional",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "reintConCertif",
-  //     headerName: "Reint Con CeRift",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "reintSinCertif",
-  //     headerName: "Reint Sin CeRift",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "ingresosInafectos",
-  //     headerName: "INGRESOS INAFECTOS",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "minutosTardanza",
-  //     headerName: "Min Tard",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "diasFalta",
-  //     headerName: "Dias Faltas",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "licencias",
-  //     headerName: "Licencias",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "sistemaPensiones",
-  //     headerName: "SIST. PENSIONES",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "aporteObligatorio",
-  //     headerName: "Aporte Obligatorio",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "primaSeguro",
-  //     headerName: "Prima de Seguro",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "comisionVariable",
-  //     headerName: "Comis. Variable",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "faltas",
-  //     headerName: "Faltas",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "tardanzas",
-  //     headerName: "Tardanzas",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "quintaaCategoria",
-  //     headerName: "5ta Categoría",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "cuotaSindical",
-  //     headerName: "Cuota Sindical",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "essVida",
-  //     headerName: "ESSVIDA",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "otrosDescuentos",
-  //     headerName: "Otros Descuentos",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "eps",
-  //     headerName: "EPS",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "essalud",
-  //     headerName: "ESSALUD",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "remuneracionBruta",
-  //     headerName: "Remun. Bruta",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "reumneracionCalculable",
-  //     headerName: "Remun. Calculable",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "totalAportacion",
-  //     headerName: "Aport. Total",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "totalDescuentos",
-  //     headerName: "Desc. Total",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "totalAportes",
-  //     headerName: "Total Aportes",
-  //     width: 200,
-  //   },
-  //   {
-  //     field: "netoPagar",
-  //     headerName: "Pago Neto",
-  //     width: 200,
-  //   }
-  // ];
+
   const columnsPDF = [
     {
       field: "unidad",
-      header: "Unidad",
+      headerName: "Unidad",
       width: 400,
     },
     {
       field: "apellidosNombres",
-      header: "Apellidos y Nombres",
+      headerName: "Apellidos y Nombres",
       width: 400,
     },
     {
       field: "diasLaborables",
-      header: "Dias Lab.",
+      headerName: "Dias Lab.",
       width: 200,
     },
     {
       field: "sueldoBasico",
-      header: "000010 SUELDO BASICO 2.1.1.1.1.4",
+      headerName: "SUELDO BASICO",
       width: 200,
     },
     {
       field: "afP_020",
-      header: "000020 INC AFP 10.23% 2.1.1.1.2.99",
+      headerName: "INC AFP 10.23%",
       width: 200,
     },
     {
       field: "afP_030",
-      header: "000030 INC AFP 3% 2.1.1.1.2.99",
+      headerName: "INC AFP 3%",
       width: 200,
     },
     {
       field: "racionamiento",
-      header: "000082 RACIONAMIENTO 2.1.1.1.2.99",
+      headerName: "RACIONAMIENTO",
       width: 200,
     },
     {
       field: "asignacionFamiliar",
-      header: "000399 ASIG-FAMILIAR 2.1.1.1.2.99",
+      headerName: "ASIG-FAMILIAR",
       width: 200,
     },
     {
-      field: "vacaciones",
-      header: "VACACIONES",
+      field: "bonif_Vacacional",
+      headerName: "VACACIONES",
       width: 200,
     },
     {
-      field: "licenciaConGoceHaber",
-      header: "LICENCIA CON GOCE HABER",
+      field: "escolaridad",
+      headerName: "ESCOLARIDAD",
       width: 200,
     },
     {
       field: "movilidad",
-      header: "100038 MOVILIDAD 2.1.1.1.2.99",
+      headerName: "MOVILIDAD",
       width: 200,
     },
     {
       field: "bonificacionFamiliar",
-      header: "Bonif. Vacacional",
+      headerName: "Bonif. Vacacional",
       width: 200,
     },
     {
       field: "reintConCertif",
-      header: "Reint Con CeRift",
+      headerName: "Reint Con CeRift",
       width: 200,
     },
     {
       field: "reintSinCertif",
-      header: "Reint Sin CeRift",
+      headerName: "Reint Sin CeRift",
       width: 200,
     },
     {
       field: "ingresosInafectos",
-      header: "INGRESOS INAFECTOS",
+      headerName: "INGRESOS INAFECTOS",
       width: 200,
     },
     {
       field: "remuneracionBruta",
-      header: "Remun. Bruta",
+      headerName: "Remun. Bruta",
       width: 200,
     },
     {
       field: "reumneracionCalculable",
-      header: "Remun. Calculable",
+      headerName: "Remun. Calculable",
       width: 200,
     },
     {
       field: "minutosTardanza",
-      header: "Min Tard",
+      headerName: "Min Tard",
       width: 200,
     },
     {
       field: "diasFalta",
-      header: "Dias Faltas",
+      headerName: "Dias Faltas",
       width: 200,
     },
     {
       field: "licencias",
-      header: "Licencias",
+      headerName: "Licencias",
       width: 200,
     },
     {
       field: "sistemaPensiones",
-      header: "SIST. PENSIONES",
+      headerName: "SIST. PENSIONES",
       width: 200,
     },
     {
       field: "aporteObligatorio",
-      header: "Aporte Obligatorio",
+      headerName: "Aporte Obligatorio",
       width: 200,
     },
     {
       field: "primaSeguro",
-      header: "Prima de Seguro",
+      headerName: "Prima de Seguro",
       width: 200,
     },
     {
       field: "comisionVariable",
-      header: "Comis. Variable",
+      headerName: "Comis. Variable",
+      width: 200,
+    },
+    {
+      field: "totalAportacion",
+      headerName: "TOTAL APORTACION",
+      width: 200,
+    },
+    {
+      field: "faltas",
+      headerName: "FALTAS S/",
+      width: 200,
+    },
+    {
+      field: "tardanzas",
+      headerName: "TARDANZAS S/",
+      width: 200,
+    },
+    {
+      field: "quintaCategoria",
+      headerName: "5° CAT",
+      width: 200,
+    },
+    {
+      field: "cuotaSindical",
+      headerName: "CUOTA SINDICAL",
+      width: 200,
+    },
+    {
+      field: "essVida",
+      headerName: "ESS VIDA",
+      width: 200,
+    },
+    {
+      field: "desJud1",
+      headerName: "DESC JUDICIAL 1",
+      width: 200,
+    },
+    {
+      field: "desJud2",
+      headerName: "DESC JUDICIAL 2",
+      width: 200,
+    },
+    {
+      field: "otrosDescuentos",
+      headerName: "OTROS DESCUENTOS",
+      width: 200,
+    },
+    {
+      field: "cajMet",
+      headerName: "cajMet",
+      width: 200,
+    },
+    {
+      field: "totalDescuentos",
+      headerName: "TOTAL DESCUENTOS",
+      width: 200,
+    },
+    {
+      field: "netoPagar",
+      headerName: "NETO A PAGAR",
+      width: 200,
+    },
+    {
+      field: "eps",
+      headerName: "EPS",
+      width: 200,
+    },
+    {
+      field: "essalud",
+      headerName: "ESSALUD",
+      width: 200,
+    },
+    {
+      field: "totalAportes",
+      headerName: "TOTAL APORTES",
       width: 200,
     }
   ];
@@ -606,6 +588,13 @@ const ReportTable = () => {
           toolbar={CustomToolbar}
         />
       </div>
+      <MUIPreload ref={levelEducateChild}>
+          <Grid container spacing={2} justifyContent="center">
+            <Box sx={{ display: 'flex' }}>
+              <CircularProgress color="primary" size={70} />
+            </Box>
+          </Grid>
+        </MUIPreload>
     </>
   );
 };

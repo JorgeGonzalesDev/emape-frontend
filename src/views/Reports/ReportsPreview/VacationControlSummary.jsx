@@ -22,23 +22,9 @@ const VacationControlSummary = () => {
     mes: mes,
     annio: annio
   };
-  // Diccionario
-  const months = {
-    '01' : 'Enero',
-    '02' : 'Febero',
-    '03' : 'Marzo',
-    '04' : 'Abril',
-    '05' : 'Mayo',
-    '06' : 'Junio',
-    '07' : 'Julio',
-    '08' : 'Agosto',
-    '09' : 'Septiembre',
-    '10' : 'Octubre',
-    '11' : 'Noviembre',
-    '12' : 'Diciembre',
-  }
 
   const [dataH, setDataH] = useState([]);
+  let num = 0;
   const loadData = async () => {
     const response1 = await GetReporteResumenControlDeVacaciones(fields.annio)
     setDataH(response1.listado);
@@ -88,43 +74,44 @@ const VacationControlSummary = () => {
             <table className="table-center border-table">
               <thead>
                 <tr>
+                  <th className="th-table" colSpan="1">NRO</th>
                   <th className="th-table" colSpan="1">T/REP</th>
                   <th className="th-table" colSpan="1">UND</th>
                   <th className="th-table" colSpan="1">DNI</th>
                   <th className="th-table" colSpan="2">APELLIDO Y NOMBRES</th>
                   <th className="th-table" colSpan="1">FECHA INGRESO PLANILLA</th>
-                  <th className="th-table" colSpan="1">2018</th>
-                  <th className="th-table" colSpan="1">2019</th>
                   <th className="th-table" colSpan="1">2020</th>
                   <th className="th-table" colSpan="1">2021</th>
                   <th className="th-table" colSpan="1">2022</th>
                   <th className="th-table" colSpan="1">2023</th>
                   <th className="th-table" colSpan="1">2024</th>
-                  <th className="th-table" colSpan="1">2021</th>
+                  <th className="th-table" colSpan="1">2025</th>
                   <th className="th-table" colSpan="1">TOTAL</th>
                 </tr>
               </thead>
               <tbody>
                 {dataH &&
                   dataH.map((data, index) => {
-                    return (
-                      <tr key={index}>
-                        <td className="td-table" colSpan="1"><p>{data['t_REP']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['und']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['dni']}</p></td>
-                        <td className="td-table" colSpan="2"><p>{data['apellidoS_NOMBRES']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['fechA_INGRESO_PLANILLA']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['a2018']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['a2019']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['a2020']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['a2021']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['a2022']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['a2023']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['a2024']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['a2025']}</p></td>
-                        <td className="td-table" colSpan="1"><p>{data['total']}</p></td>
-                      </tr>
-                    )
+                    if (dataH){
+                      num = num + 1
+                      return (
+                        <tr key={index}>
+                          <td className="td-table" colSpan="1"><p>{num}</p></td>
+                          <td className="td-table" colSpan="1"><p>{data['t_REP']}</p></td>
+                          <td className="td-table" colSpan="1"><p>{data['und']}</p></td>
+                          <td className="td-table" colSpan="1"><p>{data['dni']}</p></td>
+                          <td className="td-table" colSpan="2"><p>{data['apellidoS_NOMBRES']}</p></td>
+                          <td className="td-table" colSpan="1"><p>{data['fechA_INGRESO_PLANILLA']}</p></td>
+                          <td className="td-table" colSpan="1"><p>{data['a2020']}</p></td>
+                          <td className="td-table" colSpan="1"><p>{data['a2021']}</p></td>
+                          <td className="td-table" colSpan="1"><p>{data['a2022']}</p></td>
+                          <td className="td-table" colSpan="1"><p>{data['a2023']}</p></td>
+                          <td className="td-table" colSpan="1"><p>{data['a2024']}</p></td>
+                          <td className="td-table" colSpan="1"><p>{data['a2025']}</p></td>
+                          <td className="td-table" colSpan="1"><p>{data['total']}</p></td>
+                        </tr>
+                      )
+                    }
                   })
                 }
               </tbody>

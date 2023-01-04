@@ -1,4 +1,4 @@
-import { Grid, TextField, MenuItem, Button, Tooltip, IconButton } from "@mui/material";
+import { Grid, TextField, MenuItem, Button, Tooltip, IconButton, Autocomplete } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import MUIModal from "../../components/Modal";
 import { deleteOneFamWorker, getFamWorker, getOneFamWorker } from "../../service/worker";
@@ -22,9 +22,10 @@ import {
 } from "@mui/x-data-grid";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { listPerson } from "../../service/person";
-import { getTipoPariente } from "../../service/common";
+import { getTipoPariente, getBanks, getConcept } from "../../service/common";
 import { AddOrUpdateFamWorker } from "../../service/worker";
 import { AlertWarning } from "../../components/Alerts";
+import Box from '@mui/material/Box';
 
 var XLSX = require("xlsx");
 
@@ -72,7 +73,9 @@ const RegisterSteps = ({
         "nuM_CCI": null,
         "inD_DISCAPACIDAD": null,
         "inD_ESTUDIO": null,
-        "txT_OBSERV": null
+        "txT_OBSERV": null,
+        "coD_CONCEPTO":null,
+        "inD_BENEFICIO": null
     });
 
     const defaultErrors = {
@@ -84,6 +87,8 @@ const RegisterSteps = ({
 
     const levelEducateChild = useRef();
     const [data, setData] = useState([]);
+    const [bank, setBank] = useState([]);
+    const [responseConcept, setResponseConcept] = useState([]);
     const [data2, setData2] = useState([]);
     const [inputError, setInputError] = useState({
         coD_TRABAJADOR: false,
@@ -102,6 +107,10 @@ const RegisterSteps = ({
         const responseTipo = await getTipoPariente();
         setTipoPariente(responseTipo.listado)
         setData2(response2.listado);
+        const response3 = await getBanks();
+        setBank(response3.listado);
+        const responseConcept = await getConcept();
+        setResponseConcept(responseConcept.listado);
     }
 
     const validateFields = () => {
@@ -157,9 +166,17 @@ const RegisterSteps = ({
         fields.coD_TIPPARIENTE = response.listado[0].coD_TIPPARIENTE
         fields.inD_DEPENDE = response.listado[0].inD_DEPENDE
         fields.inD_JUDICIAL = response.listado[0].inD_JUDICIAL
+        fields.inD_CALCULO= response.listado[0].inD_CALCULO
+        fields.moN_FIJO= response.listado[0].moN_FIJO
+        fields.prC_JUDICIAL= response.listado[0].prC_JUDICIAL
+        fields.coD_CTABCO=response.listado[0].coD_CTABCO
+        fields.coD_BANCO=response.listado[0].coD_BANCO
+        fields.nuM_CCI=response.listado[0].nuM_CCI
         fields.inD_DISCAPACIDAD = response.listado[0].inD_DISCAPACIDAD
         fields.inD_ESTUDIO = response.listado[0].inD_ESTUDIO
         fields.txT_OBSERV = response.listado[0].txT_OBSERV
+        fields.coD_CONCEPTO= response.listado[0].coD_CONCEPTO
+        fields.inD_BENEFICIO= response.listado[0].inD_BENEFICIO
         levelEducateChild.current.handleOpen();
     }
 
@@ -209,6 +226,8 @@ const RegisterSteps = ({
         fields.inD_DISCAPACIDAD = null
         fields.inD_ESTUDIO = null
         fields.txT_OBSERV = null
+        fields.coD_CONCEPTO = null
+        fields.inD_BENEFICIO = null
         setInputError(defaultErrors)
         levelEducateChild.current.handleOpen();
     };
@@ -240,6 +259,8 @@ const RegisterSteps = ({
             fields.inD_DISCAPACIDAD = null
             fields.inD_ESTUDIO = null
             fields.txT_OBSERV = null
+            fields.coD_CONCEPTO = null
+            fields.inD_BENEFICIO = null
 
         } else {
             levelEducateChild.current.handleClose();
@@ -565,6 +586,150 @@ const RegisterSteps = ({
                         />
                     </Grid>
                     <Grid item md={12} />
+                    <Grid item md={4} sm={12} xs={12}>
+                        <TextField
+                            name="inD_CALCULO"
+                            multiline
+                            fullWidth
+                            InputLabelProps={{
+                                readOnly: true
+                            }}
+                            label="Tipo Carga Judicial"
+                            select
+                            onChange={handleInputChange}
+                            size="small"
+                            value={fields.inD_CALCULO}
+                        >
+                            <MenuItem value="V">Monto Fijo</MenuItem>
+                            <MenuItem value="P">Porcentaje</MenuItem>
+                        </TextField>
+                    </Grid>
+                    <Grid item md={4} sm={12} xs={12}>
+                        <TextField
+                            name="moN_FIJO"
+                            multiline
+                            fullWidth
+                            InputLabelProps={{
+                                readOnly: true
+                            }}
+                            type='number'
+                            inputProps={{ maxLength: 50}}
+                            label="Monto Fijo"
+                            onChange={handleInputChange}
+                            size="small"
+                            value={fields.moN_FIJO}
+                        />
+                    </Grid>
+                    <Grid item md={4} sm={12} xs={12}>
+                        <TextField
+                            name="prC_JUDICIAL"
+                            multiline
+                            fullWidth
+                            InputLabelProps={{
+                                readOnly: true
+                            }}
+                            type='number'
+                            inputProps={{ maxLength: 100}}
+                            label="Porcentaje (%)"
+                            onChange={handleInputChange}
+                            size="small"
+                            value={fields.prC_JUDICIAL}
+                        />
+                    </Grid>
+                    <Grid item md={12} />
+                    <Grid item md={4} sm={12} xs={12}>
+                        <TextField
+                            name="coD_CTABCO"
+                            multiline
+                            fullWidth
+                            InputLabelProps={{
+                                readOnly: true
+                            }}
+                            type='number'
+                            inputProps={{ maxLength: 25 }}
+                            label="Cuenta Banco"
+                            onChange={handleInputChange}
+                            size="small"
+                            value={fields.coD_CTABCO}
+                        />
+                    </Grid>
+                    <Grid item md={4} sm={12} xs={12}>
+                        <TextField
+                            name="coD_BANCO"
+                            multiline
+                            fullWidth
+                            InputLabelProps={{
+                                readOnly: true
+                            }}
+                            label="Código Banco"
+                            onChange={handleInputChange}
+                            size="small"
+                            select
+                            value={fields.coD_BANCO}
+                        >
+                            {bank &&
+                            bank.map(data => (
+                                <MenuItem value={data.coD_BANCO}>
+                                {data?.noM_BANCO}
+                                </MenuItem>
+                            ))}
+                    </TextField>
+                    </Grid>
+                    <Grid item md={4} sm={12} xs={12}>
+                        <TextField
+                            name="nuM_CCI"
+                            multiline
+                            fullWidth
+                            InputLabelProps={{
+                                readOnly: true
+                            }}
+                            type='number'
+                            inputProps={{ maxLength: 20 }}
+                            label="CCI"
+                            onChange={handleInputChange}
+                            size="small"
+                            value={fields.nuM_CCI}
+                        />
+                    </Grid>
+                    {/*  */}
+                    <Grid item md={4} sm={12} xs={12}>
+                        <Autocomplete
+                            id="coD_CONCEPTO"
+                            getOptionLabel={(responseConcept) => `${responseConcept.noM_CONCEPTO}`}
+                            options={responseConcept}
+                            disableClearable
+                            onChange={(event, value) => setFields({ ...fields, ['coD_CONCEPTO']: value['coD_CONCEPTO'] })}
+                            isOptionEqualToValue={(option, value) => option.noM_CONCEPTO === value.noM_CONCEPTO}
+                            noOptionsText={"No encontrado"}
+                            value={responseConcept.find((option) => option.coD_CONCEPTO === fields.coD_CONCEPTO)}
+                            renderOption={(props, responseConcept) => (
+                                <Box component='li' {...props} key={responseConcept.coD_CONCEPTO}>
+                                {responseConcept.noM_CONCEPTO}
+                                </Box>
+
+                            )}
+                            renderInput={(params) => <TextField {...params} size="small" label="Conceptos" />}
+                        />
+                    </Grid>
+                    <Grid item md={4} sm={12} xs={12}>
+                        <TextField
+                            name="inD_BENEFICIO"
+                            multiline
+                            fullWidth
+                            InputLabelProps={{
+                                readOnly: true
+                            }}
+                            select
+                            label="Raci. y Mov. (desc. judic.)"
+                            onChange={handleInputChange}
+                            size="small"
+                            value={fields.inD_BENEFICIO}
+                        >
+                        <MenuItem value={'S'}>Si</MenuItem>
+                        <MenuItem value={'N'}>No</MenuItem>
+
+                        </TextField>
+                    </Grid>
                     <Grid item md={12}>
                         <Button onClick={handleFields} variant="contained" >
                             Guardar

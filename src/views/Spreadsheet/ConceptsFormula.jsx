@@ -11,9 +11,9 @@ import {
 import {
   getPlanillaTrabajadorByTipoPlan,
   getPlanillaTrabajadorByIndCalculo,
-  getPlanillaTrabajadorByFormulaTipoPlan
+  getPlanillaTrabajadorByFormulaTipoPlan,
 } from "../../service/spreadsheet/conceptspreadsheet";
-import {getPlanillaConceptoCalculo, UpdateFormulaInd} from '../../service/spreadsheet/conceptsformula'
+import {getPlanillaConceptoCalculo, UpdateFormulaInd, getAcumuladorPlanilla} from '../../service/spreadsheet/conceptsformula'
 import MUIModal from "../../components/Modal";
 import DataGridDemo from "../../components/Table";
 import { useState, useEffect, useRef } from "react";
@@ -34,7 +34,7 @@ import {
   useGridApiContext,
 } from "@mui/x-data-grid";
 import { AlertDelete } from "../../components/Alerts";
-import { AlertSuccess, AlertError } from "../../components/Alerts";
+import { AlertSuccess, AlertError, AlertWarning } from "../../components/Alerts";
 import IconToolTip from "../../components/Icons/IconToolTip";
 import {
   getTypePlan,
@@ -106,6 +106,8 @@ const ConceptsFormula = ({ id }) => {
 
   const loadData = async () => {
     const response2 = await getTypePlan(1);
+    const acumuladores = await getAcumuladorPlanilla();
+    setData2(acumuladores.listado)
     setResponseTypePlan(response2.listado);
   };
   
@@ -122,9 +124,9 @@ const ConceptsFormula = ({ id }) => {
   
   const buscarconcepto = async () => {
     /* planillaconcepto {COD_TIPOPLAN} */
-    // const response = await getPlanillaTrabajadorByTipoPlan(fields.coD_TIPOPLAN);
-    const response = await getPlanillaTrabajadorByFormulaTipoPlan(fields.coD_TIPOPLAN, 0);
-    const response2 = await getPlanillaTrabajadorByFormulaTipoPlan(fields.coD_TIPOPLAN, 1);
+    const response = await getPlanillaTrabajadorByTipoPlan(fields.coD_TIPOPLAN);
+    // const response = await getPlanillaTrabajadorByFormulaTipoPlan(fields.coD_TIPOPLAN, 2);
+    const response2 = await getPlanillaTrabajadorByFormulaTipoPlan(fields.coD_TIPOPLAN, 2);
 
     setData(response.listado);
     setData3(response2.listado);
@@ -156,24 +158,23 @@ const ConceptsFormula = ({ id }) => {
     setData3(response.listado);
     console.log(response);
   };
-  const editConcept = async (event, row) => {
-    fields.coD_ACUPLANILLA = row?.coD_ACUPLANILLA
-    const response = await getAcumuladorConceptoByAcuPlanillaId(
-      fields.coD_ACUPLANILLA
-    );
-    setData2(response.listado);
-    console.log(response);
-  };
+
+  // const editConcept = async (event, row) => {
+  //   fields.coD_ACUPLANILLA = row?.coD_ACUPLANILLA
+  //   const response = await getAcumuladorConceptoByAcuPlanillaId(
+  //     fields.coD_ACUPLANILLA
+  //   );
+  //   setData2(response.listado);
+  //   console.log(response);
+  // };
 
     /* getByPlanAndConc */
     const FormulaDes = async (event, row) => {
-      /* planillaconcepto {COD_TIPOPLAN} */
-      /* fields.coD_ACUCONCEPTO = row?.coD_CONCEPTO */
+
       const response = await getByPlanAndConc(fields.coD_TIPOPLAN, row?.coD_CONCEPTO);
-      /* setFields(response.listado) */
+
       console.log(response)
-      /* const name = 'deS_FORMULA'; 
-      const value = response.listado[0].deS_FORMULA; */
+
 
       const selectFormula={
         coD_FORPLAN: 0,
@@ -181,18 +182,15 @@ const ConceptsFormula = ({ id }) => {
         coD_CONCEPTO: row?.coD_CONCEPTO,
         deS_FORMULA: '',
       }
+
       
       if (response.code === 0){
         setFormulaFields(response.listado[0]);
-        /* setFormulatest(response.listado[0].deS_FORMULA) */
       }else{
         setFormulaFields(selectFormula);
-        alert('no data');
       }
-      
+  
       console.log(formulafields);
-      /* console.log(response.listado[0].deS_FORMULA) */
-      /* setData(response.listado); */
     };
   
 
@@ -200,13 +198,9 @@ const ConceptsFormula = ({ id }) => {
     loadData();
   }, []);
 
-  const OpenRegister = () => {
-    setPrimary(null);
-    setFields(defaultfields);
-    levelEducateChild.current.handleOpen();
-  };
 
   const saveFormulaPlanilla = async () => {
+    console.log(formulafields);
     const response = await AddOrUpdateFormulaPlanilla(formulafields);
     if (response.code === 0) {
       await AlertSuccess(`${response.message}`);
@@ -228,70 +222,61 @@ const ConceptsFormula = ({ id }) => {
       width: 300,
       valueGetter: (params) => `${params.row?.dConceptoPlanilla?.noM_CONCEPTO}`,
     },
-    {
-      field: "Acciones",
-      type: "actions",
-      width: 250,      
-      getActions: (cellValues) => [
-        <IconToolTip
-          text="Edit"
-          icon={<ArrowIconRight />}
-          action={(event) => {
-            buscarcalculo(event, cellValues.row);
-          }}
-        />,
-      ],
-    }
+    // {
+    //   field: "Acciones",
+    //   type: "actions",
+    //   width: 250,      
+    //   getActions: (cellValues) => [
+    //     <IconToolTip
+    //       text="Edit"
+    //       icon={<ArrowIconRight />}
+    //       action={(event) => {
+    //         buscarcalculo(event, cellValues.row);
+    //       }}
+    //     />,
+    //   ],
+    // }
   ];
 
   const formula = [
     {
-      field: "Acciones",
-      type: "actions",
-      getActions: (cellValues) => [
-        <IconToolTip
-          text="Edit"
-          icon={<EditIcon />}
-          action={(event) => {
-            FormulaDes(event, cellValues.row);
-          }}
-        />,
-      ],
-    },
-    {
-      field: "coD_CONCEPTO",
+      field: "coD_ACUPLANILLA",
       headerName: "Código",
       width: 100,
       hide:true,
     },
     {
-      field: "coD_ACUCONCEPTO",
+      field: "coD_ACUMULADOR",
       headerName: "Código",
       width: 100,
-      valueGetter: (params) =>
-      `${params.row?.dConceptoPlanilla?.coD_CONCEPTO}`,
-      
     },
     {
-      field: "coD_ACUPLANILLA",
-      headerName: "CódigoPlanilla",
+      field: "noM_ACUMULADOR",
+      headerName: "Acumulador",
       width: 250,
-      valueGetter: (params) =>
-      `${params.row?.dConceptoPlanilla?.noM_CONCEPTO}`,
+    },
+    {
+      field: "inD_TIPOACUMULADOR",
+      headerName: "Tipo",
+      width: 250,
+      valueGetter: (params) => {
+        if (params.row?.inD_TIPOACUMULADOR === "1") return "Fijo"
+        if (params.row?.inD_TIPOACUMULADOR === "2") return "Grupo"
+    },
     },
   ];
 
   const buscarcalculo2 = [
     {
-      field: "AccionesMove",
+      field: "Acciones",
       type: "actions",
-      width: 250,      
       getActions: (cellValues) => [
+        /*  */
         <IconToolTip
-          text="Left"
-          icon={<ArrowIconLeft />}
+          text="Agregar"
+          icon={<AddCircleOutlineIcon />}
           action={(event) => {
-            buscarcalculo(event, cellValues.row, 1);
+            FormulaDes(event, cellValues.row);
           }}
         />,
       ],
@@ -306,59 +291,45 @@ const ConceptsFormula = ({ id }) => {
       headerName: "Concepto",
       width: 300,
       valueGetter: (params) => `${params.row?.dConceptoPlanilla?.noM_CONCEPTO}`,
-    },
-    {
-      field: "Acciones",
-      type: "actions",
-      getActions: (cellValues) => [
-        /*  */
-        <IconToolTip
-          text="Agregar"
-          icon={<AddCircleOutlineIcon />}
-          action={(event) => {
-            FormulaDes(event, cellValues.row);
-          }}
-        />,
-      ],
-    },
+    }
   ]
  
-  const columns3 = [
-    {
-      field: "Acciones",
-      type: "actions",
-      getActions: (cellValues) => [
-        /*  */
-        <IconToolTip
-          text="Agregar"
-          icon={<AddCircleOutlineIcon />}
-          action={(event) => {
-            editConcept(event, cellValues.row);
-          }}
-        />,
-      ],
-    },
-    {
-      field: "coD_CONCEPTO",
-      headerName: "Código",
-      width: 150,
-      hide: true,
-    },
-    {
-      field: "coD_ACUPLANILLA",
-      headerName: "Código",
-      width: 100,
-      valueGetter: (params) =>
-        `${params.row?.dAcumuladorPlanilla?.coD_ACUMULADOR}`,
-    },
-    {
-      field: "coD_ACUCONCEPTO",
-      headerName: "Acumulador",
-      width: 250,
-      valueGetter: (params) =>
-        `${params.row?.dAcumuladorPlanilla?.noM_ACUMULADOR}`,
-    },
-  ];
+  // const columns3 = [
+  //   {
+  //     field: "Acciones",
+  //     type: "actions",
+  //     getActions: (cellValues) => [
+  //       /*  */
+  //       <IconToolTip
+  //         text="Agregar"
+  //         icon={<AddCircleOutlineIcon />}
+  //         action={(event) => {
+  //           editConcept(event, cellValues.row);
+  //         }}
+  //       />,
+  //     ],
+  //   },
+  //   {
+  //     field: "coD_CONCEPTO",
+  //     headerName: "Código",
+  //     width: 150,
+  //     hide: true,
+  //   },
+  //   {
+  //     field: "coD_ACUPLANILLA",
+  //     headerName: "Código",
+  //     width: 100,
+  //     valueGetter: (params) =>
+  //       `${params.row?.dAcumuladorPlanilla?.coD_ACUMULADOR}`,
+  //   },
+  //   {
+  //     field: "coD_ACUCONCEPTO",
+  //     headerName: "Acumulador",
+  //     width: 250,
+  //     valueGetter: (params) =>
+  //       `${params.row?.dAcumuladorPlanilla?.noM_ACUMULADOR}`,
+  //   },
+  // ];
 
   /* buscarcalculo */
   // const buscarcalculo2 = [
@@ -466,32 +437,7 @@ const ConceptsFormula = ({ id }) => {
     </GridToolbarExportContainer>
   );
 
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <Button size="small" variant="text" onClick={OpenRegister}>
-          <AddCircleIcon />
-          <span>&nbsp;&nbsp;&nbsp;Agregar</span>
-        </Button>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <GridToolbarExport
-          printOptions={{
-            hideFooter: true,
-            hideToolbar: true,
-            fields: [
-              "coD_FORPLAN",
-              "coD_TIPOPLAN_P",
-              "coD_TIPOPLAN",
-              "coD_CONCEPTO",
-              "deS_FORMULA",
-            ],
-          }}
-        />
-      </GridToolbarContainer>
-    );
-  }
+  
 
   return (
     <>
@@ -564,7 +510,6 @@ const ConceptsFormula = ({ id }) => {
               id={(row) => row.coD_CONCEPTO}
               rows={data}
               columns={columns}
-              toolbar={CustomToolbar}
               height={"60vh"}
             />
           </Grid>
@@ -588,13 +533,13 @@ const ConceptsFormula = ({ id }) => {
 
         <Grid container spacing={1}>
           <Grid item md={5} sm={12} xs={12}>
-            {/* <h3>Lista de Acumuladores</h3>
+            <h3>Lista de Acumuladores</h3>
             <DataGridDemo
-              id={(row) => row.coD_ACUCONCEPTO}
+              id={(row) => row.coD_ACUPLANILLA}
               rows={data2}
               columns={formula}
               height={"60vh"}
-            /> */}
+            />
           </Grid>
           <Grid item md={1} sm={12} xs={12}></Grid>
           <Grid item md={5} sm={12} xs={12}>

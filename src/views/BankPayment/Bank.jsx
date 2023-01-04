@@ -241,7 +241,7 @@ const Bank = () => {
           <Grid item md={12} />
           <Grid container spacing={2} justifyContent="center">
             <Grid item md={12} xs={12}>
-              <h1 style={{ color: "red" }}>Parametros</h1>
+              <h1 style={{ color: "black" }}>Parametros</h1>
             </Grid>
             <Grid item md={4} sm={12} xs={12}>
               <TextField
@@ -308,7 +308,7 @@ const Bank = () => {
           </Grid>
           <Grid container spacing={2} justifyContent="center">
             <Grid item md={12} xs={12}>
-              <h1 style={{ color: "red" }}>Datos Proceso Interface Banco</h1>
+              <h1 style={{ color: "black" }}>Datos Proceso Interface Banco</h1>
             </Grid>
             <Grid item md={6} sm={12} xs={12}>
               <TextField
@@ -343,9 +343,9 @@ const Bank = () => {
           </Grid>
           {/* proceso */}
           <Grid container spacing={2} justifyContent="center">
-            <Grid item md={12} xs={12}>
+            {/* <Grid item md={12} xs={12}>
               <h1 style={{ color: "red" }}>Proceso Generación TXT</h1>
-            </Grid>
+            </Grid> */}
             <Grid item md={12} sm={12} xs={12}>
               <Grid item md={12} sm={12} xs={12}>
               </Grid>
@@ -360,9 +360,9 @@ const Bank = () => {
             <Grid item md={4} sm={12} xs={12}>
               {/* <Button variant="contained" onClick={generarTXT}>Generar</Button> */}
             </Grid>
-            <Grid item md={4} sm={12} xs={12}>
+            {/* <Grid item md={4} sm={12} xs={12}>
               <Button variant="contained">X</Button>
-            </Grid>
+            </Grid> */}
             {/* <Grid item md={12} xs={6}>
             <Button variant="contained">
               Enviar
@@ -385,9 +385,9 @@ const Bank = () => {
           />
         </Grid>
         <Grid item md={12} sm={12} xs={12}>
-          <h1 style={{ color: "red" }}>Trabajadores</h1>
+          <h1 style={{ color: "black" }}>Trabajadores</h1>
          </Grid>
-        <Grid item md={10} sm={12} xs={12}>
+        <Grid item md={12} sm={12} xs={12}>
           <DataGridDemo
             height={"44vh"}
             id={(row) => row.coD_TRABAJADOR}

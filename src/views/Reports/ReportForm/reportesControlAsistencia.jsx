@@ -1,16 +1,10 @@
-import DataGridDemo from "../../../components/Table";
-import { useState, useEffect } from "react";
-import FileIcon from '@mui/icons-material/InsertDriveFile';
+import { useState } from "react";
 import { Button, Grid, TextField, Stack, MenuItem } from "@mui/material";
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import moment from "moment/moment";
-import {
-  ListPlanillaHistorica, getPlanillaHistoricaExportTXT
-} from "../../../service/historicalspreadsheet";
+import { styled } from '@mui/material/styles';
+import Paper from '@mui/material/Paper';
 import { AlertSuccess } from "../../../components/Alerts";
 
 var XLSX = require("xlsx");
@@ -21,42 +15,28 @@ const Report = () => {
     nuM_PERIODO: `${new Date().getFullYear()}`,
     nuM_PERPLAN: `${new Date().getMonth()}`,
     coD_TIPOPLAN: null,
-    inicio: `2022-10-17`,
-    termino: `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}`,
+    inicio: null,
+    termino: null,
   };
 
   const [fields, setFields] = useState(defaultfields);
-  const [data1, setData1] = useState([]);
-  const [data2, setData2] = useState([]);
-  const [data3, setData3] = useState([]);
   const [estado, setEstado] = useState(false);
-
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFields({ ...fields, [name]: value });
   };
-
-  const loadData = async (
-    year = new Date().getFullYear(), month = new Date().getMonth()
-  ) => {
-    const response1 = await ListPlanillaHistorica();
-    setData2(response1.listado);
-    const response2 = await getPlanillaHistoricaExportTXT();
-    setData2(response2.listado);
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const handleInputChangeDate = (value, name) => {
-    setFields({
-      ...fields,
-      [name]: moment(new Date(value)).format(),
-    });
+    setFields({ ...fields, [name]: value });
   };
-  /*variables de ruta*/
+
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
 
   const MonthlySummaryOfAbsencesAndTardies = async () => {
     if (estado == false){
@@ -65,7 +45,6 @@ const Report = () => {
       await AlertSuccess("Enviado con Exito");
     }
   }
-  
   const VacationControlSummary = async () => {
     if (estado == false){
       var path = `/RRHHDEV/reportes/VacationControlSummary/`;
@@ -112,7 +91,9 @@ const Report = () => {
             </div>
           </Stack>
         </div>
-        <br />
+      </Grid>
+      <br />
+      <Grid item md={12} xs={12} sm={12}>
         <Stack
           direction="row"
           xs={{ mb: 1, display: "flex" }}
@@ -161,43 +142,79 @@ const Report = () => {
                 <MenuItem value="12">DICIEMBRE</MenuItem>
               </TextField>
             </Grid>
-            <Grid item md={2} sm={12} xs={12} />
+          </Grid>
+        </Stack>
+        <Stack direction="row" spacing={1} xs={{ display: "flex" }}>
+          <Grid item md={3} xs={12} sm={12}>
+            <Button
+              size="large"
+              variant="outlined"
+              onClick={MonthlySummaryOfAbsencesAndTardies}/*  preview pdf */
+            >
+              <span>Resumen Mensual de Faltas y Tardanzas</span>
+            </Button>
+          </Grid>
+          <Grid item md={3} xs={12} sm={12}>
+            <Button
+              size="large"
+              variant="outlined"
+              onClick={VacationDetail}/*  preview pdf */
+            >
+              <span>Detalle de Vacaciones</span>
+            </Button>
+          </Grid>
+          <Grid item md={3} xs={12} sm={12}>
+            <Button
+              size="large"
+              variant="outlined"
+              onClick={MedicalRestForm}/*  preview pdf */
+            >
+              <span>Detalle de Descanso Medico</span>
+            </Button>
           </Grid>
         </Stack>
       </Grid>
-      <Grid item md={4} sm={12} xs={12}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DesktopDateTimePicker
-            ampm={false}
-            label="Inicio*"
-            inputFormat="YYYY-MM-DD"
-            value={""}
-            onChange={e =>
-              handleInputChangeDate(e, 'feC_INICIO')}
-            renderInput={(params) => <TextField {...params} 
-            InputLabelProps={{
-              shrink: true
-            }}
-            size="small" />}
-          />
-        </LocalizationProvider>
-      </Grid>
-      <Grid item md={4} sm={12} xs={12}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DesktopDateTimePicker
-            ampm={false}
-            label="Termino*"
-            inputFormat="YYYY-MM-DD"
-            value={""}
-            onChange={e =>
-              handleInputChangeDate(e, 'feC_TERMINO')}
-            renderInput={(params) => <TextField {...params} 
-            InputLabelProps={{
-              shrink: true
-            }}
-            size="small" />}
-          />
-        </LocalizationProvider>
+      <br />
+      <Grid item md={12} xs={12} sm={12}>
+        <Grid item md={4} sm={12} xs={12}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DesktopDatePicker
+              label="Inicio"
+              inputFormat="YYYY-MM-DD"
+              value={fields.inicio}
+              onChange={e =>
+                handleInputChangeDate(e, 'inicio')}
+              renderInput={(params) => <TextField {...params} 
+              size="small" />}
+            />
+          </LocalizationProvider>
+        </Grid>
+        <br/>
+        <Grid item md={4} sm={12} xs={12}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DesktopDatePicker
+              label="Termino"
+              inputFormat="YYYY-MM-DD"
+              value={fields.termino}
+              onChange={e =>
+                handleInputChangeDate(e, 'termino')}
+              renderInput={(params) => <TextField {...params} 
+              size="small" />}
+            />
+          </LocalizationProvider>
+        </Grid>
+        <br />
+        <Stack direction="row" spacing={1} xs={{ display: "flex" }}>
+          <Grid item md={3} xs={12} sm={12}>
+            <Button
+              size="large"
+              variant="outlined"
+              onClick={PermissionsReport}/*  preview pdf */
+            >
+              <span>Reporte de Permisos</span>
+            </Button>
+          </Grid>
+        </Stack>
       </Grid>
       <br />
       <Stack direction="row" spacing={1} xs={{ display: "flex" }}>
@@ -212,46 +229,9 @@ const Report = () => {
           <Button
             size="large"
             variant="outlined"
-            onClick={MonthlySummaryOfAbsencesAndTardies}/*  preview pdf */
-          >
-            <span>Resumen Mensual de Faltas y Tardanzas</span>
-          </Button>
-        </Grid>
-        <Grid item md={3} xs={12} sm={12}>
-          <Button
-            size="large"
-            variant="outlined"
             onClick={VacationControlSummary}/*  preview pdf */
           >
             <span>Resumen Control de Vacaciones</span>
-          </Button>
-        </Grid>
-      </Stack>
-      <br />
-      <Stack direction="row" spacing={1} xs={{ display: "flex" }}>
-        <Button
-          size="large"
-          variant="outlined"
-          onClick={VacationDetail}/*  preview pdf */
-        >
-          <span>Detalle de Vacaciones</span>
-        </Button>
-        <Grid item md={3} xs={12} sm={12}>
-          <Button
-            size="large"
-            variant="outlined"
-            onClick={MedicalRestForm}/*  preview pdf */
-          >
-            <span>Detalle de Descanso Medico</span>
-          </Button>
-        </Grid>
-        <Grid item md={3} xs={12} sm={12}>
-          <Button
-            size="large"
-            variant="outlined"
-            onClick={PermissionsReport}/*  preview pdf */
-          >
-            <span>Reporte de Permisos</span>
           </Button>
         </Grid>
       </Stack>

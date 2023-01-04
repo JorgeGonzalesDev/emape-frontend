@@ -272,6 +272,16 @@ export const getTrabajador = async () => {
   }
 };
 
+export const getTrabajadorQuintaCategoria = async () => {
+  try{
+    const response = await fetch(`${URL}/Trabajador/GetQuintacategoria`, METHOD.GET())
+    const data = await response.json();
+    return data;
+  } catch (err){
+    console.log(err);
+  }
+};
+
 export const getSubTypePlan = async (ind) => {
   try{
     const response = await fetch(`${URL}/TipoPlanilla/GetTipoPlanillaByTipoPlanilla?COD_PADRE=${ind}`, METHOD.GET())
@@ -459,6 +469,16 @@ export const GetReporteResumenPlanilla = async (cod_plan) => {
 export const GetReportePermisos = async (inicio,  termino) => {
   try {
     const response = await fetch(`${URL}/ReportePermisos/Get?INICIO=${inicio}&TERMINO=${termino}`, METHOD.GET());
+    const data =  await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export const GetReportePadronTrabajadores = async () => {
+  try {
+    const response = await fetch(`${URL}/ReportePadronTrabajadores/Get`, METHOD.GET());
     const data =  await response.json();
     return data;
   } catch (err) {

@@ -210,18 +210,22 @@ const CalculateSpreadsheet = ({ id }) => {
   const redirectReport = () => {
     if (codigo === 0) return;
     navigate(pathPROD + '/reporte/periodo/' + codigo)
-    AlertSuccess('Cargando...');
   }
 
   const calculate = async () => {
 
     levelEducateChild.current.handleOpen();
-
     if (codigo != "") {
       const response = await calculatePlanilla(codigo);
-      levelEducateChild.current.handleClose();
-      return AlertSuccess(response.listado[0].mensaje);
-    }
+      if(response.code != -300){
+        AlertSuccess(response.listado[0].mensaje);
+        levelEducateChild.current.handleClose();
+      }else{
+        levelEducateChild.current.handleClose();
+      }
+    }else{
+      AlertError('Faltan datos');
+    }  
   }
 
   function CustomToolbar() {

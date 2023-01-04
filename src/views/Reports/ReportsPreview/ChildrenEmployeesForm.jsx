@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import styled from "styled-components";
 import { GetDetalleDeHijosTrabajadores } from "../../../service/common";
 import moment from "moment";
+var XLSX = require("xlsx");
 
 const ChildrenEmployeesForm = () => {
   const generatePDF = () => {
@@ -16,6 +17,39 @@ const ChildrenEmployeesForm = () => {
         doc.save("Reporte-Trabajador-Hijo.pdf");
       }
     })
+  };
+
+  const downloadExcel = (dataExport) => {
+    //var Headers = [["Reporte de Trabajador y Hijo"]];
+    let dataH = [];
+    dataExport.forEach((item) => {
+      dataH.push({
+        "DNI TRAB.": item?.dnI_TRABAJADOR,
+        "APELLIDOS Y NOMBRES - TRABAJADOR": item?.apellidoS_NOMBRES_TRABAJADOR,
+        "DNI HIJOS": item?.dnI_HIJO,
+        "APELLIDOS Y NOMBRES - HIJOS": item?.apellidoS_NOMBRES_HIJOS,
+        "F. ING": item?.fechA_INGRESO,
+        "EDAD": item?.edad,
+        "OBSERVACIONES": item?.observacion,
+
+      });
+    });
+
+    const workSheet = XLSX.utils.json_to_sheet(dataH, { origin: "A2" });
+    const workBook = XLSX.utils.book_new();
+
+    const merge = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 33 } },
+      { s: { r: 0, c: 34 }, e: { r: 0, c: 37 } },
+    ];
+
+    workSheet["!merges"] = merge;
+
+    //XLSX.utils.sheet_add_aoa(workSheet, Headers);
+    XLSX.utils.book_append_sheet(workBook, workSheet, "ReporteTrabajadorHijo");
+    XLSX.write(workBook, { bookType: "xlsx", type: "buffer" });
+    XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+    XLSX.writeFile(workBook, "Reporte-Trabajador-Hijo.xlsx");
   };
 
   const { codt } = useParams();
@@ -47,6 +81,7 @@ const ChildrenEmployeesForm = () => {
       </Grid>
       <Stack direction="row" spacing={1} xs={{ display: "flex" }}>
         <Button variant="outlined" onClick={generatePDF}>Generate PDF</Button>
+        <Button variant="outlined" onClick={() => {downloadExcel(dataH);}}>Generate Excel</Button>
         <Grid item md={3} xs={12} sm={12}>
           <Link
             to="/RRHHDEV/reportes/LegajoReportes"
@@ -58,7 +93,7 @@ const ChildrenEmployeesForm = () => {
           </Link>
         </Grid>
       </Stack>
-
+      <br />
       <HojaA4>
         <div className="page" id="boleta-pago">
           <div className="border-header d-flex">

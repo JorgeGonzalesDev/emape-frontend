@@ -383,7 +383,7 @@ const ExternalEntity = ({ id }) => {
                 shrink: true
               }}
               error={inputErrors.noM_ENTIDAD}
-              inputProps={{ maxlength: '100' }}
+              inputProps={{ maxlength: '150' }}
               size="small"
               label="Entidad"
               onChange={handleInputChange}

@@ -1,11 +1,11 @@
 import DataGridDemo from "../../../components/Table";
 import { useState, useEffect, useRef } from "react";
-import { Button, Grid, TextField, Stack, MenuItem } from "@mui/material";
+import { Button, Grid, TextField, Stack, MenuItem, Autocomplete } from "@mui/material";
 import {
   GetByPeriodoPlanilla
 } from "../../../service/historicalspreadsheet";
 import { getEmployeeDesByConcept, employeeDesInsertorUpdate, deleteEmployeeDes, getEmployeeDesByConceptFec } from "../../../service/lend/prog";
-import { employeeDesCronInsertorUpdate, getEmployeeDesCron } from "../../../service/lend/cron";
+import { employeeDesCronInsertorUpdate, getEmployeeDesCron, deleteDesCron } from "../../../service/lend/cron";
 import IconToolTip from "../../../components/Icons/IconToolTip";
 import { AlertSuccess, AlertError, AlertWarning } from "../../../components/Alerts";
 import { getSubTypePlan, getTrabajador, getConcept } from "../../../service/common";
@@ -26,7 +26,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
-
+import Box from '@mui/material/Box';
 import {
   GridToolbarContainer,
   GridToolbarColumnsButton,
@@ -90,7 +90,15 @@ const Lend = () => {
   const loadData = async () => {
 
     const response3 = await getConcept();
-    setResponseConcept(response3.listado);
+
+    const data = response3.listado;
+
+    data.splice(0, 0, {
+      coD_CONCEPTO: 0,
+      noM_CONCEPTO: 'Todos'
+    })
+
+    setResponseConcept(data);
 
     const response4 = await getTrabajador();
     setData4(response4.listado);
@@ -136,7 +144,7 @@ const Lend = () => {
         coD_TRADES: id,
       };
       await deleteEmployeeDes(dataDelete);
-      const response = await getEmployeeDesByConcept(fields.coD_CONCEPTO);
+      const response = await getEmployeeDesByConceptFec(fields.nuM_PERIODO, fields.nuM_PERPLAN, fields.coD_CONCEPTO);
       setData1(response.listado);
     }
   };
@@ -146,15 +154,14 @@ const Lend = () => {
     const response = await employeeDesInsertorUpdate(fieldsprog);
     if (response.code === 0) {
       setFieldsProg(defaultfieldsprog);
+      levelConceptChild.current.handleClose();
+      fields.coD_CONCEPTO = fieldsprog.coD_CONCEPTO;
       const response = await getEmployeeDesByConceptFec(fields.nuM_PERIODO, fields.nuM_PERPLAN, fields.coD_CONCEPTO);
       setData1(response.listado);
-      levelConceptChild.current.handleClose();
       return await AlertSuccess(`${response.message}`);
-
     } else {
       return await AlertError(`${response.message}`);
     }
-
   }
 
   const generar = async (event, row) => {
@@ -184,6 +191,7 @@ const Lend = () => {
   };
 
   const obtenerCron = async (event, id) => {
+    fieldsprog.coD_TRADES = id;
     const response = await getEmployeeDesCron(id);
     setData(response.listado);
   };
@@ -209,13 +217,25 @@ const Lend = () => {
 
     const response = employeeDesCronInsertorUpdate(body);
 
-  
+
     await AlertSuccess(response.message);
 
     return await obtenerCron(event, row?.coD_TRADES);
 
   };
 
+  const deleteCron = async (event, id) => {
+
+    const resultado = await AlertDelete();
+
+    if (resultado) {
+      const dataDelete = {
+        coD_DESDET: id
+      };
+      await deleteDesCron(dataDelete);
+    }
+    obtenerCron(event, fieldsprog.coD_TRADES);
+  };
 
   const columns = [
     {
@@ -227,6 +247,13 @@ const Lend = () => {
           icon={<PriceCheckIcon />}
           action={(event) => {
             editCron(event, cellValues.row);
+          }}
+        />,
+        <IconToolTip
+          text="Eliminar"
+          icon={<DeleteIcon />}
+          action={(event) => {
+            deleteCron(event, cellValues.row?.coD_DESDET);
           }}
         />,
       ],
@@ -286,7 +313,7 @@ const Lend = () => {
           text="Delete"
           icon={<DeleteIcon />}
           action={(event) => {
-            destroy(event, cellValues.row.coD_TRADES);
+            destroy(event, cellValues.row?.coD_TRADES);
           }}
         />,
         /*  */
@@ -475,7 +502,7 @@ const Lend = () => {
               </TextField>
             </Grid>
             <Grid item md={3} sm={12} xs={12}>
-              <TextField
+              {/* <TextField
                 name="coD_CONCEPTO"
                 fullWidth
                 InputLabelProps={{
@@ -496,7 +523,25 @@ const Lend = () => {
                       {data?.noM_CONCEPTO}
                     </MenuItem>
                   ))}
-              </TextField>
+              </TextField> */}
+              <Autocomplete
+                id="coD_CONCEPTO"
+                getOptionLabel={(responseConcept) => `${responseConcept.noM_CONCEPTO}` || 0}
+                options={responseConcept}
+                disableClearable
+                onChange={(event, value) => setFields({ ...fields, ['coD_CONCEPTO']: value['coD_CONCEPTO'] })}
+                isOptionEqualToValue={(option, value) => option.noM_CONCEPTO === value.noM_CONCEPTO}
+                noOptionsText={"No encontrado"}
+                value={responseConcept.find((option) => option.coD_CONCEPTO === fields.coD_CONCEPTO)}
+                renderOption={(props, responseConcept) => (
+                  <>
+                    <Box component='li' {...props} key={responseConcept.coD_CONCEPTO}>
+                      {responseConcept.noM_CONCEPTO}
+                    </Box>
+                  </>
+                )}
+                renderInput={(params) => <TextField {...params} size="small" label="Conceptos" />}
+              />
             </Grid>
             <Grid item md={3} sm={12} xs={12}>
               <Button
@@ -534,7 +579,7 @@ const Lend = () => {
       <MUIModal ref={levelConceptChild}>
         <Grid container spacing={1.5}>
           <Grid item md={4} sm={12} xs={12}>
-            <TextField
+            {/* <TextField
               name="coD_CONCEPTO"
               fullWidth
               InputLabelProps={{
@@ -552,7 +597,24 @@ const Lend = () => {
                     {data?.noM_CONCEPTO}
                   </MenuItem>
                 ))}
-            </TextField>
+            </TextField> */}
+            <Autocomplete
+              id="coD_CONCEPTO"
+              getOptionLabel={(responseConcept) => `${responseConcept.noM_CONCEPTO}`}
+              options={responseConcept}
+              disableClearable
+              onChange={(event, value) => setFieldsProg({ ...fieldsprog, ['coD_CONCEPTO']: value['coD_CONCEPTO'] })}
+              isOptionEqualToValue={(option, value) => option.noM_CONCEPTO === value.noM_CONCEPTO}
+              noOptionsText={"No encontrado"}
+              value={responseConcept.find((option) => option.coD_CONCEPTO === fieldsprog.coD_CONCEPTO)}
+              renderOption={(props, responseConcept) => (
+                <Box component='li' {...props} key={responseConcept.coD_CONCEPTO}>
+                  {responseConcept.noM_CONCEPTO}
+                </Box>
+
+              )}
+              renderInput={(params) => <TextField {...params} size="small" label="Conceptos" />}
+            />
           </Grid>
           <Grid item md={6} sm={12} xs={12}>
             <TextField
@@ -584,8 +646,8 @@ const Lend = () => {
                   {...params} />}
               />
               </LocalizationProvider> */}
-              {/*  */}
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
+            {/*  */}
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DesktopDatePicker
                 label="Fecha de Inicio"
                 inputFormat="dd-MM-yyyy"
@@ -597,7 +659,7 @@ const Lend = () => {
                   }} {...params} />}
               />
             </LocalizationProvider>
-            
+
           </Grid>
           <Grid item md={4} sm={12} xs={12}>
             <TextField

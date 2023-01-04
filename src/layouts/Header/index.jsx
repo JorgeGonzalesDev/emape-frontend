@@ -212,7 +212,7 @@ export default function PersistentDrawerLeft({ children }) {
     (item) => item.dMenu.coD_MENU >= 29 && item.dMenu.coD_MENU <= 32
   );
   let menuFiltradoConfiguracionAdd = menu.filter(
-    (item) => item.dMenu.coD_MENU > 36 && item.dMenu.coD_MENU < 40 || (item.dMenu.coD_MENU === 53) || (item.dMenu.coD_MENU === 54)  
+    (item) => item.dMenu.coD_MENU > 36 && item.dMenu.coD_MENU < 40 || (item.dMenu.coD_MENU === 53) || (item.dMenu.coD_MENU === 54) || (item.dMenu.coD_MENU === 55) 
   );
   //add menuFiltradoConfiguracionAdd to menuFiltradoConfiguracion
   menuFiltradoConfiguracion.push(...menuFiltradoConfiguracionAdd);
@@ -277,6 +277,7 @@ export default function PersistentDrawerLeft({ children }) {
   sayings.set(52, ROUTES.BoletaTrabajador);
   sayings.set(53, ROUTES.PayrollAccumulatorAndConcepts);
   sayings.set(54, ROUTES.PlanillaReporte2);
+  sayings.set(55, ROUTES.FifthCategory);
   
 
   let iconsToMenu = new Map();
@@ -305,6 +306,7 @@ export default function PersistentDrawerLeft({ children }) {
   iconsToMenu.set(30, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(31, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(32, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(41, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(34, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(45, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(48, <AccessTimeFilledIcon color="white" />);
@@ -312,15 +314,26 @@ export default function PersistentDrawerLeft({ children }) {
   iconsToMenu.set(51, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(52, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(54, <AccessTimeFilledIcon color="white" />);
-
-
+  iconsToMenu.set(55, <AccessTimeFilledIcon color="white" />);
+  
+  /* coloring kit */
+  const colorprimary = "#111926";
+  const colorgbaTextoMenu = "rgb(209, 213, 219)";
+  const colorEmapeIcon= "white";
+  const colorlink= "#00A39C";
+  const marginTextSubMenu = -2;
+  const paddingTextMenu = 2.5;
+  const paddingLeftIcon = 5;
+  /* coloring kit old */
+  const oldprimary = "#00A39C";
+  
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
         position="fixed"
         open={open}
-        style={{ backgroundColor: "#00A39C" }}
+        style={{ backgroundColor: colorprimary }}
       >
         <Toolbar>
           <IconButton
@@ -354,8 +367,8 @@ export default function PersistentDrawerLeft({ children }) {
         }}
         PaperProps={{
           sx: {
-            backgroundColor: "#00A39C",
-            color: "#fff",
+            backgroundColor: colorprimary,
+            color: colorgbaTextoMenu,
           },
         }}
         variant="persistent"
@@ -364,14 +377,14 @@ export default function PersistentDrawerLeft({ children }) {
       >
         <Divider />
         <List
-          sx={{ width: "100%", maxWidth: 360, bgcolor: "#00A39C" }}
+          sx={{ width: "100%", maxWidth: 360, bgcolor: colorprimary }}
           component="nav"
           aria-labelledby="nested-list-subheader"
           subheader={
-            <ListSubheader component="div" id="nested-list-subheader">
-              <DrawerHeader>
+            <ListSubheader component="div" id="nested-list-subheader" sx={{bgcolor: colorprimary}}>
+              <DrawerHeader sx={{color: colorEmapeIcon + ';!important'}}>
                 EMAPE
-                <IconButton onClick={handleDrawerClose}>
+                <IconButton onClick={handleDrawerClose} sx={{color: colorEmapeIcon + ';!important'}}>
                   {theme.direction === "ltr" ? (
                     <ChevronLeftIcon />
                   ) : (
@@ -382,6 +395,7 @@ export default function PersistentDrawerLeft({ children }) {
             </ListSubheader>
           }
         >
+          <br />
           {menu.length === 1 && (
             <>
               {menuFiltradoMaestros.map((item, index) => (
@@ -404,7 +418,7 @@ export default function PersistentDrawerLeft({ children }) {
                         {opengenerales ? <ExpandLess /> : <ExpandMore />}
                       </ListItemButton>
                       <Collapse in={opengenerales} timeout="auto" unmountOnExit>
-                        <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemButton sx={{ pl: paddingLeftIcon }}>
                           <ListItemIcon>
                             {iconsToMenu.get(item.dMenu.coD_MENU)}
                           </ListItemIcon>
@@ -413,7 +427,7 @@ export default function PersistentDrawerLeft({ children }) {
                               to={sayings.get(item.dMenu.coD_MENU)}
                               style={{
                                 textDecoration: "none",
-                                color: "#202020",
+                                color: colorlink,
                               }}
                             >
                               <ListItemText primary={item.dMenu.deS_MENU} />
@@ -454,7 +468,7 @@ export default function PersistentDrawerLeft({ children }) {
                         timeout="auto"
                         unmountOnExit
                       >
-                        <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemButton sx={{ pl: paddingLeftIcon }}>
                           <ListItemIcon>
                             {iconsToMenu.get(item.dMenu.coD_MENU)}
                           </ListItemIcon>
@@ -463,7 +477,7 @@ export default function PersistentDrawerLeft({ children }) {
                               to={sayings.get(item.dMenu.coD_MENU)}
                               style={{
                                 textDecoration: "none",
-                                color: "#202020",
+                                color: colorlink,
                               }}
                             >
                               <ListItemText
@@ -506,7 +520,7 @@ export default function PersistentDrawerLeft({ children }) {
                         {openconfigplanilla ? <ExpandLess /> : <ExpandMore />}
                       </ListItemButton>
                       <Collapse in={openproceso} timeout="auto" unmountOnExit>
-                        <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemButton sx={{ pl: paddingLeftIcon }}>
                           <ListItemIcon>
                             {iconsToMenu.get(item.dMenu.coD_MENU)}
                           </ListItemIcon>
@@ -515,7 +529,7 @@ export default function PersistentDrawerLeft({ children }) {
                               to={sayings.get(item.dMenu.coD_MENU)}
                               style={{
                                 textDecoration: "none",
-                                color: "#202020",
+                                color: colorlink,
                               }}
                             >
                               <ListItemText
@@ -557,7 +571,7 @@ export default function PersistentDrawerLeft({ children }) {
                         {openconfigplanilla ? <ExpandLess /> : <ExpandMore />}
                       </ListItemButton>
                       <Collapse in={openproceso} timeout="auto" unmountOnExit>
-                        <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemButton sx={{ pl: paddingLeftIcon }}>
                           <ListItemIcon>
                             {iconsToMenu.get(item.dMenu.coD_MENU)}
                           </ListItemIcon>
@@ -566,7 +580,7 @@ export default function PersistentDrawerLeft({ children }) {
                               to={sayings.get(item.dMenu.coD_MENU)}
                               style={{
                                 textDecoration: "none",
-                                color: "#202020",
+                                color: colorlink,
                               }}
                             >
                               <ListItemText
@@ -612,7 +626,7 @@ export default function PersistentDrawerLeft({ children }) {
                         timeout="auto"
                         unmountOnExit
                       >
-                        <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemButton sx={{ pl: paddingLeftIcon }}>
                           <ListItemIcon>
                             {iconsToMenu.get(item.dMenu.coD_MENU)}
                           </ListItemIcon>
@@ -621,7 +635,7 @@ export default function PersistentDrawerLeft({ children }) {
                               to={sayings.get(item.dMenu.coD_MENU)}
                               style={{
                                 textDecoration: "none",
-                                color: "#202020",
+                                color: colorlink,
                               }}
                             >
                               <ListItemText
@@ -663,7 +677,7 @@ export default function PersistentDrawerLeft({ children }) {
                         {openlegajo ? <ExpandLess /> : <ExpandMore />}
                       </ListItemButton>
                       <Collapse in={openlegajo} timeout="auto" unmountOnExit>
-                        <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemButton sx={{ pl: paddingLeftIcon }}>
                           <ListItemIcon>
                             {iconsToMenu.get(item.dMenu.coD_MENU)}
                           </ListItemIcon>
@@ -672,7 +686,7 @@ export default function PersistentDrawerLeft({ children }) {
                               to={sayings.get(item.dMenu.coD_MENU)}
                               style={{
                                 textDecoration: "none",
-                                color: "#202020",
+                                color: colorlink,
                               }}
                             >
                               <ListItemText primary={item.dMenu.deS_MENU} />
@@ -683,7 +697,7 @@ export default function PersistentDrawerLeft({ children }) {
                           to={ROUTES.EXPERIENCIALABORAL}
                           style={{
                             textDecoration: "none",
-                            color: "#202020",
+                            color: colorlink,
                           }}
                         ></Link>
                       </Collapse>
@@ -731,10 +745,10 @@ export default function PersistentDrawerLeft({ children }) {
                                   to={sayings.get(item.dMenu.coD_MENU)}
                                   style={{
                                     textDecoration: "none",
-                                    color: "#202020",
+                                    color: colorlink,
                                   }}
                                 >
-                                  <ListItemButton sx={{ pl: 4 }}>
+                                  <ListItemButton sx={{ pl: paddingLeftIcon }}>
                                     <ListItemIcon>
                                       {iconsToMenu.get(item.dMenu.coD_MENU)}
                                     </ListItemIcon>
@@ -789,10 +803,10 @@ export default function PersistentDrawerLeft({ children }) {
                                       to={sayings.get(item.dMenu.coD_MENU)}
                                       style={{
                                         textDecoration: "none",
-                                        color: "#202020",
+                                        color: colorlink,
                                       }}
                                     >
-                                      <ListItemButton sx={{ pl: 3 }}>
+                                      <ListItemButton sx={{ pl: paddingLeftIcon }}>
                                         <ListItemIcon>
                                           {iconsToMenu.get(item.dMenu.coD_MENU)}
                                         </ListItemIcon>
@@ -828,8 +842,8 @@ export default function PersistentDrawerLeft({ children }) {
           {menu.length >= 2 && menuFiltradoMaestros.length > 0 && (
             <>
               <Fragment>
-                <ListItemButton onClick={handleClickMaestro}>
-                  <ListItemIcon></ListItemIcon>
+                <ListItemButton onClick={handleClickMaestro} sx={{py: '1.2rem', pl: paddingTextMenu }}>
+                  {/* <ListItemIcon></ListItemIcon> */}
                   <ListItemText primary="LEGAJO TRABAJADOR" />
                   {openmaestro ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
@@ -842,7 +856,7 @@ export default function PersistentDrawerLeft({ children }) {
                       <ListItemIcon>
                         <EngineeringIcon color="white" />
                       </ListItemIcon>
-                      <ListItemText primary="MAESTROS" />
+                      <ListItemText primary="MAESTROS" sx={{ml: marginTextSubMenu}}/>
                       {opengenerales ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
                     {menuFiltradoMaestros.map((item, index) => (
@@ -856,15 +870,15 @@ export default function PersistentDrawerLeft({ children }) {
                             to={sayings.get(item.dMenu.coD_MENU)}
                             style={{
                               textDecoration: "none",
-                              color: "#202020",
+                              color: colorlink,
                             }}
                           >
-                            <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemButton sx={{ pl: paddingLeftIcon }}>
                               <ListItemIcon>
                                 {iconsToMenu.get(item.dMenu.coD_MENU)}
                               </ListItemIcon>
                               <ListItem>
-                                <ListItemText
+                                <ListItemText sx={{ml: marginTextSubMenu}}
                                   primary={
                                     <Typography style={{ color: "#fff" }}>
                                       {item.dMenu.deS_MENU}
@@ -885,7 +899,7 @@ export default function PersistentDrawerLeft({ children }) {
 
           {menu.length >= 2 && menuFiltradoLegado.length > 0 && (
             <>
-              <Fragment>
+              <Fragment sx={{margin: "1px;!important"}}>
                 {menuFiltradoMaestros.length > 0 ? (
                   <></>
                 ) : (
@@ -903,7 +917,7 @@ export default function PersistentDrawerLeft({ children }) {
                       <ListItemIcon>
                         <ArchiveIcon color="white" />
                       </ListItemIcon>
-                      <ListItemText primary="LEGAJO" />
+                      <ListItemText primary="LEGAJO" sx={{ml: marginTextSubMenu}}/>
                       {openlegajo ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
                     {menuFiltradoLegado.map((item, index) => (
@@ -913,15 +927,15 @@ export default function PersistentDrawerLeft({ children }) {
                             to={sayings.get(item.dMenu.coD_MENU)}
                             style={{
                               textDecoration: "none",
-                              color: "#202020",
+                              color: colorlink,
                             }}
                           >
-                            <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemButton sx={{ pl: paddingLeftIcon }}>
                               <ListItemIcon>
                                 {iconsToMenu.get(item.dMenu.coD_MENU)}
                               </ListItemIcon>
                               <ListItem>
-                                <ListItemText
+                                <ListItemText sx={{ml: marginTextSubMenu}}
                                   primary={
                                     <Typography style={{ color: "#fff" }}>
                                       {item.dMenu.deS_MENU}
@@ -942,8 +956,8 @@ export default function PersistentDrawerLeft({ children }) {
           {menu.length >= 2 && menuFiltradoAsistencia.length > 0 && (
             <>
               <Fragment>
-                <ListItemButton onClick={handleClickAsistencia}>
-                  <ListItemIcon></ListItemIcon>
+                <ListItemButton onClick={handleClickAsistencia} sx={{py: '1.2rem', pl: paddingTextMenu}}>
+                  {/* <ListItemIcon></ListItemIcon> */}
                   <ListItemText primary="CONTROL DE ASISTENCIA" />
                   {openasistencia ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
@@ -958,7 +972,7 @@ export default function PersistentDrawerLeft({ children }) {
                           <ListItemIcon>
                             <EngineeringIcon color="white" />
                           </ListItemIcon>
-                          <ListItemText primary="MAESTROS" />
+                          <ListItemText primary="MAESTROS" sx={{ml: marginTextSubMenu}}/>
                           {openasistenciamaestro ? (
                             <ExpandLess />
                           ) : (
@@ -976,15 +990,15 @@ export default function PersistentDrawerLeft({ children }) {
                                 to={sayings.get(item.dMenu.coD_MENU)}
                                 style={{
                                   textDecoration: "none",
-                                  color: "#202020",
+                                  color: colorlink,
                                 }}
                               >
-                                <ListItemButton sx={{ pl: 4 }}>
+                                <ListItemButton sx={{ pl: paddingLeftIcon }}>
                                   <ListItemIcon>
                                     {iconsToMenu.get(item.dMenu.coD_MENU)}
                                   </ListItemIcon>
                                   <ListItem>
-                                    <ListItemText
+                                    <ListItemText sx={{ml: marginTextSubMenu}}
                                       primary={
                                         <Typography style={{ color: "#fff" }}>
                                           {item.dMenu.deS_MENU}
@@ -1011,7 +1025,7 @@ export default function PersistentDrawerLeft({ children }) {
                             <ListItemIcon>
                               <SettingsIcon color="white" />
                             </ListItemIcon>
-                            <ListItemText primary="CONTROL" />
+                            <ListItemText primary="CONTROL" sx={{ml: marginTextSubMenu}}/>
                             {openconfiguracion ? (
                               <ExpandLess />
                             ) : (
@@ -1034,15 +1048,15 @@ export default function PersistentDrawerLeft({ children }) {
                                     to={sayings.get(item.dMenu.coD_MENU)}
                                     style={{
                                       textDecoration: "none",
-                                      color: "#202020",
+                                      color: colorlink,
                                     }}
                                   >
-                                    <ListItemButton sx={{ pl: 3 }}>
+                                    <ListItemButton sx={{ pl: paddingLeftIcon }}>
                                       <ListItemIcon>
                                         {iconsToMenu.get(item.dMenu.coD_MENU)}
                                       </ListItemIcon>
                                       <ListItem>
-                                        <ListItemText
+                                        <ListItemText sx={{ml: marginTextSubMenu}}
                                           primary={
                                             <Typography
                                               style={{ color: "#fff" }}
@@ -1073,8 +1087,8 @@ export default function PersistentDrawerLeft({ children }) {
           {menu.length >= 2 && menuFiltradoPlantilla.length > 0 && (            
             <>
               <Fragment>
-                <ListItemButton onClick={handleClickPlanilla}>
-                  <ListItemIcon></ListItemIcon>
+                <ListItemButton onClick={handleClickPlanilla} sx={{py: '1.2rem', pl: paddingTextMenu}}>
+                 {/*  <ListItemIcon></ListItemIcon> */}
                   <ListItemText primary="PLANILLA" />
                   {openplanilla ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
@@ -1089,7 +1103,7 @@ export default function PersistentDrawerLeft({ children }) {
                           <ListItemIcon>
                             <EngineeringIcon color="white" />
                           </ListItemIcon>
-                          <ListItemText primary="CONFIGURACIÓN" />
+                          <ListItemText primary="CONFIGURACIÓN" sx={{ml: marginTextSubMenu}}/>
                           {openconfigplanilla ? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>
                         {menuFiltradoConfiguracion.map((item, index) => (
@@ -1103,15 +1117,15 @@ export default function PersistentDrawerLeft({ children }) {
                                 to={sayings.get(item.dMenu.coD_MENU)}
                                 style={{
                                   textDecoration: "none",
-                                  color: "#202020",
+                                  color: colorlink,
                                 }}
                               >
-                                <ListItemButton sx={{ pl: 4 }}>
+                                <ListItemButton sx={{ pl: paddingLeftIcon }}>
                                   <ListItemIcon>
                                     {iconsToMenu.get(item.dMenu.coD_MENU)}
                                   </ListItemIcon>
                                   <ListItem>
-                                    <ListItemText
+                                    <ListItemText sx={{ml: marginTextSubMenu}}
                                       primary={
                                         <Typography style={{ color: "#fff" }}>
                                           {item.dMenu.deS_MENU}
@@ -1138,7 +1152,7 @@ export default function PersistentDrawerLeft({ children }) {
                             <ListItemIcon>
                               <SettingsIcon color="white" />
                             </ListItemIcon>
-                            <ListItemText primary="PROCESOS" />
+                            <ListItemText primary="PROCESOS" sx={{ml: marginTextSubMenu}}/>
                             {openproceso ? <ExpandLess /> : <ExpandMore />}
                           </ListItemButton>
                           <Collapse
@@ -1157,15 +1171,15 @@ export default function PersistentDrawerLeft({ children }) {
                                     to={sayings.get(item.dMenu.coD_MENU)}
                                     style={{
                                       textDecoration: "none",
-                                      color: "#202020",
+                                      color: colorlink,
                                     }}
                                   >
-                                    <ListItemButton sx={{ pl: 3 }}>
+                                    <ListItemButton sx={{ pl: paddingLeftIcon }}>
                                       <ListItemIcon>
                                         {iconsToMenu.get(item.dMenu.coD_MENU)}
                                       </ListItemIcon>
                                       <ListItem>
-                                        <ListItemText
+                                        <ListItemText sx={{ml: marginTextSubMenu}}
                                           primary={
                                             <Typography
                                               style={{ color: "#fff" }}
@@ -1196,7 +1210,7 @@ export default function PersistentDrawerLeft({ children }) {
                             <ListItemIcon>
                               <SettingsIcon color="white" />
                             </ListItemIcon>
-                            <ListItemText primary="INTERFACE" />
+                            <ListItemText primary="INTERFACE" sx={{ml: marginTextSubMenu}}/>
                             {openInterface ? <ExpandLess /> : <ExpandMore />}
                           </ListItemButton>
                           <Collapse
@@ -1215,15 +1229,15 @@ export default function PersistentDrawerLeft({ children }) {
                                     to={sayings.get(item.dMenu.coD_MENU)}
                                     style={{
                                       textDecoration: "none",
-                                      color: "#202020",
+                                      color: colorlink,
                                     }}
                                   >
-                                    <ListItemButton sx={{ pl: 3 }}>
+                                    <ListItemButton sx={{ pl: paddingLeftIcon }}>
                                       <ListItemIcon>
                                         {iconsToMenu.get(item.dMenu.coD_MENU)}
                                       </ListItemIcon>
                                       <ListItem>
-                                        <ListItemText
+                                        <ListItemText sx={{ml: marginTextSubMenu}}
                                           primary={
                                             <Typography
                                               style={{ color: "#fff" }}
@@ -1248,9 +1262,11 @@ export default function PersistentDrawerLeft({ children }) {
                     {menu.length >= 2 && menuFiltradoAsistencia.length > 0 && (
             <>
               <Fragment>
-                <ListItemButton onClick={handleClickRegistro}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="SUNAT" />
+                <ListItemButton onClick={handleClickRegistro} sx={{ pl: 3}} >
+                <ListItemIcon>
+                  <SettingsIcon color="white" />
+                </ListItemIcon>
+                  <ListItemText primary="SUNAT" sx={{ml: marginTextSubMenu}}/>
                   {openregistro ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
                 <Collapse in={openregistro} timeout="auto" unmountOnExit>
@@ -1264,7 +1280,7 @@ export default function PersistentDrawerLeft({ children }) {
                           <ListItemIcon>
                             <EngineeringIcon color="white" />
                           </ListItemIcon>
-                          <ListItemText primary="T-REGISTROS" />
+                          <ListItemText primary="T-REGISTROS" sx={{ml: marginTextSubMenu}}/>
                           {openregistros ? (
                             <ExpandLess />
                           ) : (
@@ -1282,15 +1298,15 @@ export default function PersistentDrawerLeft({ children }) {
                                 to={sayings.get(item.dMenu.coD_MENU)}
                                 style={{
                                   textDecoration: "none",
-                                  color: "#202020",
+                                  color: colorlink,
                                 }}
                               >
-                                <ListItemButton sx={{ pl: 4 }}>
+                                <ListItemButton sx={{ pl: paddingLeftIcon }}>
                                   <ListItemIcon>
                                     {iconsToMenu.get(item.dMenu.coD_MENU)}
                                   </ListItemIcon>
                                   <ListItem>
-                                    <ListItemText
+                                    <ListItemText sx={{ml: marginTextSubMenu}}
                                       primary={
                                         <Typography style={{ color: "#fff" }}>
                                           {item.dMenu.deS_MENU}

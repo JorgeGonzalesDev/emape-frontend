@@ -68,6 +68,7 @@ const BallotsLabor = ({ id }) => {
     coD_PAPELETA: true,
     feC_PAPELETA: true,
     coD_TRABAJADOR: true,
+    inD_ASISTENCIA: true,
     feC_INICIO: true,
     feC_TERMINO: true,
     coD_CARG: true,
@@ -93,6 +94,7 @@ const BallotsLabor = ({ id }) => {
       coD_PAPELETA: false,
       feC_PAPELETA: false,
       coD_TRABAJADOR: false,
+      inD_ASISTENCIA: false,
       feC_INICIO: false,
       feC_TERMINO: false,
       coD_CARG: false,
@@ -596,6 +598,7 @@ const BallotsLabor = ({ id }) => {
               }}
               size="small"
               select
+              error={inputError.inD_ASISTENCIA}
               label="Ind. Asistencia"
               onChange={handleInputChange}
               value={fields.inD_ASISTENCIA}

@@ -2,6 +2,8 @@ import {
   getPlanillaTrabajador,
   AddOrUpdatePlanillaTrabajador,
   deletePlanillaTrabajador,
+  AddOrUpdatePlanillaTrabajadorRango,
+  AddOrUpdatePlanillaTrabajadorRango2,
   getPlanillaTrabajadorById,
 } from "../../service/spreadsheet/payrollandworkers";
 import MUIModal from "../../components/Modal";
@@ -10,7 +12,7 @@ import { useState, useEffect, useRef } from "react";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, Grid, TextField, Stack, MenuItem } from "@mui/material";
+import { Button, Grid, TextField, Stack, MenuItem, Select} from "@mui/material";
 import {
   GridActionsCellItem,
   GridToolbarContainer,
@@ -45,6 +47,8 @@ const PayrollAndWorkers = ({ id }) => {
   const [namePerson, setNamePerson] = useState([]);
   const [responseTypePlan, setResponseTypePlan] = useState([]);
   const [responseSubTypePlan, setResponseSubTypePlan] = useState([]);
+  const [mostrarTable, setMostrarTable] = useState(false);
+  const [personName, setPersonName] = useState([]);
   const levelEducateChild = useRef();
 
   const getSub = async (ind) => {
@@ -65,7 +69,14 @@ const PayrollAndWorkers = ({ id }) => {
     }
 
   };
-
+  /* const handleInputChangeSelect = (event) => {
+    const personName = this.getSelectedRows();
+    console.log(personName);
+  }; */
+  const seleccionado = (rows) => {
+    setNamePerson(rows);
+    console.log(rows);
+  };
   const loadData = async () => {
     const response = await getPlanillaTrabajador();
     setData(response.listado);
@@ -88,7 +99,7 @@ const PayrollAndWorkers = ({ id }) => {
   };
   /*  */
   const edit = async (event, row) => {
-
+    setMostrarTable(true);
     const response = await getTypePlanById(row.coD_TIPOPLAN);
     getSub(response.listado[0]['coD_PADRE'])
     setFields({
@@ -106,14 +117,22 @@ const PayrollAndWorkers = ({ id }) => {
   }, []);
 
   const OpenRegister = () => {
+    setMostrarTable(false);
     setNamePerson('')
     setFields(defaultfields);
     levelEducateChild.current.handleOpen();
   };
 
   const savePlanillaTrabajador = async () => {
-    if (fields.coD_PLATRA != 0) {
-      const response = await AddOrUpdatePlanillaTrabajador(fields);
+    console.log(fields.coD_PLATRA);
+    if (fields.coD_PLATRA == 0) {
+      const trabajadores = {
+        trabajadores : namePerson,
+        coD_PLATRA : fields.coD_PLATRA,
+        coD_TIPOPLAN : fields.coD_TIPOPLAN
+      }
+      /* console.log(trabajadores); */
+      const response = await AddOrUpdatePlanillaTrabajadorRango2(trabajadores);
       if (response.code === 0) {
         levelEducateChild.current.handleOpen();
         await loadData();
@@ -295,7 +314,7 @@ const PayrollAndWorkers = ({ id }) => {
   }
 
   const columns2 = [
-    {
+    /* {
       field: "acciones",
       type: "actions",
       disableExport: true,
@@ -307,7 +326,7 @@ const PayrollAndWorkers = ({ id }) => {
           }}
           icon={<AddCircleOutlineIcon />} label="Edit" />
       ],
-    },
+    }, */
     {
       field: "coD_TRABAJADOR",
       headerName: "Cod. Trabajador",
@@ -393,27 +412,49 @@ const PayrollAndWorkers = ({ id }) => {
           </Grid>
           {/* traer select Trabajador */}
           <Grid item md={12} />
-          <Grid item md={7} sm={12} xs={12}>
+          <Grid item md={7} sm={12} xs={12} hidden={!mostrarTable}>
             <TextField
               name="namePersona"
               fullWidth
               InputLabelProps={{
                 readOnly: true
               }}
+              inputProps={{
+                disabled: true
+              }}
+              onChange={handleInputChange}
               label="Nombres y apellidos"
               type="text"
               size="small"
               value={namePerson}
             />
+            
+            {/* <Select
+              fullWidth
+              size="small"
+              value={personName}
+              sx={{overflow:'hidden'}}
+              renderValue={() => (
+                <Box sx={{ display: 'flex',overflowY: 'hidden',overflowX: 'auto' , gap: 0.5, maxHeight: '60px'}}>
+                  {personName.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}
+            /> */}
           </Grid>
           <Grid item md={12} />
-          <Grid item md={12}>
+          <Grid item md={12} hidden={mostrarTable}>
             <DataGridDemo
               height='40vh'
+              /* name='personName' */
               id={(row) => row.coD_TRABAJADOR}
               rows={data2}
               columns={columns2}
               numberSize={10}
+              checkboxSelection = {true}
+              seleccionado = {seleccionado}
+              /* value= {personName} */
             />
           </Grid>
           <Grid item md={12} />

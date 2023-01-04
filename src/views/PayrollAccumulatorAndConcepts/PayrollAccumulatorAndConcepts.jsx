@@ -12,7 +12,7 @@ import {
   AddOrUpdateAcumuladorPlanilla,
   AddOrUpdateAcumuladorConcepto,
 } from "../../service/payrollaccumulatorandconcepts"; /* importante */
-import { Button, Grid, TextField, Stack, MenuItem, Select, Autocomplete, Box } from "@mui/material";
+import { Button, Grid, TextField, Stack, MenuItem, Select, Autocomplete, Box, Hidden } from "@mui/material";
 import DataGridDemo from "../../components/Table";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import IconToolTip from "../../components/Icons/IconToolTip";
@@ -53,7 +53,6 @@ const WorkerAndConcept = () => {
   const [fields, setFields] = useState(defaultfields);
   const [test, setTest] = useState(defaultest);
   const defaultErrors = {
-    coD_ACUMULADOR: true,
     noM_ACUMULADOR: true,
     inD_ACUMAFP: true,
     inD_DSCTOESSALUD: true,
@@ -64,9 +63,11 @@ const WorkerAndConcept = () => {
   const levelEducateChild = useRef(); /* levelEducateChildTEST */
   const levelEducateChildTEST = useRef(); /* levelEducateChildTEST */
   const [data2, setData2] = useState([]);
+  const [valida, setValida] = useState(true);
   const [inputError, setInputError] = useState(defaultErrors);
   const [responseConcept, setResponseConcept] = useState([]);
   const edit = async (event, row) => {
+    setValida(false);
     setFields({
       coD_ACUPLANILLA: row.coD_ACUPLANILLA,
       coD_ACUMULADOR: row.coD_ACUMULADOR,
@@ -104,7 +105,6 @@ const WorkerAndConcept = () => {
 
   const loadData = async () => {
     setInputError({
-      coD_ACUMULADOR: false,
       noM_ACUMULADOR: false,
       moN_ACUMULADOR: false,
       inD_ACUMAFP: false,
@@ -127,6 +127,7 @@ const WorkerAndConcept = () => {
     const copyFields = { ...fields };
     delete copyFields.moN_ACUMULADOR;
     delete copyFields.coD_ACUPLANILLA;
+    delete copyFields.coD_ACUMULADOR;
 
     let errors = {};
 
@@ -219,13 +220,6 @@ const WorkerAndConcept = () => {
       type: "actions",
       getActions: (cellValues) => [
         <IconToolTip
-          text="Agregar"
-          icon={<AddCircleOutlineIcon />}
-          action={(event) => {
-            edit(event, cellValues.row);
-          }}
-        />,
-        <IconToolTip
           text="Editar"
           icon={<EditIcon />}
           action={(event) => {
@@ -290,6 +284,7 @@ const WorkerAndConcept = () => {
   };
 
   const OpenRegister = () => {
+    setValida(true);
     setFields(defaultfields);
     levelEducateChild.current.handleOpen();
   };
@@ -333,16 +328,6 @@ const WorkerAndConcept = () => {
       </GridToolbarContainer>
     );
   }
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
   return (
     <>
       <Grid container spacing={1}>
@@ -384,14 +369,16 @@ const WorkerAndConcept = () => {
       </Grid>
       <MUIModal ref={levelEducateChild}>
         <Grid container spacing={1.5}>
-          <Grid item md={4} sm={12} xs={12}>
+          <Grid item md={4} sm={12} xs={12} hidden={valida}>
             <TextField
               name="coD_ACUMULADOR"
               fullWidth
               InputLabelProps={{
                 shrink: true,
               }}
-              type="text"
+              inputProps={{
+                disabled: true,
+              }}
               size="small"
               onChange={handleInputChange}
               label="Código"

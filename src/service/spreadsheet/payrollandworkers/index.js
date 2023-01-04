@@ -42,6 +42,26 @@ export const AddOrUpdatePlanillaTrabajador = async (body) => {
     console.log(err);
   }
 };
+export const AddOrUpdatePlanillaTrabajadorRango = async (body) => {
+  try {
+    const response = await fetch(`${URL}/InsertRange`, METHOD.POST(body));
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const AddOrUpdatePlanillaTrabajadorRango2 = async (body) => {
+  try {
+    const response = await fetch(`${URL}/InsertRange2`, METHOD.POST(body));
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const deletePlanillaTrabajador = async (body) => {
   try {
     const response = await fetch(`${URL}/Delete`, METHOD.DELETE(body));

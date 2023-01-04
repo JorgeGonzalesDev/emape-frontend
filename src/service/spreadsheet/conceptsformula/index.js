@@ -5,6 +5,8 @@ const URL2 = `${baseURL}/PlanillaConcepto`;
 
 const URL3 = `${baseURL}/ConceptoPlanilla`;
 
+const URL4 = `${baseURL}/AcumuladorPlanilla`;
+
 
 export const getPlanillaTrabajador = async () => {
   try {
@@ -79,3 +81,12 @@ export const UpdateFormulaInd = async (body) => {
   }
 };
 
+export const getAcumuladorPlanilla = async () => {
+  try {
+    const response = await fetch(`${URL4}/Get`, METHOD.GET());
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};

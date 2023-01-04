@@ -54,9 +54,10 @@ const ReportTable = lazy(() => import("../views/Reports/ReportTable"));
 const TypeSpreadsheet = lazy(() => import("../views/Spreadsheet/TypeSpreadsheet"));
 const Bank = lazy(() => import("../views/BankPayment/Bank"));
 const RenumConcept = lazy(() => import('../views/Spreadsheet/RenumConcept'));
+const FifthCategory = lazy(() => import('../views/Spreadsheet/FifthCategory'));
 const BoletaTrabajador = lazy(() => import('../views/Reports/Employee/Ticket'));
 const HistoricalBallot = lazy(() => import('../views/Reports/HistoricalBallot'));
-const PlanillaReporte = lazy(() => import('../views/Reports/ReportForm/reportes1'));
+const PlanillaReporte = lazy(() => import('../views/Reports/ReportForm/reportesPlanillaProcesos'));
 const PaymentForm = lazy(() => import('../views/Reports/ReportsPreview/PaymentForm'));
 const PlanillaResumenConcepto = lazy(() => import('../views/Reports/ReportsPreview/ConceptSummaryForm/index'));
 const SummaryFormTC = lazy(() => import('../views/Reports/ReportsPreview/SummaryFormTC'));
@@ -78,11 +79,13 @@ const MonthlySummaryOfAbsencesAndTardies =lazy(() => import("../views/Reports/Re
 const VacationControlSummary =lazy(() => import("../views/Reports/ReportsPreview/VacationControlSummary"));
 const VacationDetail =lazy(() => import("../views/Reports/ReportsPreview/VacationDetail"));
 
-const PlanillaReporte2 = lazy(() => import('../views/Reports/ReportForm/reportes2'));
-const PlanillaReporte3 = lazy(() => import('../views/Reports/ReportForm/reportes3'));
-const PlanillaReporte4 = lazy(() => import('../views/Reports/ReportForm/reportes4'));
+const PlanillaReporte2 = lazy(() => import('../views/Reports/ReportForm/reportesPlanillaConfig'));
+const PlanillaReporte3 = lazy(() => import('../views/Reports/ReportForm/reportesControlAsistencia'));
+const PlanillaReporte4 = lazy(() => import('../views/Reports/ReportForm/reportesLegajoTrabajador'));
 
 const RemunerationReturn =lazy(() => import("../views/Reports/ReportsPreview/RemunerationReturn"));
+
+const WorkersList =lazy(() => import("../views/Reports/ReportsPreview/WorkersList"));
 
 const pathPROD = PATH
 
@@ -252,6 +255,10 @@ const Router = () => {
           element={logged ? <WorkerAndConcept /> : <Navigate to={pathPROD} />}
         />
         <Route
+          path={pathPROD + "/planilla/QuintaCategoria"}
+          element={logged ? <FifthCategory /> : <Navigate to={pathPROD} />}
+        />
+        <Route
           path={pathPROD + "/calcular/planilla/CalcularPlanilla"}
           element={logged ? <CalculateSpreadsheet /> : <Navigate to={pathPROD} />}
         />
@@ -362,6 +369,10 @@ const Router = () => {
         <Route
           path={pathPROD + "/reportes/RemunerationReturn/:id"}
           element={logged ? <RemunerationReturn /> : <Navigate to={pathPROD} />}
+        />
+        <Route
+          path={pathPROD + "/reportes/WorkersList"}
+          element={logged ? <WorkersList /> : <Navigate to={pathPROD} />}
         />
       </Routes>
       

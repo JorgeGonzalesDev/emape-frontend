@@ -9,7 +9,7 @@ export const AlertAddUpdate = (id) => {
             timer: 1500
         })
     } else {
-        Swal.fire({ 
+        Swal.fire({
             icon: 'success',
             title: 'Actualizado con exito',
             showConfirmButton: false,

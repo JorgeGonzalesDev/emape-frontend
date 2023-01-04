@@ -21,3 +21,13 @@ export const employeeDesCronInsertorUpdate = async (body) => {
     console.log(err);
   }
 };
+
+export const deleteDesCron = async (body) => {
+  try {
+    const response = await fetch(`${URL}/Delete`, METHOD.DELETE(body));
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};

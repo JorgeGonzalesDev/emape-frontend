@@ -100,7 +100,9 @@ export default function DataGridDemo(
         columns,
         id,
         numberSize = 25,
-        height = '70vh'
+        height = '70vh',
+        checkboxSelection = false,
+        seleccionado,
     }
 ) {
 
@@ -279,6 +281,8 @@ export default function DataGridDemo(
                     },
                 }}
                 localeText={tableES}
+                checkboxSelection = {checkboxSelection}
+                onSelectionModelChange= {seleccionado}
             />
         </Box>
     );

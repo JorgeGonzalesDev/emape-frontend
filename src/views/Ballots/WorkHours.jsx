@@ -332,6 +332,7 @@ const WorkHours = ({ id }) => {
               InputLabelProps={{
                 shrink: true
               }}
+              inputProps={{maxLength: 50}}
               size="small"
               label="Nombre Horario *"
               onChange={handleInputChange}
