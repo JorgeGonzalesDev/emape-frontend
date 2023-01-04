@@ -1,3 +1,3 @@
-export const baseURL = "http://200.48.24.53:89/api";
-export const baseURLLog = "http://200.48.24.53:89";
-export const PATH = "/RRHHTEST"
+export const baseURL = "http://200.48.24.53:86/api";
+export const baseURLLog = "http://200.48.24.53:86";
+export const PATH = "/RRHHDEV"

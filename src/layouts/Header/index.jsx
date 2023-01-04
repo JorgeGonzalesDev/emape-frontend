@@ -308,6 +308,10 @@ export default function PersistentDrawerLeft({ children }) {
   iconsToMenu.set(32, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(41, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(34, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(38, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(39, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(53, <AccessTimeFilledIcon color="white" />);
+  iconsToMenu.set(37, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(45, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(48, <AccessTimeFilledIcon color="white" />);
   iconsToMenu.set(49, <AccessTimeFilledIcon color="white" />);
